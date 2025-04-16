@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/movieListStyle.css">
+    <script src="js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <script src="element-ui/lib/index.js"></script>
+</head>
+
+<body>
+<div id="movie-list-container">
+    <div class="movie-section title-bar">影视列表</div>
+    <hr>
+    <div class="movie-section tool-bar">
+        <div><a class="auto-button" href="/movies_add.html">添加影视</a></div>
+        <form>
+            <ul class="horizontal-ul">
+                <li>搜索：</li>
+                <li>
+                    <!-- TODO 分类选择下拉框 -->
+                    <!-- 1~15： 动作、剧情、喜剧、爱情、科幻、悬疑、恐怖、犯罪、战争、历史、动画、音乐、体育、奇幻、冒险-->
+                    <!-- 分类选择 -->
+                    <select class="auto-input" v-model="cid">
+                        <option value="">全部</option>
+                        <option v-for="item in categoryOptions" :key="item" :value="item">
+                            {{ item }}
+                        </option>
+                    </select>
+                </li>
+                <li>
+                    <!-- 搜索框 -->
+                    <!-- 由于搜索按钮在无序列表中，点击后父元素也会提交表单，这样就会执行2次，所以用stop阻止父级事件-->
+                    <input class="auto-input" type="text" placeholder="请输入搜索关键字" name="keyword" v-model="keyword"/>
+                    <button class="auto-button" type="button"  @click.stop="findByPage()">搜索</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <hr>
+    <!-- 表格 -->
+    <div class="movie-section movie-table-wrapper">
+        <el-table :data="pagination.list"
+                  :highlight-current-row="true"
+                  :header-cell-style="{ background: 'var(--base-color)', color: 'var(--secondary-text)' }"
+                  :row-style="{ background: 'var(--base-color)', color: 'var(--secondary-text)' }"
+                  @select="checkboxSelected"
+                  @selection-change="selectionChange">
+            <!-- 复选框 -->
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+
+            <!-- 图片列 -->
+            <el-table-column label="图片" width="100">
+                <template slot-scope="{ row }">
+                    <img :src="row.posterPath" alt="封面" width="55" height="70"/>
+                </template>
+            </el-table-column>
+
+            <!-- 影视名称列 -->
+            <el-table-column prop="title" label="影视名称"></el-table-column>
+
+            <!-- 导演列 -->
+            <el-table-column prop="director" label="导演" width="120"></el-table-column>
+
+            <!-- TODO  分类名称列 -->
+            <el-table-column label="分类">
+                <template slot-scope="{ row }">
+                    <el-tag
+                            v-for="(genre, index) in row.genres"
+                            :key="index"
+                            type="info"
+                            size="mini"
+                            style="margin-right: 5px"
+                    >
+                        {{ genre }}
+                    </el-tag>
+                </template>
+            </el-table-column>
+
+            <!-- 上映时间列 -->
+            <el-table-column prop="releaseDate" label="上映时间" width="120"></el-table-column>
+
+            <!-- 操作列 -->
+            <el-table-column label="操作" width="150">
+                <template slot-scope="{ row }">
+
+                    <div class="svg-group">
+                        <a :href="'/movies_add.html?id=' + row.id" title="修改">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M80 0v-160h800V0H80Zm80-240v-170l448-447q11-11 25.5-17t30.5-6q16 0 31 6t27 18l55 56q12 11 17.5 26t5.5 31q0 15-5.5 29.5T777-687L330-240H160Zm504-448 56-56-56-56-56 56 56 56Z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:void(0)" @click="deleteById(row.id)" title="删除">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm80-160h80v-360h-80v360Zm160 0h80v-360h-80v360Z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:void(0)" @click="toBanner(row.id)" title="置轮播">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-440H200v440Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+
+        <!-- 批量删除 -->
+        <div style="margin-top: 10px">
+            <a href="javascript:void(0)" class="auto-button" @click="deleteBatch()"> 批量删除</a>
+            <span class="auto-label">总记录数：{{pagination.total}}</span>
+        </div>
+
+        <div class="pagination-wrapper">
+<!--
+分页组件
+    size-change: pageSize改变时会触发
+    current-change：currentPage改变时会触发
+    background：是否为分页按钮添加背景色
+    layout：组件布局，子组件名用逗号分割。String：sizes,prev,pager,next,jumper,->,total,slot
+        prev：上一页按钮
+        pager：页码按钮
+        next：下一页按钮
+-->
+            <el-pagination
+                    @size-change="handleSizeChange"/>
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.pageNum"
+                    :page-size="pagination.pageSize"
+                    :total="pagination.total"
+                    background
+                    layout="prev, pager, next">
+            </el-pagination>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#movie-list-container',
+        data: {
+            ids: [],
+            cid: "",
+            keyword: "",
+            categoryOptions: [
+                "动作", "剧情", "喜剧", "爱情", "科幻", "悬疑", "恐怖",
+                "犯罪", "战争", "历史", "动画", "音乐", "体育", "奇幻", "冒险"
+            ],
+            pagination: { // 分页对象
+                pageNum: 1, //当前页——current-page
+                pageSize: 5, // 每页5条内容
+                total: 20, // 总条目数
+                list: []
+            },
+        },
+        methods: {
+            // 复选框单个选中
+            checkboxSelected(selection, row) {
+                const ids = selection.map(item => item.id); // 获取所有选中的id
+                this.ids = ids; //更新ids
+                console.log(ids);
+            },
+            // 复选框当前页全选
+            selectionChange(selection) {
+                this.ids = selection.map(item => item.id);
+            },
+
+            // 分页查询
+            findByPage(page) {
+                axios.get("/movies/list", {
+                    params: {
+                        pageNum: this.pagination.pageNum,
+                        pageSize: this.pagination.pageSize,
+                        // TODO
+                        //分类
+                        cid: this.cid,
+                        keyword: this.keyword //搜索框中的文字检索
+                    }
+                }).then(resp => {
+                    if (resp.data.code == 1) {
+                        // 将查询到的movie的数量和数据赋值
+                        this.pagination.total = resp.data.data.total;
+                        this.pagination.list = resp.data.data.list;
+                    } else {
+                        alert(resp.data.msg);
+                    }
+                });
+            },
+            //当前页改变时调用的方法
+            handleCurrentChange(pageNum) {
+                //将最新页码赋值给分页对象的当前页码
+                this.pagination.pageNum = pageNum;
+                //重新发起分页请求
+                this.findByPage();
+            },
+            //改变每页大小时调用的方法
+            handleSizeChange(pageSize) {
+                //将最新的每页大爱小赋值给分页对象的当前页码
+                this.pagination.pageSize = pageSize;
+                //重新发起分页请求
+                this.findByPage();
+            },
+            //单个删除
+            deleteById(id) {
+                if (confirm("你确定要删除吗?")) {
+                    axios.delete("/movies/deleteById?id=" + id).then(resp => {
+                        if (resp.data.code == 1) {
+                            const totalPage = Math.ceil((this.pagination.total - 1) / this.pagination.pageSize) // 计算总页数
+                            this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
+                            this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
+                            this.findByPage();
+                        } else {
+                            alert(resp.data.msg);
+                        }
+                    });
+                }
+            },
+            //批量删除
+            deleteBatch() {
+                if (this.ids.length > 0) {
+                    console.log(this.ids);
+                    if (confirm("您确定要删除这些吗?")) {
+                        axios.delete("/movies/deleteByIds?ids=" + this.ids).then(resp => {
+                            if (resp.data.code == 1) {
+                                const totalPage = Math.ceil((this.pagination.total - this.ids.length) / this.pagination.pageSize) // 计算总页数
+                                this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
+                                this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
+                                this.findByPage();
+                            } else {
+                                alert(resp.data.msg);
+                            }
+                        });
+                    }
+                }
+            },
+            //单个删除
+            toBanner(id) {
+                if (confirm("你确定要添加到banner中吗?")) {
+                    axios.post("/movies/save2Banner?id=" + id).then(resp => {
+                        if (resp.data.code == 1) {
+                            this.findByPage();
+                        } else {
+                            alert(resp.data.msg);
+                        }
+                    });
+                }
+            },
+        },
+        //vue对象创建成功之后要做的事情,可以简单的理解为页面加载成功事件
+        created: function () {
+            this.findByPage();
+        }
+    })
+</script>
+</body>
+</html>

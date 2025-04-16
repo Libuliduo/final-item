@@ -1,0 +1,55 @@
+.login-item {
+    /* 容器本身 */
+    width: 350px;
+    height: 400px;
+    /* 背景透明 */
+    background: rgba(255, 255, 255, 0.1);
+    /* 毛玻璃效果*/
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* 加上阴影 */
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 让登录框水平居中 */
+    margin: auto;
+
+    /* 内部元素之间的间隔 */
+    row-gap: 10px;
+    column-gap: 20px;
+}
+
+.login-input {
+    width: 90%;
+    height: 45px;
+    margin: 15px 0;
+    border: none;
+    border-radius: 10px;
+    padding: 0 15px;
+    font-size: 16px;
+    background-color: var(--base-color);
+    color: var(--secondary-text);
+    outline: none;
+}
+
+.rememberAndForgetPassword {
+    color: #FFFFFF;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.rememberAndForgetPassword a {
+    color: #FFFFFF;
+}
+
+.el-checkbox {
+    color: #FFFFFF;
+}
+
+.login-name {
+    color: #c4c2c2;
+}

@@ -1,0 +1,30 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-circular-references: true #允许 Spring 容器中的 Bean 出现循环依赖（Circular Dependency）
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://server.yeyuchun.icu:3306/finalitem_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: a123@456
+  servlet: # 文件上传限制
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
+
+mybatis:
+  type-aliases-package: com.yeyuchun.domain
+  configuration:
+    # 开启驼峰命名规则映射  表 user_name  -> 实体类 userName
+    map-underscore-to-camel-case: true
+    # 控制台打印SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+tmdb:
+  tmdb-api-key: 91dd7a8fcde8a96c6816312d93447677
+
+alist:
+  alist-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlleXVjaHVuIiwicHdkX3RzIjoxNzQ0MjgyMTU1LCJleHAiOjE3NDQ5NTIyMzksIm5iZiI6MTc0NDc3OTQzOSwiaWF0IjoxNzQ0Nzc5NDM5fQ.zh8gL5qEZgJZu-x648xWl26j9zrMYcNUmsP_Zv7n0H8

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.yeyuchun.mapper.MovieMapper">
+<!-- =============== 定义类型 =================-->
+    <!-- 将数据库字段映射到实体类Movie字段：驼峰映射-->
+    <resultMap id="movieResultMap" type="top.yeyuchun.entity.Movie">
+        <id property="id" column="id" />
+        <result property="title" column="title" />
+        <result property="originalTitle" column="original_title" />
+        <result property="country" column="country" />
+        <result property="releaseDate" column="release_date" />
+        <result property="overview" column="overview" />
+        <result property="director" column="director" />
+        <result property="actors" column="actors" />
+        <result property="backdropPath" column="backdrop_path" />
+        <result property="posterPath" column="poster_path" />
+        <result property="url" column="url" />
+        <result property="popularity" column="popularity" />
+
+        <!-- 处理多对多：genres 是 List<String>，每部电影可以对应多个类型 -->
+        <!-- 数据库一行只能查询出一个genre，下面将每条记录的genre字段收集起来，存放到genres集合里面-->
+        <collection property="genres" ofType="string">
+            <result column="genre" />
+        </collection>
+    </resultMap>
+
+<!-- =============== 查询所有=================-->
+    <!-- 定义SQL查询方法findAll，返回结果用上面的movieResultMap -->
+    <select id="findAll" resultMap="movieResultMap">
+        SELECT
+            movie.*,              -- 电影主表字段
+            genre.genre           -- 类型名称
+        FROM
+            tb_movie AS movie
+                LEFT JOIN
+            tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                LEFT JOIN
+            tb_genre AS genre ON movieGenre.genre_id = genre.id
+    </select>
+
+<!-- =============== 查询单个 =================-->
+    <select id="findById" resultMap="movieResultMap">
+        SELECT
+            movie.*,
+            genre.genre
+        FROM
+            tb_movie AS movie
+        LEFT JOIN
+            tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+        LEFT JOIN
+            tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+            movie.id = #{id}
+    </select>
+
+<!-- =============== 插入单条movie =================-->
+    <insert id="addMovie" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_movie (
+            title, original_title, country, release_date, overview,
+            director, actors, backdrop_path, poster_path, url, popularity
+        ) VALUES (
+                     #{title}, #{originalTitle}, #{country}, #{releaseDate}, #{overview},
+                     #{director}, #{actors}, #{backdropPath}, #{posterPath}, #{url}, #{popularity}
+                 )
+    </insert>
+
+    <!-- 根据传入的类型名称列表查 genre.id -->
+    <select id="findGenreIdsByNames" resultType="int">
+        SELECT id FROM tb_genre WHERE genre IN
+        <foreach collection="genres" item="genre" open="(" separator="," close=")">
+            #{genre}
+        </foreach>
+    </select>
+
+    <!-- 插入 tb_movie_genre 中间表 -->
+    <insert id="addMovieGenres">
+        INSERT INTO tb_movie_genre (movie_id, genre_id)
+        VALUES
+        <foreach collection="genreIds" item="genreId" separator=",">
+            (#{movieId}, #{genreId})
+        </foreach>
+    </insert>
+
+    <!-- =============== 更新单条movie =================-->
+    <!-- 1. 更新 tb_movie 主表 -->
+    <update id="updateById">
+        UPDATE tb_movie
+        SET
+            title = #{title},
+            original_title = #{originalTitle},
+            country = #{country},
+            release_date = #{releaseDate},
+            overview = #{overview},
+            director = #{director},
+            actors = #{actors},
+            backdrop_path = #{backdropPath},
+            poster_path = #{posterPath},
+            url = #{url},
+            popularity = #{popularity}
+        WHERE id = #{id};
+    </update>
+
+    <!-- 2. 删除旧的电影-类型关系 -->
+    <delete id="deleteMovieGenres">
+        DELETE FROM tb_movie_genre WHERE movie_id = #{movieId}
+    </delete>
+
+    <!-- 3. 查询 genre 名称对应的id：在上面已经实现 -->
+
+    <!-- 4. 插入新的电影-类型关系 -->
+    <insert id="insertMovieGenres">
+        INSERT INTO tb_movie_genre (movie_id, genre_id)
+        VALUES
+        <foreach collection="genreIds" item="genreId" separator=",">
+            (#{movieId}, #{genreId})
+        </foreach>
+    </insert>
+
+
+<!-- =============== 删除单个movie =================-->
+    <!-- 1. 删除中间表 上面已经实现：deleteMovieGenres -->
+    <!-- 2. 删除主表tb_movie中的记录 -->
+    <delete id="deleteMovieById">
+        DELETE FROM tb_movie WHERE id = #{id}
+    </delete>
+
+<!-- =============== 批量删除movies =================-->
+    <!-- 1. 批量删除中间表中的记录 -->
+    <delete id="deleteMovieGenresBatch">
+        DELETE FROM tb_movie_genre WHERE movie_id IN
+        <foreach collection="movieIds" item="movieId" open="(" separator="," close=")">
+            #{movieId}
+        </foreach>
+    </delete>
+
+    <!-- 2. 批量删除主表中的记录 -->
+    <delete id="deleteMoviesBatch">
+        DELETE FROM tb_movie WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+
+
+</mapper>
