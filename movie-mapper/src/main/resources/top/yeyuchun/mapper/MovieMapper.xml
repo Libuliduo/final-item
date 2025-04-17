@@ -134,6 +134,16 @@
     </delete>
 
     <!-- 2. 批量删除主表中的记录 -->
+    <!-- 动态sql,实现 delete from tb_movie where id in (1,3,5) -->
+    <!-- 括号里面的id与我们的选中有关,所以需要动态sql -->
+    <!--
+        动态sql:foreach：循环
+               collection：用来指定遍历的容器 若容器为list 可以写list 或者 collection 或 参数名；若容器为数组则写array或参数名
+               open：指定动态sql开始的内容
+               close：指定动态sql结束的内容
+               item：指定遍历时获取的每个元素，起临时变量名
+               separator：多个元素之间的分隔符
+    -->
     <delete id="deleteMoviesBatch">
         DELETE FROM tb_movie WHERE id IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">
@@ -141,6 +151,30 @@
         </foreach>
     </delete>
 
-
+<!-- =============== 匹配genre和keyword查询数据 =================-->
+    <select id="findList" resultType="top.yeyuchun.entity.Movie">
+        SELECT DISTINCT m.*
+        FROM tb_movie m
+        <if test="genre != null and genre != ''">
+            JOIN tb_movie_genre mg ON m.id = mg.movie_id
+            JOIN tb_genre g ON mg.genre_id = g.id
+        </if>
+        <if test="genre == null or genre == ''">
+            LEFT JOIN tb_movie_genre mg ON m.id = mg.movie_id
+            LEFT JOIN tb_genre g ON mg.genre_id = g.id
+        </if>
+        WHERE 1 = 1
+        <if test="keyword != null and keyword != ''">
+            AND (
+            m.title LIKE CONCAT('%', #{keyword}, '%')
+            OR m.original_title LIKE CONCAT('%', #{keyword}, '%')
+            OR m.director LIKE CONCAT('%', #{keyword}, '%')
+            OR m.actors LIKE CONCAT('%', #{keyword}, '%')
+            )
+        </if>
+        <if test="genre != null and genre != ''">
+            AND g.genre = #{genre}
+        </if>
+    </select>
 
 </mapper>

@@ -3,6 +3,8 @@ package top.yeyuchun.service.Impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -86,6 +88,7 @@ public class MovieServiceImpl implements MovieService {
                     .retrieve()
                     .bodyToMono(String.class)
                     .block();
+
 
             // 输出响应
             System.out.println("通过title查询到的响应：" + searchResponse);
@@ -212,7 +215,7 @@ public class MovieServiceImpl implements MovieService {
                     .bodyToMono(String.class)
                     .block();
 
-            System.out.println("Credits响应：" + creditsResponse);
+//            System.out.println("Credits响应：" + creditsResponse);
 
             JSONObject creditsJson = JSON.parseObject(creditsResponse);
             JSONArray crewArray = creditsJson.getJSONArray("crew"); // 工作人员
@@ -306,5 +309,27 @@ public class MovieServiceImpl implements MovieService {
 
         // 2. 再删除主表中的记录
         movieMapper.deleteMoviesBatch(ids);
+    }
+
+    @Override
+    public PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword) {
+        // 参数校验
+        if (pageNum<=0) {
+            pageNum=1;
+        }
+        if (pageSize<=0) {
+            pageSize=5;
+        }
+
+        // 使用pageHelper完成分页查询
+        PageHelper.startPage(pageNum,pageSize);
+
+        // trim:去掉字符串两端空白
+        keyword = (keyword == null ? null : keyword.trim());
+
+        List<Movie> list = movieMapper.findList(genre,keyword);
+
+        //使用PageInfo构造器封装list,就可以获取总记录数和分页的一些其他参数
+        return new PageInfo(list);
     }
 }

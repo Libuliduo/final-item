@@ -20,4 +20,6 @@ public interface MovieService {
     void deleteById(Integer id);
 
     void deleteBatch(Integer[] ids);
+
+    PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword);
 }

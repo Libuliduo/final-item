@@ -26,6 +26,9 @@ public class MovieController {
         // 加上打印看下传进来的内容
         System.out.println("前端传入 title: " + title);
         Movie movie = movieService.getMovieInfo(title);
+        if (movie == null) {
+            return Result.error("未找到对应电影信息");
+        }
         return Result.success(movie);
     }
 
@@ -70,5 +73,16 @@ public class MovieController {
     public Result deleteBatch(Integer[] ids) {
         movieService.deleteBatch(ids);
         return Result.success();
+    }
+
+    // 分页查询
+    @GetMapping("list")
+    public Result findByPage(
+            @RequestParam Integer pageNum,
+            @RequestParam Integer pageSize,
+            String genre,
+            String keyword ) {
+        PageInfo pageInfo = movieService.findByPage(pageNum, pageSize, genre, keyword);
+        return Result.success(pageInfo);
     }
 }

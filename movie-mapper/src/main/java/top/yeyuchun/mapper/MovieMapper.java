@@ -34,4 +34,5 @@ public interface MovieMapper {
 
     void deleteMovieGenresBatch(Integer[] movieIds);
 
+    List<Movie> findList(String genre, String keyword);
 }

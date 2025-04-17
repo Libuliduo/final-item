@@ -23,6 +23,9 @@ mybatis:
     # 控制台打印SQL日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+lsky:
+  lsky-api-key: 1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR
+
 tmdb:
   tmdb-api-key: 91dd7a8fcde8a96c6816312d93447677
 
