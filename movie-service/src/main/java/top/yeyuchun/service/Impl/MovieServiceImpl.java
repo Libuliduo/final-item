@@ -22,6 +22,25 @@ import java.sql.Date;
 import java.util.*;
 
 
+/* Alist 获取raw_url的流程：
+    1.先获取文件所在目录path
+    发送post请求到https://alist.yeyuchun.top:23333/api/fs/search
+    Headers里面需要Authorization，body里面需要json类型的数据
+    如：{
+          "parent": "/NASVideo",
+          "keywords": "星际穿越",
+          "scope": 2,
+          "page": 1,
+          "per_page": 1,
+          "password": ""
+        }
+    得到响应，若data.content.is_dir = false，则直接找到文件了，将data.content.parent和name拼接即为path
+
+    2.通过path查询文件链接
+    发送Post请求到https://alist.yeyuchun.top:23333/api/fs/get
+    Headers里面需要Authorization，body里面需要json类型的path：文件路径得到data.raw_url
+
+ */
 @Service
 public class MovieServiceImpl implements MovieService {
 

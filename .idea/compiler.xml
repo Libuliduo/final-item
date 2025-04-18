@@ -11,6 +11,7 @@
         <module name="movie-domain" />
         <module name="movie-service" />
         <module name="movie-mapper" />
+        <module name="movie-portal-web" />
         <module name="movie-common" />
       </profile>
     </annotationProcessing>
@@ -21,6 +22,7 @@
       <module name="movie-domain" options="-parameters" />
       <module name="movie-manager-web" options="-parameters" />
       <module name="movie-mapper" options="-parameters" />
+      <module name="movie-portal-web" options="-parameters" />
       <module name="movie-service" options="-parameters" />
     </option>
   </component>

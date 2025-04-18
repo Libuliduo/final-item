@@ -1,0 +1,212 @@
+/* 默认颜色: 浅色主题*/
+:root {
+    /* 背景色 */
+    --base-color: #FFFFFF;
+    /* 次级背景色: 侧边栏颜色*/
+    --base-variant: #F1F4F9;
+    /* 主要文字颜色: 如电影名称颜色 */
+    --text-color: #202327;
+    /* 次级文字颜色 如侧边栏文字颜色*/
+    --secondary-text: #202327;
+    /* 主色: 可能用于按钮、导航栏或其他主要 UI 组件的背景色*/
+    --primary-color: #4A5568;
+    /* 强调色: 用于高亮元素，比如链接、按钮或选中状态。*/
+    --accent-color: #202327;
+    /*  按钮色  */
+    --button-color: #2173DF;
+    /*   按钮字体颜色 */
+    --button-font-color: #F3F7FD;
+}
+
+/* darkmode: 暗色主题*/
+.darkmode {
+    /* 背景色 */
+    --base-color: #1A1E23;
+    /* 次级背景色: 侧边栏颜色*/
+    --base-variant: #14171A;
+    /* 主要文字颜色: 比如main里面的颜色 */
+    --text-color: #FFFFFF;
+    /* 次级文字颜色: 如侧边栏文字颜色 */
+    --secondary-text: #CBD5E0;
+    /* 主色: 可能用于按钮、导航栏或其他主要 UI 组件的背景色*/
+    --primary-color: #CBD5E0;
+    /* 强调色: 用于高亮元素，比如链接、按钮或选中状态。*/
+    --accent-color: #FFFFFF;
+    /*  按钮色  */
+    --button-color: #2173DF;
+    /*   按钮字体颜色 */
+    --button-font-color: #F3F7FD;
+}
+
+/* 切换明暗按钮样式 */
+#theme-switch {
+    border: none;
+    background-color: var(--base-color);
+}
+
+.right-buttons svg {
+    fill: var(--primary-color);
+}
+
+/*将最后一个svg显示为无*/
+#theme-switch svg:last-child {
+    display: none;
+}
+
+/*暗模式下，第一个svg显示为无,最后一个显示为块元素*/
+.darkmode #theme-switch svg:first-child {
+    display: none;
+}
+
+.darkmode #theme-switch svg:last-child {
+    display: block;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: "Kanit", sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background-color: var(--base-color);
+    color: var(--text-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--secondary-text);
+}
+.section {
+    width: 70%;
+    max-width: 1200px;
+}
+
+.header-bar {
+    display: flex;
+    /* 子元素垂直居中 */
+    align-items: center;
+    height: 100px;
+}
+
+.header-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.header-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.leftNav-title {
+    font-size: 25px;
+}
+
+/*  横向列表 */
+.header-bar-ul {
+    padding-left: 30px;
+    /* 去掉列表前面的小圆点 */
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 20px;
+}
+.header-bar-ul li a {
+    /* 让::after能相对于a正确定位 */
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    padding-bottom: 4px; /* 给底部留空间 */
+    transition: color 0.3s ease;
+}
+
+/* 悬停时更换颜色 + 显示下划线条 */
+.header-bar-ul li a:hover {
+    color: var(--button-color);
+}
+
+/* 创建一个伪元素放在文字底部，初始宽度为0，悬停时展开到100% */
+.header-bar-ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--button-color);
+    transition: width 0.3s ease;
+}
+/* 悬停时小条展开 */
+.header-bar-ul li a:hover::after {
+    width: 100%;
+}
+
+/* 影视盒子 */
+/* 盒子 */
+
+.box-group {
+    max-width: 1200px;
+    margin: 5px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.movieBox {
+    width: 180px;
+    height: 280px;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.movieBox:hover {
+    transform: scale(1.05);
+}
+
+.box-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    padding-top: 2px;
+}
+
+.box-name {
+    font-size: 16px;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 猜你喜欢、全部影视 */
+.box-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 20px;
+    width: 70%;
+}
+
+.moviesList {
+    width: 70%;
+    height: auto;
+    display: flex;
+    column-gap: 50px;
+}

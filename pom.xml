@@ -10,6 +10,7 @@
         <module>movie-common</module>
         <module>movie-service</module>
         <module>movie-mapper</module>
+        <module>movie-portal-web</module>
     </modules>
 
     <parent>

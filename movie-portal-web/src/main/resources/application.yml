@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+spring:
+  main:
+    allow-circular-references: true #允许 Spring 容器中的 Bean 出现循环依赖（Circular Dependency）
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://server.yeyuchun.icu:3306/finalitem_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: a123@456
+
+mybatis:
+  type-aliases-package: top.yeyuchun.domain
+  configuration:
+    # 开启驼峰命名规则映射  表 user_name  -> 实体类 userName
+    map-underscore-to-camel-case: true
+    # 控制台打印SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+lsky:
+  lsky-api-key: 1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR
+
+tmdb:
+  tmdb-api-key: 91dd7a8fcde8a96c6816312d93447677
+
+alist:
+  alist-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlleXVjaHVuIiwicHdkX3RzIjoxNzQ0MjgyMTU1LCJleHAiOjE3NDUxNTQ4NjAsIm5iZiI6MTc0NDk4MjA2MCwiaWF0IjoxNzQ0OTgyMDYwfQ.TTjfO7p64ovVBi7TEQ-g3_oy4ixICZB-1tFmx5Tt_Yo
