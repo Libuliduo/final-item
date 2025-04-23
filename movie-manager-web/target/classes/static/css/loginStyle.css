@@ -1,7 +1,7 @@
-.login-item {
+.login-register-item {
     /* 容器本身 */
     width: 350px;
-    height: 400px;
+    height: auto;
     /* 背景透明 */
     background: rgba(255, 255, 255, 0.1);
     /* 毛玻璃效果*/
@@ -22,7 +22,7 @@
     column-gap: 20px;
 }
 
-.login-input {
+.login-register-input {
     width: 90%;
     height: 45px;
     margin: 15px 0;
@@ -52,4 +52,25 @@
 
 .login-name {
     color: #c4c2c2;
+}
+
+/*------------------------------------*/
+.code-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.get-code-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 30px;
+    padding: 0 10px;
+    border: none;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.3);
+    color: var(--secondary-text);
+    font-size: 12px;
+    cursor: pointer;
 }

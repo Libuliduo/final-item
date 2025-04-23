@@ -23,16 +23,29 @@
         </dependency>
 
 
-        <!--springboot依赖-->
+        <!-- springboot依赖：包含springboot redis的依赖，可以查看key和value -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-json</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.1</version>
+        </dependency>
+
         <!--hutool工具包-->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
         </dependency>
+
         <!--支持配置属性类，yml文件中可以提示配置项-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
