@@ -3,7 +3,6 @@ package top.yeyuchun.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import top.yeyuchun.entity.Admin;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.AdminService;
 
@@ -29,11 +28,13 @@ public class AdminController {
 
     @PostMapping("login")
     public Result login(@RequestBody Map<String, String> paramMap) {
-        Admin admin = adminService.login(paramMap);
-        if (admin != null) {
-            return Result.success("登录成功");
-        } else {
-            return Result.error("账号或密码错误");
-        }
+        String res = adminService.login(paramMap);
+        return Result.success(res);
+    }
+
+    @GetMapping("verify")
+    public Result verify(@RequestHeader("Authorization") String token) {
+        adminService.verify(token);
+        return Result.success();
     }
 }

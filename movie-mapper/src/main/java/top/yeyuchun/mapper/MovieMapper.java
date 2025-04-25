@@ -35,4 +35,12 @@ public interface MovieMapper {
     void deleteMovieGenresBatch(Integer[] movieIds);
 
     List<Movie> findList(String genre, String keyword);
+
+    List<Movie> findChinese();
+
+    List<Movie> findEnglish();
+
+    List<Movie> findJPandKR();
+
+    List<Movie> findOther();
 }

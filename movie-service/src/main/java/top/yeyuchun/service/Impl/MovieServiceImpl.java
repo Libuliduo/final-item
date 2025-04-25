@@ -85,77 +85,7 @@ public class MovieServiceImpl implements MovieService {
     public Movie getMovieInfo(String title) {
         Movie movie = new Movie();
         try {
-
-            // ======= 1.通过 AList 获取视频的Path =======
-            // 将影视名用空格隔开，这样通过api可以直接搜到文件，不然会搜到目录
-            String keywords = title.replaceAll("(.)", "$1 ");  // 使用正则表达式插入空格
-
-            System.out.println("keyword：" + keywords);
-            String tempPath = "";
-            // 创建请求体
-            Map<String, Object> searchBody = new HashMap<>();
-            searchBody.put("parent", "/");
-            searchBody.put("keywords", keywords);
-            searchBody.put("scope", 0);
-            searchBody.put("page", 1);
-            searchBody.put("per_page", 1);
-
-            System.out.println("请求体：" + JSON.toJSONString(searchBody));
-            // 发送请求
-            String searchResponse = alistClient.post()
-                    .uri("https://alist.yeyuchun.top:23333/api/fs/search")
-                    .header(HttpHeaders.AUTHORIZATION, AListApiKey)
-                    .bodyValue(searchBody)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-
-            // 输出响应
-            System.out.println("通过title查询到的响应：" + searchResponse);
-
-            JSONObject searchJson = JSON.parseObject(searchResponse);
-            // 检查返回结果
-            if (searchJson.getInteger("code") == 200) {
-                JSONObject data = searchJson.getJSONObject("data");
-                if(data != null) {
-                    JSONArray content = data.getJSONArray("content");
-                    if (content != null && !content.isEmpty()) {
-                        JSONObject fileInfo = content.getJSONObject(0);
-                        boolean isDir = fileInfo.getBoolean("is_dir");
-                        if (!isDir) {
-                            // 拼接path
-                            String parent = fileInfo.getString("parent");
-                            String name = fileInfo.getString("name");
-                            tempPath = parent + "/" + name; // 拼接得到路径
-                        }
-                    }
-                }
-            }
-
-            final String path = tempPath;
-            // ======= 2.通过Path获取视频的 URL =======
-            Map<String, String> body = new HashMap<>();
-            body.put("path", path);
-
-            String alistResponse = alistClient.post()
-                    .uri("/api/fs/get")
-                    .header(HttpHeaders.AUTHORIZATION, AListApiKey) // 加上 Authorization
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-
-            // 解析AList响应，提取raw_url
-            System.out.println("收到响应：" + alistResponse);
-            // 用fastjson 解析响应字符串
-            JSONObject alistJson = JSON.parseObject(alistResponse);
-            // 获取data.raw_url 字段
-            String rawUrl = alistJson.getJSONObject("data").getString("raw_url");
-            System.out.println("获取到的rawUrl：" + rawUrl);
-            movie.setUrl(rawUrl);
-
-            // ======= 2.调用TMDB接口，获取电影基础信息 =======
+            // ======= 1.调用TMDB接口，获取电影基础信息 =======
             String tmdbResponse = tmdbClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/search/movie")
@@ -193,7 +123,7 @@ public class MovieServiceImpl implements MovieService {
             // 获取到的TMDB中的影视id
             final int movieIdFinal = tempMovieId;
 
-            // ======= 3.获取更详细的信息:国家、影视类型） =======
+            // ======= 2.获取更详细的信息:国家、影视类型） =======
             // 通过TMDB的id查询original_country并保存到movie.country中
             // 通过TMDB的id查询genres 影视类型存放到movie.genreList中
             String detailResponse = tmdbClient.get()
@@ -225,7 +155,7 @@ public class MovieServiceImpl implements MovieService {
             movie.setGenres(genreList);
 
 
-            // ======= 4.通过TMDB的id获取导演和演员 =======
+            // ======= 3.通过TMDB的id获取导演和演员 =======
             String creditsResponse = tmdbClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path("/movie/" + movieIdFinal + "/credits")
@@ -263,6 +193,125 @@ public class MovieServiceImpl implements MovieService {
                 movie.setActors(String.join(", ", actorsSet));
             }
 
+            // ======= 4.通过 AList 获取视频的Path =======
+            // 将影视名用空格隔开，这样通过api可以直接搜到文件，不然会搜到目录
+            String keywords = title.replaceAll("(.)", "$1 ");  // 使用正则表达式插入空格
+            String tempOriginalTitle = movie.getOriginalTitle();
+            String OriginalKeywords = tempOriginalTitle.replaceAll("(.)", "$1 ");
+
+            System.out.println("keyword：" + keywords);
+            String tempPath = "";
+            // 创建请求体
+            Map<String, Object> searchBody = new HashMap<>();
+            searchBody.put("parent", "/");
+            searchBody.put("keywords", keywords);
+            searchBody.put("scope", 0);
+            searchBody.put("page", 1);
+            searchBody.put("per_page", 1);
+
+            System.out.println("请求体：" + JSON.toJSONString(searchBody));
+            // 发送请求
+            String searchResponse = alistClient.post()
+                    .uri("https://alist.yeyuchun.top:23333/api/fs/search")
+                    .header(HttpHeaders.AUTHORIZATION, AListApiKey)
+                    .bodyValue(searchBody)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+
+            // 输出响应
+            System.out.println("通过title查询到的响应：" + searchResponse);
+
+            // 无论成功是否都会返回code=200，但是成功了content是不为空的
+            JSONObject searchJson = JSON.parseObject(searchResponse);
+            // 检查返回结果
+            JSONObject data = searchJson.getJSONObject("data");
+            if(data != null) {
+                JSONArray content = data.getJSONArray("content");
+                if (content != null && !content.isEmpty()) {
+                    JSONObject fileInfo = content.getJSONObject(0);
+                    if (!fileInfo.getBoolean("is_dir")) {
+                        // 拼接path
+                            String parent = fileInfo.getString("parent");
+                            String name = fileInfo.getString("name");
+                            tempPath = parent + "/" + name; // 拼接得到路径
+                    }
+                }
+            }
+
+            // 如果第一次没找到，再用 originalKeywords 搜一次
+            if (tempPath.isEmpty()) {
+                System.out.println("使用 title 未找到，尝试用 OriginalKeywords 再次搜索...");
+                searchBody.put("keywords", OriginalKeywords);  // 修改关键词再发一次
+
+                String secondResponse = alistClient.post()
+                        .uri("https://alist.yeyuchun.top:23333/api/fs/search")
+                        .header(HttpHeaders.AUTHORIZATION, AListApiKey)
+                        .bodyValue(searchBody)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
+                System.out.println("通过 originalTitle 查询到的响应：" + secondResponse);
+
+                JSONObject secondJson = JSON.parseObject(secondResponse);
+                JSONObject secondData = secondJson.getJSONObject("data");
+                if (secondData != null) {
+                    JSONArray content = secondData.getJSONArray("content");
+                    if (content != null && !content.isEmpty()) {
+                        JSONObject fileInfo = content.getJSONObject(0);
+                        if (!fileInfo.getBoolean("is_dir")) {
+                            String parent = fileInfo.getString("parent");
+                            String name = fileInfo.getString("name");
+                            tempPath = parent + "/" + name;
+                        }
+                    }
+                }
+            }
+
+
+            final String path = tempPath;
+
+//            if (searchJson.getInteger("code") == 200) {
+//                JSONObject data = searchJson.getJSONObject("data");
+//                if(data != null) {
+//                    JSONArray content = data.getJSONArray("content");
+//                    if (content != null && !content.isEmpty()) {
+//                        JSONObject fileInfo = content.getJSONObject(0);
+//                        boolean isDir = fileInfo.getBoolean("is_dir");
+//                        if (!isDir) {
+//                            // 拼接path
+//                            String parent = fileInfo.getString("parent");
+//                            String name = fileInfo.getString("name");
+//                            tempPath = parent + "/" + name; // 拼接得到路径
+//                        }
+//                    }
+//                }
+//            }
+
+
+            // ======= 2.通过Path获取视频的 URL =======
+            Map<String, String> body = new HashMap<>();
+            body.put("path", path);
+
+            String alistResponse = alistClient.post()
+                    .uri("/api/fs/get")
+                    .header(HttpHeaders.AUTHORIZATION, AListApiKey) // 加上 Authorization
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+
+            // 解析AList响应，提取raw_url
+            System.out.println("收到响应：" + alistResponse);
+            // 用fastjson 解析响应字符串
+            JSONObject alistJson = JSON.parseObject(alistResponse);
+            // 获取data.raw_url 字段
+            String rawUrl = alistJson.getJSONObject("data").getString("raw_url");
+            System.out.println("获取到的rawUrl：" + rawUrl);
+            movie.setUrl(rawUrl);
+
         } catch (Exception e) {
             System.out.println("发生异常：");
             e.printStackTrace();
@@ -274,6 +323,26 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> findAll() {
         return movieMapper.findAll();
+    }
+
+    @Override
+    public List<Movie> findChinese() {
+        return movieMapper.findChinese();
+    }
+
+    @Override
+    public List<Movie> findEnglish() {
+        return movieMapper.findEnglish();
+    }
+
+    @Override
+    public List<Movie> findJPandKR() {
+        return movieMapper.findJPandKR();
+    }
+
+    @Override
+    public List<Movie> findOther() {
+        return movieMapper.findOther();
     }
 
     @Override
@@ -359,4 +428,6 @@ public class MovieServiceImpl implements MovieService {
         //使用PageInfo构造器封装list,就可以获取总记录数和分页的一些其他参数
         return new PageInfo(list);
     }
+
+
 }

@@ -126,6 +126,58 @@
           }
         })
       },
+
+      startCount() {
+        // 禁用按钮
+        this.isSendButton = true;
+        // 设置倒计时为60s
+        this.countdown = 60;
+        // 每秒减少倒计时
+        const timer = setInterval(() => {
+          if (this.countdown > 0) {
+            this.countdown -= 1;
+          } else {
+            this.isSendButton = false; // 将按钮置为未点击状态
+            clearInterval(timer); // 清除定时器
+          }
+        }, 1000);
+      },
+
+      register() {
+        if (!this.email || !this.password || !this.code || !this.telephone) {
+          alert("请填写所有注册信息");
+          return;
+        }
+        // 格式校验
+        if (!this.isValidEmail(this.email)) {
+          alert("手机号码格式不正确");
+          return;
+        }
+        if (!this.isValidTel(this.telephone)) {
+          alert("手机号码格式不正确");
+          return;
+        }
+
+        // 点击注册按钮，发送注册请求
+        axios.post("/admin/register",{
+          email: this.email,
+          tel: this.telephone,
+          password: this.password,
+          code: this.code
+        }) .then(resp => {
+          if (resp.data.code === 1) {
+            alert("注册成功，即将跳转到登录页面");
+            this.switchToLogin();
+          } else {
+            alert(resp.data.msg); // 显示注册错误的消息
+          }
+        }) .catch(error => {
+          console.error("注册失败",error);
+          alert("注册失败，请稍后再试");
+        })
+      },
+
+      // 点击登录按钮，发送登录请求
       login() {
         if (!this.account || !this.loginPassword) {
           alert("请填写账号和密码");
@@ -148,6 +200,10 @@
           type: loginType
         }) .then(resp => {
           if(resp.data.code === 1) {
+            // TODO JWT：登录成功，保存token
+            // localStorage.setItem("Authorization", resp.data.data);
+
+            // 跳转到后台管理页面
             location.href = "main.html";
           } else {
             alert(resp.data.msg);
@@ -156,58 +212,7 @@
           console.log("登录失败", err);
           alert("登录失败，请重新输入账号密码");
         })
-
       },
-
-      startCount() {
-        // 禁用按钮
-        this.isSendButton = true;
-        // 设置倒计时为60s
-        this.countdown = 60;
-        // 每秒减少倒计时
-        const timer = setInterval(() => {
-          if (this.countdown > 0) {
-            this.countdown -= 1;
-          } else {
-            this.isSendButton = false; // 将按钮置为未点击状态
-            clearInterval(timer); // 清除定时器
-          }
-        }, 1000);
-      },
-      register() {
-        if (!this.email || !this.password || !this.code || !this.telephone) {
-          alert("请填写所有注册信息");
-          return;
-        }
-        // 格式校验
-        if (!this.isValidEmail(this.email)) {
-          alert("手机号码格式不正确");
-          return;
-        }
-        if (!this.isValidTel(this.telephone)) {
-          alert("手机号码格式不正确");
-          return;
-        }
-
-        // 发送注册请求
-        axios.post("/admin/register",{
-          email: this.email,
-          tel: this.telephone,
-          password: this.password,
-          code: this.code
-        }) .then(resp => {
-          if (resp.data.code === 1) {
-            alert("注册成功，即将跳转到登录页面");
-            this.switchToLogin();
-          } else {
-            alert(resp.data.msg); // 显示注册错误的消息
-          }
-        }) .catch(error => {
-          console.error("注册失败",error);
-          alert("注册失败，请稍后再试");
-        })
-
-      }
 
     }
   })

@@ -18,8 +18,6 @@
             align-items: center;
         }
     </style>
-<!--    <script src="js/vue.js"></script>-->
-<!--    <script src="js/axios-0.18.0.js"></script>-->
 </head>
 
 <body>
@@ -36,14 +34,13 @@
 
             <!-- 水平无序列表 首页 电影 动漫-->
             <ul class="header-bar-ul">
-                <li><a href="javascript:void(0)" target="iframe-content">首页</a></li>
-                <li><a href="javascript:void(0)" target="iframe-content">电影</a></li>
-                <li><a href="javascript:void(0)" target="iframe-content">动漫</a></li>
-                <li><a href="javascript:void(0)" target="iframe-content">美剧</a></li>
-                <li><a href="javascript:void(0)" target="iframe-content">日韩</a></li>
+                <li><a href="javascript:void(0)" @click="changePage('home.html')">首页</a></li>
+                <li><a href="javascript:void(0)" @click="changePage('ChineseMoviePage.html')">华语剧</a></li>
+                <li><a href="javascript:void(0)" @click="changePage('EnglishMoviePage.html')">欧美剧</a></li>
+                <li><a href="javascript:void(0)" @click="changePage('JPandKRMoviePage.html')">日韩剧</a></li>
+                <li><a href="javascript:void(0)" @click="changePage('OtherMoviePage.html')">其他</a></li>
             </ul>
         </div>
-
         <!-- 右侧 切换主题颜色、搜索等按钮-->
         <div class="right-buttons">
             <button id="theme-switch">
@@ -58,41 +55,21 @@
             </button>
         </div>
     </div>
-
-    <!-- 内容区 -->
-    <div class="moviesList">
-        <h2>全部影视</h2>
-        <div class="box-group">
-            <div class="movieBox" v-for="(movie) in movieList">
-                <a :href="'/detailPage.html?id=' + movie.id">
-                    <img :src="movie.posterPath" class="box-img">
-                    <div class="box-name">{{ movie.title }}</div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-
+<!-- 内容区域 iframe-->
+    <iframe :src="iframeSrc" style="width: 70%; margin: 0 auto; border: none; flex: 1;"></iframe>
 </div>
 
 <script type="text/javascript">
     const app = new Vue({
         el: '#portal-index-page',
         data: {
-            movieList: []
+            iframeSrc: 'home.html'
         },
         methods: {
-            findAll() {
-                axios.get("/index/findAll").then(resp => {
-                    if(resp.data.code == 1) {
-                        this.movieList = resp.data.data;
-                    }
-                })
-            },
+          changePage(pageUrl) {
+              this.iframeSrc = pageUrl;
+          }
         },
-        created() {
-            this.findAll();
-        }
     })
 </script>
 </body>

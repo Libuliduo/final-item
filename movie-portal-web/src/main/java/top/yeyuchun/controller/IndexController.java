@@ -17,19 +17,43 @@ public class IndexController {
     @Autowired
     private MovieService movieService;
 
+    // 首页 查询所有电影
     @GetMapping("findAll")
     public Result findAll() {
         List<Movie> movieList = movieService.findAll();
-        System.out.println("查询到的电影数据：");
-        for (Movie movie : movieList) {
-            System.out.println(movie.getId() + movie.getTitle());
-        }
         return Result.success(movieList);
     }
 
     @GetMapping("findMovieById")
     public Result findMovieById(@RequestParam Integer id) {
-            Movie movie = movieService.findById(id);
-            return Result.success(movie);
+        Movie movie = movieService.findById(id);
+        return Result.success(movie);
+    }
+
+    // 华语剧 查询地区为CN HK TW的movie
+    @GetMapping("findChinese")
+    public Result findChinese() {
+        List<Movie> movieList = movieService.findChinese();
+        return Result.success(movieList);
+    }
+
+    // 欧美剧 查询地区为 US（美国）, GB（英国）, FR（法国）, DE（德国）, IT（意大利）, IE（爱尔兰）的movie
+    @GetMapping("findEnglish")
+    public Result findEnglish() {
+        List<Movie> movieList = movieService.findEnglish();
+        return Result.success(movieList);
+    }
+
+    // 日韩剧 JP KR
+    @GetMapping("findJPandKR")
+    public Result findJPandKR() {
+        List<Movie> movieList = movieService.findJPandKR();
+        return Result.success(movieList);
+    }
+
+    @GetMapping("findOther")
+    public Result findOther() {
+        List<Movie> movieList = movieService.findOther();
+        return Result.success(movieList);
     }
 }

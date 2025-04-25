@@ -10,8 +10,9 @@ public interface AdminService {
 
     void sendEmail(String email);
 
-
     String registerAdmin(Map<String, String> paramMap);
 
-    Admin login(Map<String, String> paramMap);
+    String login(Map<String, String> paramMap);
+
+    void verify(String token);
 }

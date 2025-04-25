@@ -1,12 +1,16 @@
 package top.yeyuchun.test;
 
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import top.yeyuchun.template.JWTTemplate;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -43,5 +47,26 @@ public class TemplateTest {
 
         System.out.println(value + "--------" + value2);
     }
+
+    @Autowired
+    private JWTTemplate jwtTemplate;
+
+    @Test
+    public void createToken() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", 3);
+        map.put("userName", "tom");
+        String token = jwtTemplate.createJWT(map);
+        System.out.println(token);
+    }
+
+    // 解析JWT的token
+    @Test
+    public void parseToken() {
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MywidXNlck5hbWUiOiJ0b20iLCJleHAiOjE3NDU0MTA3Mjd9.lH-TJ3kZ8XKOPrNP3g16S1hK7JoTC3xecQjMLsCNmq0";
+        Claims claims = jwtTemplate.parseJWT(token);
+        System.out.println(claims);
+    }
+
 }
 

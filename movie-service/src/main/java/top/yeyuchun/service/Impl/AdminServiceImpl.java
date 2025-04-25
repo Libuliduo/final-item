@@ -1,5 +1,6 @@
 package top.yeyuchun.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Admin;
 import top.yeyuchun.exception.BusinessException;
+import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.mapper.AdminMapper;
 import top.yeyuchun.service.AdminService;
+import top.yeyuchun.template.JWTTemplate;
 
 import javax.annotation.Resource;
 import java.time.Duration;
@@ -33,6 +36,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     private AdminMapper adminMapper;
+
+    @Autowired
+    private JWTTemplate jwtTemplate;
 
     @Override
     public String generateCode() {
@@ -125,16 +131,18 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin login(Map<String, String> paramMap) {
+    public String login(Map<String, String> paramMap) {
+        // 1.获取前端输入的账号密码
         String account = paramMap.get("account");
         String password = paramMap.get("loginPassword");
         String type = paramMap.get("type");
 
+        // 2.参数校验
         if (StrUtil.isBlank(account) || StrUtil.isBlank(password)) {
             throw new BusinessException("账号或密码不能为空");
         }
 
-        // 处理登录
+        // 3.处理登录业务
         Admin admin = null;
         if ("email".equalsIgnoreCase(type)) {
             admin = adminMapper.findByEmail(account);
@@ -145,10 +153,30 @@ public class AdminServiceImpl implements AdminService {
         }
 
         if (admin == null || !StrUtil.equals(admin.getPassword(), password)) {
-            return null;
+            throw new BusinessException("此用户无权访问系统");
         }
 
-        return admin;
+        // TODO  4.生成token
+        // 避免将password打包进jwt中，有可能泄露的
+//        admin.setPassword(null);
+//        admin.setTel(null);
+//        admin.setEmail(null);
+
+//        Map<String, Object> map = BeanUtil.beanToMap(admin);
+
+//        String token = jwtTemplate.createJWT(map);
+//        return token;
+        return "ok";
     }
 
+
+    @Override
+    public void verify(String token) {
+        try {
+            jwtTemplate.parseJWT(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new LoginException();
+        }
+    }
 }

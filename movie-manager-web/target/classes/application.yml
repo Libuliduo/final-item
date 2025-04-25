@@ -48,6 +48,15 @@ mybatis:
     # 控制台打印SQL日志
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+movies:
+  jwt:
+    admin:
+      # 设置jwt签名加密时使用的秘钥
+      admin-secret: itcast
+      # 设置jwt过期时间(30分钟)--自己可以设置得长点,目前项目中没有涉及到token续约的操作
+      admin-ttl: 1800000
+
+
 lsky:
   lsky-api-key: 1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR
 
@@ -55,4 +64,4 @@ tmdb:
   tmdb-api-key: 91dd7a8fcde8a96c6816312d93447677
 
 alist:
-  alist-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlleXVjaHVuIiwicHdkX3RzIjoxNzQ0MjgyMTU1LCJleHAiOjE3NDUxNTQ4NjAsIm5iZiI6MTc0NDk4MjA2MCwiaWF0IjoxNzQ0OTgyMDYwfQ.TTjfO7p64ovVBi7TEQ-g3_oy4ixICZB-1tFmx5Tt_Yo
+  alist-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlleXVjaHVuIiwicHdkX3RzIjoxNzQ0MjgyMTU1LCJleHAiOjE3NDU3MzYzODYsIm5iZiI6MTc0NTU2MzU4NiwiaWF0IjoxNzQ1NTYzNTg2fQ.D5ZX40ILvsQDPtw-SlmrHTMZMigeFhM0Ui5TXvOo3Mw

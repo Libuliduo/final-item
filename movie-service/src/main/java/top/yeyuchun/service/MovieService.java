@@ -9,6 +9,8 @@ public interface MovieService {
 
     List<Movie> findAll();
 
+    List<Movie> findChinese();
+
     Movie getMovieInfo(String title);
 
     Movie findById(Integer id);
@@ -22,4 +24,12 @@ public interface MovieService {
     void deleteBatch(Integer[] ids);
 
     PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword);
+
+
+    List<Movie> findEnglish();
+
+    List<Movie> findJPandKR();
+
+    List<Movie> findOther();
+
 }

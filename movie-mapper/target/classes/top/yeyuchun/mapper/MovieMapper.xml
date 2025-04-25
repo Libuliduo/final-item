@@ -24,7 +24,7 @@
         </collection>
     </resultMap>
 
-<!-- =============== 查询所有=================-->
+<!-- =============== 前端查询：查询所有、根据地区查询=================-->
     <!-- 定义SQL查询方法findAll，返回结果用上面的movieResultMap -->
     <select id="findAll" resultMap="movieResultMap">
         SELECT
@@ -38,7 +38,56 @@
             tb_genre AS genre ON movieGenre.genre_id = genre.id
     </select>
 
-<!-- =============== 查询单个 =================-->
+<!-- 注意 resultMap不能用 type="top.yeyuchun.entity.Movie" 由于genre的不同 会查出多条相同的数据-->
+    <select id="findChinese" resultMap="movieResultMap">
+        SELECT
+            movie.*,
+            genre.genre
+        FROM
+            tb_movie AS movie
+                LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+            movie.country IN ('CN', 'HK', 'TW')
+    </select>
+
+    <select id="findEnglish" resultMap="movieResultMap">
+        SELECT
+            movie.*,
+            genre.genre
+        FROM
+            tb_movie AS movie
+                LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+            movie.country IN ('US', 'GB', 'FR', 'DE', 'IT', 'IE')
+    </select>
+
+    <select id="findJPandKR" resultMap="movieResultMap">
+        SELECT
+            movie.*,
+            genre.genre
+        FROM
+            tb_movie AS movie
+                LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+            movie.country IN ('JP', 'KR')
+    </select>
+
+    <select id="findOther" resultMap="movieResultMap">
+        SELECT
+            movie.*,
+            genre.genre
+        FROM
+            tb_movie AS movie
+                LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+                movie.country NOT IN ('CN', 'HK', 'TW', 'US', 'GB', 'FR', 'DE', 'IT', 'IE', 'JP', 'KR')
+    </select>
+
+    <!-- =============== 查询单个 =================-->
     <select id="findById" resultMap="movieResultMap">
         SELECT
             movie.*,
@@ -176,5 +225,6 @@
             AND g.genre = #{genre}
         </if>
     </select>
+
 
 </mapper>

@@ -1,0 +1,22 @@
+{
+  "groups": [
+    {
+      "name": "movies.jwt.admin",
+      "type": "top.yeyuchun.template.JWTTemplate",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    }
+  ],
+  "properties": [
+    {
+      "name": "movies.jwt.admin.admin-secret",
+      "type": "java.lang.String",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    },
+    {
+      "name": "movies.jwt.admin.admin-ttl",
+      "type": "java.lang.Long",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    }
+  ],
+  "hints": []
+}
