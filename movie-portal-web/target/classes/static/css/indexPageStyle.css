@@ -11,10 +11,10 @@
 
 /*轮播图*/
     /* 轮播外层 */
-.el-carousel {
+.carousel-wrapper {
     width: 1100px;
     height: 500px;
-    position: relative;
+    margin-bottom: 20px;
 }
 
     /* 每一张轮播卡片 */
@@ -46,5 +46,24 @@
     font-weight: bold;
     text-align: left;
     box-sizing: border-box;
+}
+
+
+/* 外层div，负责撑开页面 */
+.iframe-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* iframe本体，重点设置！ */
+#iframe-wrapper iframe,
+#main-iframe {
+    width: 70%;
+    min-height: 0;
+    height: auto; /* 由js动态设置 */
+    border: none;
+    overflow: hidden; /* 禁止iframe自己滚动 */
 }
 

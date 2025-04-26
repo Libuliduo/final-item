@@ -155,3 +155,9 @@ a {
 .header-bar-ul li a:hover::after {
     width: 100%;
 }
+
+/* 当前选中的菜单，显示下划线 */
+.header-bar-ul li a.active::after {
+    width: 100%;
+}
+

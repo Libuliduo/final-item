@@ -24,12 +24,13 @@
 
             <!-- 水平无序列表 首页 电影 动漫-->
             <ul class="header-bar-ul">
-                <li><a href="javascript:void(0)" @click="changePage('home.html')">首页</a></li>
-                <li><a href="javascript:void(0)" @click="changePage('ChineseMoviePage.html')">华语剧</a></li>
-                <li><a href="javascript:void(0)" @click="changePage('EnglishMoviePage.html')">欧美剧</a></li>
-                <li><a href="javascript:void(0)" @click="changePage('JPandKRMoviePage.html')">日韩剧</a></li>
-                <li><a href="javascript:void(0)" @click="changePage('OtherMoviePage.html')">其他</a></li>
+                <li><a :class="{ active: currentPage === 'home.html' }" href="javascript:void(0)" @click="changePage('home.html')">首页</a></li>
+                <li><a :class="{ active: currentPage === 'ChineseMoviePage.html' }" href="javascript:void(0)" @click="changePage('ChineseMoviePage.html')">华语剧</a></li>
+                <li><a :class="{ active: currentPage === 'EnglishMoviePage.html' }" href="javascript:void(0)" @click="changePage('EnglishMoviePage.html')">欧美剧</a></li>
+                <li><a :class="{ active: currentPage === 'JPandKRMoviePage.html' }" href="javascript:void(0)" @click="changePage('JPandKRMoviePage.html')">日韩剧</a></li>
+                <li><a :class="{ active: currentPage === 'OtherMoviePage.html' }" href="javascript:void(0)" @click="changePage('OtherMoviePage.html')">其他</a></li>
             </ul>
+
         </div>
         <!-- 右侧 切换主题颜色、搜索等按钮-->
         <div class="right-buttons">
@@ -47,18 +48,22 @@
     </div>
 
     <!-- 轮播区域----最新上架 -->
-    <el-carousel :interval="4000" type="card" height="400px">
-        <el-carousel-item v-for="item in movieBannerList" :key="item.id" class="banner-item">
-            <a :href="'/detailPage.html?id=' + item.id" class="banner-link">
-                <img :src="item.backdropPath" class="banner-img">
-                <div class="banner-title">{{ item.title }}</div>
-            </a>
-        </el-carousel-item>
-    </el-carousel>
+    <div class="carousel-wrapper">
+        <h2>最新上映</h2>
+        <el-carousel :interval="4000" type="card" height="400px">
+            <el-carousel-item v-for="item in movieBannerList" :key="item.id" class="banner-item">
+                <a :href="'/detailPage.html?id=' + item.id" class="banner-link">
+                    <img :src="item.backdropPath" class="banner-img">
+                    <div class="banner-title">{{ item.title }}</div>
+                </a>
+            </el-carousel-item>
+        </el-carousel>
+    </div>
 
     <!-- 内容区域 iframe-->
-    <iframe :src="iframeSrc" style="width: 70%; margin: 0 auto; border: none; flex: 1;"></iframe>
-
+    <div class="iframe-wrapper">
+        <iframe id="main-iframe" :src="iframeSrc" frameborder="0"></iframe>
+    </div>
 </div>
 
 <script type="text/javascript">
@@ -66,11 +71,13 @@
         el: '#portal-index-page',
         data: {
             iframeSrc: 'home.html',
+            currentPage: 'home.html',
             movieBannerList: []
         },
         methods: {
             changePage(pageUrl) {
                 this.iframeSrc = pageUrl;
+                this.currentPage = pageUrl;
             },
             // 查询首页轮播影视
             findBannerList() {
@@ -85,6 +92,38 @@
             this.findBannerList();
         }
     })
+
+    window.addEventListener('DOMContentLoaded', function () {
+        const iframe = document.getElementById('main-iframe');
+
+        function resizeIframe() {
+            try {
+                const iframeDoc = iframe.contentWindow.document;
+                const body = iframeDoc.body;
+                const html = iframeDoc.documentElement;
+                // 综合body和html高度，取最大值，防止误差
+                const scrollHeight = Math.max(body.scrollHeight, html.scrollHeight);
+                iframe.style.height = (scrollHeight + 10) + 'px'; // 多留10px缓冲
+            } catch (error) {
+                console.error('设置iframe高度失败，可能是跨域问题');
+            }
+        }
+
+        iframe.addEventListener('load', function () {
+            resizeIframe(); // iframe加载完第一次调整
+
+            // 设置定时器，动态监听内容高度变化
+            let totalTime = 0;
+            const interval = setInterval(() => {
+                resizeIframe();
+                totalTime += 500;
+                if (totalTime > 5000) { // 最多调整5秒
+                    clearInterval(interval);
+                }
+            }, 500);
+        });
+    });
+
 
 </script>
 </body>

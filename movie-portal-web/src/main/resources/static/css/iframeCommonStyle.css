@@ -7,6 +7,8 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    /* 隐藏iframe的滚动条 */
+    overflow: hidden;
 }
 
 /* 影视盒子 */
