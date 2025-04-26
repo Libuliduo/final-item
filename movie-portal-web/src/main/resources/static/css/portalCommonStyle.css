@@ -87,11 +87,16 @@ a {
 }
 
 .header-bar {
+    height: 70px;
+    position: fixed;
+    top: 0;
     display: flex;
-    /* 子元素垂直居中 */
     align-items: center;
-    height: 100px;
+    justify-content: space-between;
+    z-index: 1000; /* 保证在最上层 */
+    background-color: var(--base-color);
 }
+
 
 .header-bar-left {
     display: flex;
@@ -150,4 +155,3 @@ a {
 .header-bar-ul li a:hover::after {
     width: 100%;
 }
-

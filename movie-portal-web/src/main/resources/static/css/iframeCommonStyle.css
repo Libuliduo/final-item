@@ -1,33 +1,13 @@
-#portal-home-page {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-#portal-Chinese-page {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-#portal-English-page {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-#portal-JPandKR-page {
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-}
-
+/* 各个嵌入iframe的通用样式 */
+#portal-home-page,
+#portal-Chinese-page,
+#portal-English-page,
+#portal-JPandKR-page,
 #portal-other-page {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
 }
-
 
 /* 影视盒子 */
 .box-group {
