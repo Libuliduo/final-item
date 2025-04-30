@@ -161,3 +161,13 @@ a {
     width: 100%;
 }
 
+/* 顶部用户按钮 */
+.top-user-button {
+    border: none;
+    background-color: var(--base-color);
+    margin-right: 10px;
+}
+
+.top-user-button svg {
+    fill: var(--primary-color);
+}
