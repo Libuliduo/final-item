@@ -1,7 +1,5 @@
 package top.yeyuchun.handler;
 
-
-
 /*
     全局异常处理
     @RestControllerAdvice 是 Spring Framework 中的一个注解
@@ -18,6 +16,7 @@ import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.result.Result;
 import org.springframework.mail.MailException;
 
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,8 +30,9 @@ public class GlobalExceptionHandler {
     // 处理登录异常
     @ExceptionHandler(LoginException.class)
     public Result handleLoginException(LoginException ex) {
-        return Result.error(401, null);
+        return Result.error(401, "登录失败，token无效");
     }
+
 
     // 处理邮件发送异常
     @ExceptionHandler(MailException.class)

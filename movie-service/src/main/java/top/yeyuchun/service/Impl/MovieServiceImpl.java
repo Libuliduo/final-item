@@ -166,8 +166,6 @@ public class MovieServiceImpl implements MovieService {
                     .bodyToMono(String.class)
                     .block();
 
-//            System.out.println("Credits响应：" + creditsResponse);
-
             JSONObject creditsJson = JSON.parseObject(creditsResponse);
             JSONArray crewArray = creditsJson.getJSONArray("crew"); // 工作人员
             JSONArray castArray = creditsJson.getJSONArray("cast"); // 演员列表

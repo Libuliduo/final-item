@@ -1,9 +1,12 @@
 package top.yeyuchun.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import top.yeyuchun.entity.User;
 
 @Mapper
 public interface UserMapper {
-    User findByEmailAndPassword(String email, String password);
+
+    @Select("select * from tb_user where email = #{email}")
+    User findByEmail(String email);
 }

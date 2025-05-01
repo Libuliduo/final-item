@@ -6,6 +6,8 @@ import top.yeyuchun.entity.User;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.UserService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -14,16 +16,15 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("login")
-    public Result login(@RequestBody User loginUser) {
-        try {
-            boolean loginSuccess = userService.login(loginUser);
-            if (loginSuccess) {
-                return Result.success("登录成功"); // 返回登录成功的消息
-            } else {
-                return Result.error("邮箱或密码错误"); // 返回错误消息
-            }
-        } catch (Exception e) {
-            return Result.error("服务器错误");
-        }
+    public Result login(@RequestBody Map<String,String> paramMap) {
+        String token = userService.login(paramMap);
+        return Result.success(token);
     }
+
+    @GetMapping("verify")
+    public Result verify(@RequestHeader("Authorization") String token){
+        userService.verify(token);
+        return Result.success();
+    }
+
 }

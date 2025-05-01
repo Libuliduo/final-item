@@ -28,7 +28,15 @@ mybatis:
     # 开启驼峰命名规则映射  表 user_name  -> 实体类 userName
     map-underscore-to-camel-case: true
     # 控制台打印SQL日志
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+movies:
+  jwt:
+    admin:
+      # 设置jwt签名加密时使用的秘钥
+      admin-secret: itcast
+      # 设置jwt过期时间(30分钟)--自己可以设置得长点,目前项目中没有涉及到token续约的操作
+      admin-ttl: 1800000
 
 
 lsky:

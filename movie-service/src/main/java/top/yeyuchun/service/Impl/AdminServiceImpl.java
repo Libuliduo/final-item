@@ -10,12 +10,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Admin;
 import top.yeyuchun.exception.BusinessException;
-import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.mapper.AdminMapper;
 import top.yeyuchun.service.AdminService;
 import top.yeyuchun.template.JWTTemplate;
 
 import javax.annotation.Resource;
+import javax.security.auth.login.LoginException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Random;
@@ -174,7 +174,8 @@ public class AdminServiceImpl implements AdminService {
             jwtTemplate.parseJWT(token);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new LoginException();
+//            throw new LoginException();
+            throw new BusinessException("失败");
         }
     }
 }

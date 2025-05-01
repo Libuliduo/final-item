@@ -100,25 +100,24 @@
 
         methods: {
             login() {
-                if (!this.email || !this.password) {
-                    this.errorMsg = "请输入邮箱和密码";
-                    return;
+                if (this.email && this.password) {
+                    axios.post('/user/login', {
+                        email: this.email,
+                        password: this.password
+                    }).then(resp => {
+                        if (0 == resp.data.code) {
+                            alert(resp.data.msg);
+                        } else {
+                            // 使用localStorage存储登录状态(永久储存）
+                            // 使用sessionStorage存储登录信息（一次回话存储）
+                            sessionStorage.setItem("Authorization", resp.data.data);
+
+                            // 跳转到首页
+                            location.href = "index.html";
+                        }
+                    })
                 }
 
-                axios.post('/user/login', {
-                    email: this.email,
-                    password: this.password
-                }).then(resp => {
-                    if (resp.data.code === 1) {
-                        // 登录成功，保存登录状态
-                        localStorage.setItem('isLoggedIn', true); // 使用localStorage存储登录状态
-                        window.location.href = '/index.html'; // 登录成功跳转首页
-                    } else {
-                        this.errorMsg = resp.data.msg || '邮箱或密码错误';
-                    }
-                }).catch(err => {
-                    this.errorMsg = "服务器错误";
-                });
             }
         }
     });
