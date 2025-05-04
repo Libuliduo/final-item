@@ -12,8 +12,9 @@
 <body>
 <div id="portal-home-page">
     <div class="box-group">
-        <div class="movieBox" v-for="(movie) in movieList">
-            <a :href="'/detailPage.html?id=' + movie.id">
+        <div class="movieBox" v-for="(movie) in movieList" :key="movie.id">
+<!--            <a :href="'/detailPage.html?id=' + movie.id">-->
+            <a @click="iframeGoToDetailPage(movie.id)">
                 <img :src="movie.posterPath" class="box-img">
                 <div class="box-name">{{ movie.title }}</div>
             </a>
@@ -25,7 +26,14 @@
     const app = new Vue({
         el: '#portal-home-page',
         data: {
-            movieList: []
+            movieList: [],
+            iframeGoToDetailPage(movieId) {
+                const userId = sessionStorage.getItem("userId");
+                console.log("=========正在执行iframeGoToDetailPage------------");
+                if (userId) {
+                    window.parent.location.href = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                }
+            }
         },
         methods: {},
         created() {

@@ -2,7 +2,7 @@ package top.yeyuchun.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.Claims;import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.User;
 import top.yeyuchun.exception.BusinessException;
@@ -59,15 +59,39 @@ public class UserServiceImpl implements UserService {
     public void verify(String token) {
         try {
             jwtTemplate.parseJWT(token);
-            System.out.println("-------------------------------------");
-            System.out.println("Received token: " + token); // 打印token，检查是否为空
-            System.out.println("-------------------------------------");
         } catch (Exception e) {
-            System.out.println("-----Impl-Exception-------------------------------");
-            System.out.println("-----Impl-Exception-------------------");
             e.printStackTrace();
             throw new LoginException();
         }
+    }
+
+    @Override
+    public void addFavorite(Integer userId, Integer movieId) {
+        if (!userMapper.isFavorite(userId, movieId)) {
+            userMapper.insertFavorite(userId, movieId);
+        }
+    }
+
+    @Override
+    public void removeFavorite(Integer userId, Integer movieId) {
+        userMapper.deleteFavorite(userId, movieId);
+    }
+
+    @Override
+    public boolean isFavorite(Integer userId, Integer movieId) {
+        return userMapper.isFavorite(userId, movieId);
+    }
+
+    @Override
+    public Integer getJwtUserId(String token) {
+        try {
+            Claims claims = jwtTemplate.parseJWT(token);
+            Integer userId = (Integer) claims.get("id");
+            return userId;
+        } catch (Exception e) {
+            throw new LoginException();
+        }
+
     }
 
 

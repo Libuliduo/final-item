@@ -91,7 +91,12 @@
         </div>
         <div class="buttons">
             <el-button type="primary" icon="el-icon-video-play" @click="goToSinglePage(movie.url)">播放</el-button>
-            <el-button icon="el-icon-star-off">收藏</el-button>
+            <el-button
+                    :icon="isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"
+                    type="warning"
+                    @click="toggleFavorite">
+                {{ isFavorite ? '已收藏' : '收藏' }}
+            </el-button>
             <el-button icon="el-icon-check">看过</el-button>
         </div>
         <p class="overview">{{ movie.overview }}</p>
@@ -102,6 +107,9 @@
     const app = new Vue({
         el: '#portal-index-page',
         data: {
+            userId: 1,
+            movieId: 1,
+            isFavorite: false,
             movie: {
                 "id": 27,
                 "title": "三傻大闹宝莱坞",
@@ -130,18 +138,59 @@
                     }
                 })
             },
+
+
             goToSinglePage(url) {
                 const encodedUrl = encodeURIComponent(url);
                 window.location.href = `/singlePage.html?url=${encodedUrl}`;
+            },
+
+            checkFavorite() {
+                axios.get("/user/isFavorite", {
+                    params: {
+                        userId: this.userId,
+                        movieId: this.movieId
+                    }
+                }).then(resp => {
+                    this.isFavorite = resp.data.data;
+                }).catch(err => {
+                    console.error("获取收藏状态失败：", err);
+                    this.$message.error("获取收藏状态失败，请重试！");
+                });
+            },
+
+            toggleFavorite() {
+                const url = this.isFavorite ? '/user/remove' : '/user/add';
+                axios.post(url, null, {
+                    params: {
+                        userId: this.userId,
+                        movieId: this.movieId
+                    }
+                }).then(resp => {
+                    this.isFavorite = !this.isFavorite;
+                    this.$message.success(this.isFavorite ? "收藏成功！" : "已取消收藏！");
+                }).catch(err => {
+                    console.error("操作失败：", err);
+                    this.$message.error("操作失败，请重试！");
+                });
             }
+
+
         },
         created() {
-            // 获取传过来的id的值 http://localhost:8081/detailPage.html?id=10
-            // 获取到的是?id=123,以=分割，取第二个数组即得到id
-            let id = location.search.split("=")[1];
-            console.log("id===========" + id);
-            if(id) {
-                this.findMovieById(id);
+            const params = new URLSearchParams(location.search);
+            this.movieId = params.get('id');
+            this.userId = params.get('userId');
+
+            console.log("电影ID：", this.movieId);
+            console.log("用户ID：", this.userId);
+
+            if (this.movieId && this.userId) {
+                this.findMovieById(this.movieId); //获取影视详情
+                this.checkFavorite(); // 获取收藏状态
+            } else {
+                this.$message.warning("用户信息或电影信息丢失，请重新登录");
+                window.location.href = 'login.html';
             }
         }
     })

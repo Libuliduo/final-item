@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>推荐</title>
+  <link rel="stylesheet" type="text/css" href="css/portalCommonStyle.css">
+  <link rel="stylesheet" type="text/css" href="css/iframeCommonStyle.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+<div id="portal-recommend-page">
+  <div class="box-group">
+    <div class="movieBox" v-for="(movie) in recommendList" :key="movie.id">
+      <a @click="iframeGoToDetailPage(movie.id)">
+        <img :src="movie.posterPath" class="box-img">
+        <div class="box-name">{{ movie.title }}</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  const app = new Vue({
+    el: '#portal-recommend-page',
+    data: {
+      recommendList: [],
+      userId: 1,
+      iframeGoToDetailPage(movieId) {
+        if (this.userId) {
+          window.parent.location.href = `/detailPage.html?id=${movieId}&userId=${userId}`;
+        } else {
+          this.$message.warning("请先登录");
+          window.parent.location.href = '/login.html';
+        }
+      }
+    },
+    methods: {},
+    created() {
+      // 获取userId
+      this.userId = sessionStorage.getItem("userId");
+      axios.get("/index/findRecommendMovies").then(resp => {
+        if (resp.data.code == 1) {
+          this.recommendList = resp.data.data;
+        }
+      })
+
+    }
+  })
+</script>
+</body>
+</html>

@@ -34,6 +34,8 @@
                        @click="changePage('JPandKRMoviePage.html')">日韩剧</a></li>
                 <li><a :class="{ active: currentPage === 'OtherMoviePage.html' }" href="javascript:void(0)"
                        @click="changePage('OtherMoviePage.html')">其他</a></li>
+                <li><a :class="{ active: currentPage === 'RecommendPage.html' }" href="javascript:void(0)"
+                       @click="changePage('RecommendPage.html')">推荐</a></li>
             </ul>
         </div>
         <!-- 用户操作 -->
@@ -70,8 +72,9 @@
         <h2>最新上映</h2>
         <el-carousel :interval="4000" type="card" height="400px">
             <el-carousel-item v-for="item in movieBannerList" :key="item.id" class="banner-item">
-                <a :href="'/detailPage.html?id=' + item.id" class="banner-link">
-                    <img :src="item.backdropPath" class="banner-img">
+<!--                <a :href="'/detailPage.html?id=' + item.id" class="banner-link">-->
+                <a @click="bannerGoToDetailPage(item.id)" class="banner-link">
+                <img :src="item.backdropPath" class="banner-img">
                     <div class="banner-title">{{ item.title }}</div>
                 </a>
             </el-carousel-item>
@@ -91,7 +94,9 @@
             iframeSrc: 'home.html',
             currentPage: 'home.html',
             movieBannerList: [],
+            userId: 1,
             isLoggedIn: false  // 用来保存用户是否已登录
+
         },
         methods: {
             changePage(pageUrl) {
@@ -121,9 +126,44 @@
                 localStorage.removeItem('isLoggedIn');
                 this.isLoggedIn = false; // 更新状态
                 window.location.href = '/login.html'; // 退出后跳转到登录页面
-            }
+            },
+            bannerGoToDetailPage(movieId) {
+                const userId = this.userId;
+                if (userId) {
+                    // 将movieId和userId传到详情页
+                    window.location.href = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                    // this.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                } else {
+                    this.$message.warning("请先登录");
+                    window.location.href = '/login.html';
+                }
+            },
+
         },
         created() {
+            // 登录进来 从sessionStorage获取token 解析用户id
+            const token = sessionStorage.getItem("Authorization");
+
+            if (token) {
+                // 获取用户id
+                axios.get("/user/jwtUserId",{
+                    headers: { Authorization: token }
+                }).then(resp => {
+                    const userId = resp.data.data;
+                    this.userId = userId;
+                    console.log("用户ID：", userId);
+
+                    // 存储到sessionStorage中
+                    sessionStorage.setItem("userId", userId);
+                }).catch(err => {
+                    console.error("获取用户ID失败：", err);
+                    this.$message.error("登录状态已失效，请重新登录！");
+                });
+            } else {
+                this.$message.warning("请先登录！");
+            }
+
+            // 查询轮播电影
             this.findBannerList();
             this.isLoggedIn = !!localStorage.getItem('isLoggedIn'); // 如果有isLoggedIn标记，表示用户已登录
         }
