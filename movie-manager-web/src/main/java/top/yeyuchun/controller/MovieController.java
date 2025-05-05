@@ -7,6 +7,7 @@ import top.yeyuchun.entity.Movie;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.MovieService;
 
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -84,5 +85,11 @@ public class MovieController {
             String keyword ) {
         PageInfo pageInfo = movieService.findByPage(pageNum, pageSize, genre, keyword);
         return Result.success(pageInfo);
+    }
+
+    @GetMapping("findMoviesByIds")
+    public Result findMoviesByIds(@RequestParam List<Integer> ids) {
+        List<Movie> movies = movieService.findMoviesByIds(ids);
+        return Result.success(movies);
     }
 }

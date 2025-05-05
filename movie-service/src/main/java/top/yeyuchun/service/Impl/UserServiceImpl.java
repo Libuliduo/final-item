@@ -11,6 +11,7 @@ import top.yeyuchun.mapper.UserMapper;
 import top.yeyuchun.service.UserService;
 import top.yeyuchun.template.JWTTemplate;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -92,6 +93,18 @@ public class UserServiceImpl implements UserService {
             throw new LoginException();
         }
 
+    }
+
+    @Override
+    public List<Integer> findMovieIdsByUserId(Integer userId) {
+        List<Integer> movieIds = userMapper.findMovieIdsByUserId(userId);
+        return movieIds;
+    }
+
+    @Override
+    public List<User> findAllUsers() {
+        List<User> allUsers = userMapper.findAllUsers();
+        return allUsers;
     }
 
 

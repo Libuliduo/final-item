@@ -1,8 +1,8 @@
 package top.yeyuchun.service;
 
-
 import top.yeyuchun.entity.User;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -17,4 +17,9 @@ public interface UserService {
     boolean isFavorite(Integer userId, Integer movieId);
 
     Integer getJwtUserId(String token);
+
+    List<Integer> findMovieIdsByUserId(Integer userId);
+
+    // 获取所有用户
+    List<User> findAllUsers();
 }

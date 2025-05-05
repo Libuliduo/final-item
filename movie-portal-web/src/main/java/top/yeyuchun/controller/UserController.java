@@ -7,6 +7,7 @@ import top.yeyuchun.entity.User;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.UserService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -40,7 +41,7 @@ public class UserController {
         return Result.success("收藏成功");
     }
 
-        @PostMapping("/remove")
+    @PostMapping("/remove")
     public Result remove(@RequestParam Integer userId, @RequestParam Integer movieId) {
         userService.removeFavorite(userId, movieId);
         return Result.success("取消收藏");
@@ -52,4 +53,17 @@ public class UserController {
         return Result.success(isFavorite);
     }
 
+    // 测试
+    @GetMapping("/findMoviesByUser")
+    public Result findMoviesByUser(@RequestParam Integer userId) {
+        List<Integer> res = userService.findMovieIdsByUserId(userId);
+        return Result.success(res);
+    }
+
+    // 测试
+    @GetMapping("/findAllUsers")
+    public Result findAllUsers() {
+        List<User> res = userService.findAllUsers();
+        return Result.success(res);
+    }
 }

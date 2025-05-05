@@ -43,4 +43,7 @@ public interface MovieMapper {
     List<Movie> findJPandKR();
 
     List<Movie> findOther();
+
+    // 返回推荐的电影列表：通过ids查询movies
+    List<Movie> findMoviesByIds(List<Integer> ids);
 }

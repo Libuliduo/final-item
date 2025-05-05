@@ -32,4 +32,6 @@ public interface MovieService {
 
     List<Movie> findOther();
 
+    List<Movie> findMoviesByIds(List<Integer> ids);
+
 }

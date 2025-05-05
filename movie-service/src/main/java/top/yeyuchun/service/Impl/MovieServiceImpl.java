@@ -344,6 +344,17 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    public List<Movie> findMoviesByIds(List<Integer> ids) {
+        // 如果ids为空或者没有元素，则返回空列表
+        if (ids == null || ids.isEmpty()) {
+            return Collections.emptyList();
+        }
+        // 调用movieMapper来执行SQL查询
+        return movieMapper.findMoviesByIds(ids);
+    }
+
+
+    @Override
     public Movie findById(Integer id) {
         return movieMapper.findById(id);
     }
