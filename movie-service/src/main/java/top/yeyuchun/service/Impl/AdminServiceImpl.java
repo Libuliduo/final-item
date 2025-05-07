@@ -15,7 +15,6 @@ import top.yeyuchun.service.AdminService;
 import top.yeyuchun.template.JWTTemplate;
 
 import javax.annotation.Resource;
-import javax.security.auth.login.LoginException;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Random;

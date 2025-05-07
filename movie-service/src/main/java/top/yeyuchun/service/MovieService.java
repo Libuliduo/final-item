@@ -25,7 +25,6 @@ public interface MovieService {
 
     PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword);
 
-
     List<Movie> findEnglish();
 
     List<Movie> findJPandKR();

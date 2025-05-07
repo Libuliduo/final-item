@@ -7,24 +7,18 @@ import top.yeyuchun.entity.Movie;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.MovieService;
 
-import java.util.Arrays;
 import java.util.List;
 
-/*
-	1.声明当前类是一个controller类，项目启动的时候spring会创建该类的对象，并且将该对象放入spring容器中
-	2.将该类中方法的返回值自动转成json字符串写回客户端
-*/
 @RestController
-@RequestMapping("movie")//作为当前类中所有请求的前缀
+@RequestMapping("movie")
 public class MovieController {
 
     @Autowired
     private MovieService movieService;
 
-    // 通过影视名title 通过API获取影视信息
+    // 通过影视名title 调用API获取影视信息
     @GetMapping("info")
     public Result getMovieInfo(@RequestParam String title) {
-        // 加上打印看下传进来的内容
         System.out.println("前端传入 title: " + title);
         Movie movie = movieService.getMovieInfo(title);
         if (movie == null) {
@@ -79,6 +73,7 @@ public class MovieController {
     // 分页查询
     @GetMapping("list")
     public Result findByPage(
+            // 传入当前页码和每页显示的条数，按需传入类型和关键字
             @RequestParam Integer pageNum,
             @RequestParam Integer pageSize,
             String genre,

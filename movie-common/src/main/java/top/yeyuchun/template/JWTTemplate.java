@@ -12,22 +12,21 @@ import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
-//JWT的生成和解析
 @Data
-@Component
-@ConfigurationProperties(prefix = "movies.jwt.admin")
+@Component // 让 Spring 扫描并将此类注入为 Bean（可 @Autowired 使用）
+@ConfigurationProperties(prefix = "movies.jwt.admin") //Spring Boot 会自动做映射处理 将配置文件中的admin-secret 映射到定义的adminSecret
 public class JWTTemplate {
 
-    // 管理端员工生成jwt令牌相关配置
-    private String adminSecret;
-    private Long adminTtl;
+    private String adminSecret; // 用于签名 JWT 的密钥
+    private Long adminTtl; // Token 的生存时间（TTL，单位：毫秒）
 
     // 使用JWT生成token
     public String createJWT(Map<String, Object> claims) {
         // 指定签名的时候使用的签名算法，也就是header那部分
+        // 使用 HMAC SHA-256 签名算法对 Token 签名（常见安全算法）。
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-        // 生成JWT的时间
+        // 设置过期时间
         long expMillis = System.currentTimeMillis() + adminTtl;
         Date exp = new Date(expMillis);
 
@@ -43,7 +42,7 @@ public class JWTTemplate {
         return builder.compact();
     }
 
-    // Token 解密
+    // 解析 JWT Token
     public Claims parseJWT(String token) {
         // 得到DefaultJwtParser
         Claims claims = Jwts.parser()
@@ -54,15 +53,4 @@ public class JWTTemplate {
         return claims;
     }
 
-    // 取消登录验证
-//    public Claims parseJWT(String token) {
-//        // 打印 token，看看前端传的是什么
-//        System.out.println("收到的 JWT: " + token);
-//
-//        // 直接返回一个假的 Claims，绕过 JWT 解析
-//        Claims fakeClaims = new DefaultClaims();
-//        fakeClaims.put("userId", 123);  // 模拟一个用户 ID
-//        fakeClaims.put("role", "admin"); // 模拟角色
-//        return fakeClaims;
-//    }
 }

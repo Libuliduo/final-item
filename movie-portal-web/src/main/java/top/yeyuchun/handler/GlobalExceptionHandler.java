@@ -1,11 +1,15 @@
 package top.yeyuchun.handler;
 
 /*
-    全局异常处理
-    @RestControllerAdvice 是 Spring Framework 中的一个注解
-    结合了 @ControllerAdvice 和 @ResponseBody 的功能
-    专门用于处理 RESTful Web 服务的全局异常、数据绑定、模型属性等
-    它可以用来对所有的 REST 控制器进行统一的异常处理、全局数据绑定、响应处理等
+    全局异常处理类
+    @RestControllerAdvice 是一个组合注解，包含了：
+     @ControllerAdvice：对所有 @Controller 和 @RestController 进行增强处理（例如异常处理）
+     @ResponseBody：默认所有方法返回 JSON，而不是视图
+
+    适用于 RESTful Web 服务，常用于：
+     全局异常捕获
+     全局数据绑定（如设置统一的时间格式）
+     全局数据预处理
 */
 
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +20,7 @@ import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.result.Result;
 import org.springframework.mail.MailException;
 
-
+// @Slf4j：自动为类生成日志记录器 logger
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +34,7 @@ public class GlobalExceptionHandler {
     // 处理登录异常
     @ExceptionHandler(LoginException.class)
     public Result handleLoginException(LoginException ex) {
+        // 返回 401 未授权错误（token 无效或过期）
         return Result.error(401, "登录失败，token无效");
     }
 
@@ -41,7 +46,7 @@ public class GlobalExceptionHandler {
         return Result.error("邮件发送失败，请检查邮箱地址是否正确或稍后再试");
     }
 
-    // 兜底异常：上传图片过大会调用这个异常
+    // 兜底异常处理：捕获其他所有未被上面处理的方法捕获的异常
     @ExceptionHandler(Exception.class)
     public Result handleException(Exception ex) {
         ex.printStackTrace();

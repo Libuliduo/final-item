@@ -271,24 +271,6 @@ public class MovieServiceImpl implements MovieService {
 
             final String path = tempPath;
 
-//            if (searchJson.getInteger("code") == 200) {
-//                JSONObject data = searchJson.getJSONObject("data");
-//                if(data != null) {
-//                    JSONArray content = data.getJSONArray("content");
-//                    if (content != null && !content.isEmpty()) {
-//                        JSONObject fileInfo = content.getJSONObject(0);
-//                        boolean isDir = fileInfo.getBoolean("is_dir");
-//                        if (!isDir) {
-//                            // 拼接path
-//                            String parent = fileInfo.getString("parent");
-//                            String name = fileInfo.getString("name");
-//                            tempPath = parent + "/" + name; // 拼接得到路径
-//                        }
-//                    }
-//                }
-//            }
-
-
             // ======= 2.通过Path获取视频的 URL =======
             Map<String, String> body = new HashMap<>();
             body.put("path", path);
