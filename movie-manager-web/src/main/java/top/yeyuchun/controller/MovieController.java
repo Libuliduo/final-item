@@ -87,4 +87,11 @@ public class MovieController {
         List<Movie> movies = movieService.findMoviesByIds(ids);
         return Result.success(movies);
     }
+
+    // 置轮播
+    @PostMapping("saveBanner")
+    public Result saveBanner(@RequestParam Integer movieId) {
+        movieService.saveBanner(movieId);
+        return Result.success();
+    }
 }

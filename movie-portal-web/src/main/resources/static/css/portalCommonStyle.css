@@ -45,7 +45,7 @@
 }
 
 .right-buttons svg {
-    fill: var(--primary-color);
+    fill: var(--text-color);
 }
 
 /*将最后一个svg显示为无*/

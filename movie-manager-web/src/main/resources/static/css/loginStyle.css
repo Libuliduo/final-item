@@ -35,14 +35,14 @@
     outline: none;
 }
 
-.rememberAndForgetPassword {
+.forget-password {
     color: #FFFFFF;
     width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: end;
 }
 
-.rememberAndForgetPassword a {
+.forget-password a {
     color: #FFFFFF;
 }
 

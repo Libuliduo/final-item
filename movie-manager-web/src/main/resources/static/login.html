@@ -2,7 +2,8 @@
 <html lang="zh-cn">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>登录</title>
+    <link rel="icon" href="images/videoPlay.png" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <script src="js/vue.js"></script>
@@ -62,9 +63,8 @@
         <input class="login-register-input" type="text" v-model="account" placeholder="请输入账号"/>
         <!-- 密码输入框 -->
         <input class="login-register-input" type="password" v-model="loginPassword" placeholder="请输入密码"/>
-        <!-- 保持登录 忘记密码-->
-        <div class="rememberAndForgetPassword">
-            <el-checkbox @click="loginChecked" v-model="checked">保持登录</el-checkbox>
+        <!-- 忘记密码-->
+        <div class="forget-password">
             <a href="javascript:void(0)">忘记密码？</a>
         </div>
         <!-- 登录按钮-->

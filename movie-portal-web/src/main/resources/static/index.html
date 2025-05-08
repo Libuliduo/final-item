@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Popcorn影视</title>
+    <link rel="icon" href="images/videoPlay.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="css/portalCommonStyle.css">
     <link rel="stylesheet" type="text/css" href="css/indexPageStyle.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -74,7 +75,7 @@
             <el-carousel-item v-for="item in movieBannerList" :key="item.id" class="banner-item">
 <!--                <a :href="'/detailPage.html?id=' + item.id" class="banner-link">-->
                 <a @click="bannerGoToDetailPage(item.id)" class="banner-link">
-                <img :src="item.backdropPath" class="banner-img">
+                <img :src="item.posterPath" class="banner-img">
                     <div class="banner-title">{{ item.title }}</div>
                 </a>
             </el-carousel-item>

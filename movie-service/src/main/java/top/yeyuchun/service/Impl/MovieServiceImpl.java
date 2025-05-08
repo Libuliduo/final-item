@@ -18,6 +18,7 @@ import reactor.netty.transport.ProxyProvider;
 import top.yeyuchun.entity.Movie;
 import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.mapper.MovieMapper;
+import top.yeyuchun.service.BannerService;
 import top.yeyuchun.service.MovieService;
 
 import java.sql.Date;
@@ -48,6 +49,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Autowired
     private MovieMapper movieMapper;
+
+    @Autowired
+    private BannerService bannerService;
 
     // 从配置文件中读取 TMDB 和 AList 的 API Key
     @Value("${tmdb.tmdb-api-key}")
@@ -335,7 +339,6 @@ public class MovieServiceImpl implements MovieService {
         return movieMapper.findMoviesByIds(ids);
     }
 
-
     @Override
     public Movie findById(Integer id) {
         return movieMapper.findById(id);
@@ -419,6 +422,13 @@ public class MovieServiceImpl implements MovieService {
         //使用PageInfo构造器封装list,就可以获取总记录数和分页的一些其他参数
         return new PageInfo(list);
     }
+
+    // 置轮播
+    @Override
+    public void saveBanner(Integer movieId) {
+        bannerService.saveByMovieId(movieId);
+    }
+
 
 
 }

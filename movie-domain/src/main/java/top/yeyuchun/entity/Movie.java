@@ -10,6 +10,7 @@ import java.util.List;
 
 @Data
 public class Movie implements Serializable {
+
     private Integer id;
 
     private String title; //影视名

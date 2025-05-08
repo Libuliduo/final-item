@@ -2,15 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.yeyuchun.mapper.BannerMapper">
 
-    <select id="findBannerList" resultType="top.yeyuchun.entity.Movie">
-        SELECT
-            *
-        FROM
-            tb_movie
-        WHERE
-            release_date IS NOT NULL
-        ORDER BY
-            release_date DESC
-    </select>
+    <delete id="deleteBatch">
+        delete from tb_banner where id in
+        <foreach collection="ids" open="(" close=")" separator="," item="id">
+            #{id}
+        </foreach>
+    </delete>
 
 </mapper>
