@@ -18,8 +18,8 @@
     --button-font-color: #F3F7FD;
 }
 
-/* darkmode: 暗色主题*/
-.darkmode {
+/* darkMode: 暗色主题*/
+.darkMode {
     /* 背景色 */
     --base-color: #1A1E23;
     /* 次级背景色: 侧边栏颜色*/
@@ -44,21 +44,19 @@
     background-color: var(--base-color);
 }
 
-.right-buttons svg {
+#theme-switch svg {
     fill: var(--text-color);
 }
-
-/*将最后一个svg显示为无*/
+/*默认状态下，隐藏第第二个图标：太阳，显示月亮图标 */
 #theme-switch svg:last-child {
     display: none;
 }
-
-/*暗模式下，第一个svg显示为无,最后一个显示为块元素*/
-.darkmode #theme-switch svg:first-child {
+/* 暗色模式时，隐藏第一个图标，显示太阳图标 */
+.darkMode #theme-switch svg:first-child {
     display: none;
 }
-
-.darkmode #theme-switch svg:last-child {
+/* 暗色模式时，显示第二个图标：太阳 */
+.darkMode #theme-switch svg:last-child {
     display: block;
 }
 
@@ -169,5 +167,5 @@ a {
 }
 
 .top-user-button svg {
-    fill: var(--primary-color);
+    fill: var(--text-color);
 }

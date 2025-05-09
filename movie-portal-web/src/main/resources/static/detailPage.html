@@ -9,8 +9,6 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-    <!--    <link rel="stylesheet" href="element-ui/lib/index.js">-->
-    <!--    <script src="element-ui/lib/index.js"></script>-->
     <style>
         #portal-index-page {
             width: 100%;
@@ -28,8 +26,6 @@
             width: 70%;
         }
     </style>
-    <!--    <script src="js/vue.js"></script>-->
-    <!--    <script src="js/axios-0.18.0.js"></script>-->
 </head>
 <body>
 <div id="portal-index-page">
@@ -97,7 +93,6 @@
                     @click="toggleFavorite">
                 {{ isFavorite ? '已收藏' : '收藏' }}
             </el-button>
-            <el-button icon="el-icon-check">看过</el-button>
         </div>
         <p class="overview">{{ movie.overview }}</p>
     </div>
@@ -174,7 +169,6 @@
                     this.$message.error("操作失败，请重试！");
                 });
             }
-
 
         },
         created() {
