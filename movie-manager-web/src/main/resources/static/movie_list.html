@@ -34,7 +34,7 @@
 <div id="movie-list-container">
     <!-- 顶部 -->
     <div class="movie-section title-bar">影视列表</div>
-    <hr>
+    <hr style="width: 70%;">
     <!-- 工具栏：添加影视按钮、按类型搜索和根据关键字搜索按钮 -->
     <div class="movie-section tool-bar">
         <div><a href="/movie_add.html" class="auto-button">添加影视</a></div>
@@ -61,7 +61,7 @@
         </form>
     </div>
 
-    <hr>
+    <hr style="width: 70%;">
     <!-- 表格
         show-overflow-tooltip：为真时，多余的内容会在鼠标悬停时显示
         ref：指定表格引用名，可以在Vue方法中获取表格实例
@@ -283,8 +283,6 @@
                         });
                 }
             }
-
-
         },
         created:function (){
             this.findByPage();
@@ -292,4 +290,5 @@
     })
 </script>
 </body>
+<script src="/js/verify.js"></script>
 </html>

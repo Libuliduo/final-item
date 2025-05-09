@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/editAdminInfoStyle.css">
+</head>
+<body>
+<div id="edit-admin-container">
+    <!-- 顶部 -->
+    <div class="movie-section title-bar">修改密码</div>
+    <hr style="width: 70%;">
+
+    <div class="adminInfo">
+        <!-- 左边是一个圆的球球，里面有一个用户名称的小写首字母 -->
+        <div class="admin-circle">
+            {{ adminName.charAt(0).toLowerCase() }}
+        </div>
+        <!--  右边是admin的name -->
+        <span class="admin-name">{{ adminName }}</span>
+    </div>
+
+    <!--  input框 新密码-->
+    <h2 class="new-password-label">新密码</h2>
+    <input class="auto-input" style="width: 400px" type="password" v-model="newPwd" placeholder="请设置密码"/>
+
+    <!--  input框 确认密码-->
+    <h2 class="confirm-password-label">确认密码</h2>
+    <input class="auto-input" style="width: 400px" type="password" v-model="toConfirmedPwd" placeholder="请设置密码"/>
+
+    <!--  button 保存修改 -->
+    <button @click="saveNewPwd" class="auto-button" style="margin-top: 20px">保存修改</button>
+
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#edit-admin-container',
+        data: {
+            newPwd: "",
+            toConfirmedPwd: "",
+            adminId: null,
+            adminName: "",
+        },
+        methods: {
+            // 通过token查询管理员id
+            getIdByToken() {
+                axios.get('/admin/getAdminIdByToken', {
+                    headers: {
+                        Authorization: sessionStorage.getItem("Authorization")
+                    }
+                }).then(resp => {
+                    if (resp.data.code == 1) {
+                        //获取到了id
+                        this.adminId = resp.data.data;
+                    }
+                })
+            },
+            // 通过token查询管理员昵称
+            getNameByToken() {
+                axios.get('/admin/getAdminNameByToken', {
+                    headers: {
+                        Authorization: sessionStorage.getItem("Authorization")
+                    }
+                }).then(resp => {
+                    if (resp.data.code == 1) {
+                        //获取到了name
+                        this.adminName = resp.data.data;
+                    }
+                })
+            },
+            // 修改密码
+            saveNewPwd() {
+                if (!this.newPwd || !this.toConfirmedPwd) {
+                    alert("请输入完整密码");
+                    return;
+                }
+                if (this.newPwd !== this.toConfirmedPwd) {
+                    alert("两次输入的密码不一致");
+                    return;
+                }
+                // 发起请求
+                axios.post("/admin/updateAdminPwd", {
+                    id: this.adminId,
+                    newPassword: this.newPwd
+                }).then(resp => {
+                    if (resp.data.code === 1) {
+                        alert("密码修改成功！");
+                        // 清空保存的信息
+                        this.newPwd = "";
+                        this.toConfirmedPwd = "";
+                        sessionStorage.removeItem("Authorization");
+                        // 500ms后跳转到登录页
+                        setTimeout(() => {
+                            window.parent.location.href = "/login.html";
+                        }, 500);
+                    } else {
+                        alert(resp.data.msg || "修改失败");
+                    }
+                }).catch(err => {
+                    console.error(err);
+                    alert("请求出错");
+                })
+            }
+        },
+
+
+        created() {
+            this.getIdByToken();
+            this.getNameByToken();
+        }
+
+    })
+</script>
+<script src="/js/verify.js"></script>
+</body>
+</html>

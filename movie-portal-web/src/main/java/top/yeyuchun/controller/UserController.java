@@ -1,13 +1,10 @@
 package top.yeyuchun.controller;
 
-import cn.hutool.jwt.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.yeyuchun.entity.User;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.UserService;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -51,19 +48,5 @@ public class UserController {
     public Result isFavorite(@RequestParam Integer userId, @RequestParam Integer movieId) {
         boolean isFavorite = userService.isFavorite(userId, movieId);
         return Result.success(isFavorite);
-    }
-
-    // 测试
-    @GetMapping("/findMoviesByUser")
-    public Result findMoviesByUser(@RequestParam Integer userId) {
-        List<Integer> res = userService.findMovieIdsByUserId(userId);
-        return Result.success(res);
-    }
-
-    // 测试
-    @GetMapping("/findAllUsers")
-    public Result findAllUsers() {
-        List<User> res = userService.findAllUsers();
-        return Result.success(res);
     }
 }

@@ -1,5 +1,7 @@
 package top.yeyuchun.service;
 
+import top.yeyuchun.entity.Admin;
+
 import java.util.Map;
 
 public interface AdminService {
@@ -13,4 +15,14 @@ public interface AdminService {
     String generateCode();
 
     void verify(String token);
+
+    Admin findByEmail(String email);
+
+    Admin findByTel(String tel);
+
+    Integer getAdminIdByToken(String token);
+
+    String getAdminNameByToken(String token);
+
+    void updatePasswordById(Integer id, String newPassword);
 }

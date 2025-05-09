@@ -205,14 +205,20 @@
                     loginPassword: this.loginPassword,
                     type: loginType
                 }).then(resp => {
-                    if (resp.data.code === 1) {
-                        // TODO JWT：登录成功，保存token
-                        // localStorage.setItem("Authorization", resp.data.data);
+                    console.log(this.account)
+                    console.log(this.loginPassword)
+                    console.log(loginType)
 
-                        // 跳转到后台管理页面
-                        location.href = "main.html";
-                    } else {
+                    if (0 == resp.data.code) {
                         alert(resp.data.msg);
+                    } else {
+                        console.log(resp.data.data)
+                        // 使用localStorage存储登录状态(永久储存）
+                        // 使用sessionStorage存储登录信息（一次回话存储）
+                        sessionStorage.setItem("Authorization", resp.data.data);
+
+                        // 跳转到首页
+                        location.href = "main.html";
                     }
                 }).catch(err => {
                     console.log("登录失败", err);

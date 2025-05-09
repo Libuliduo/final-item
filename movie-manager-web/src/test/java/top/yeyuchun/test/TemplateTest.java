@@ -63,7 +63,7 @@ public class TemplateTest {
     // 解析JWT的token
     @Test
     public void parseToken() {
-        String token = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MywidXNlck5hbWUiOiJ0b20iLCJleHAiOjE3NDU0MTA3Mjd9.lH-TJ3kZ8XKOPrNP3g16S1hK7JoTC3xecQjMLsCNmq0";
+        String token = "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6MSwiZW1haWwiOiI3NzIyMDA1MjJAcXEuY29tIiwidGVsIjoiMTMzMTIzNDEyMzQiLCJwYXNzd29yZCI6bnVsbCwiZXhwIjoxNzQ2Nzk0NDYzfQ.W-aYuAo80NuKQ5RBBP1MO2JjKxOLv5ktarWVHCH_ovw";
         Claims claims = jwtTemplate.parseJWT(token);
         System.out.println(claims);
     }

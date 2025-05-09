@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.yeyuchun.entity.Banner;
-import top.yeyuchun.entity.Movie;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.BannerService;
 

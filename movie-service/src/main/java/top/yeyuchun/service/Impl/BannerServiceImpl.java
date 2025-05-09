@@ -5,7 +5,6 @@ import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Banner;
-import top.yeyuchun.entity.Movie;
 import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.mapper.BannerMapper;
 import top.yeyuchun.service.BannerService;

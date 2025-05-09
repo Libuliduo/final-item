@@ -2,7 +2,8 @@ package top.yeyuchun.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import io.jsonwebtoken.Claims;import org.springframework.beans.factory.annotation.Autowired;
+import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.User;
 import top.yeyuchun.exception.BusinessException;
@@ -29,13 +30,14 @@ public class UserServiceImpl implements UserService {
         String email = paramMap.get("email");
         String password = paramMap.get("password");
 
-        // 参数校验
+        // 用huTool工具做参数校验
         if (StrUtil.isBlank(email) || StrUtil.isBlank(password)) {
             throw new BusinessException("邮箱和密码不能为空");
         }
 
         // 验证数据库中是否存在该用户
         User user = userMapper.findByEmail(email);
+        System.out.println(user);
         if (user == null) {
             throw new BusinessException("不存在该用户");
         }

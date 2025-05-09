@@ -1,19 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="top.yeyuchun.mapper.AdminMapper">
-    <insert id="save">
-        INSERT INTO tb_admin (email, tel, password)
-        VALUES (#{email}, #{tel}, #{password})
-    </insert>
-
-    <select id="findByEmail" resultType="top.yeyuchun.entity.Admin">
-        SELECT * FROM tb_admin WHERE email = #{email}
-    </select>
-
-    <select id="findByTel" resultType="top.yeyuchun.entity.Admin">
-        SELECT * FROM tb_admin WHERE tel = #{tel}
-    </select>
-
-
 
 </mapper>

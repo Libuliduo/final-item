@@ -1,6 +1,8 @@
 package top.yeyuchun.service.Impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -10,6 +12,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Admin;
 import top.yeyuchun.exception.BusinessException;
+import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.mapper.AdminMapper;
 import top.yeyuchun.service.AdminService;
 import top.yeyuchun.template.JWTTemplate;
@@ -146,24 +149,22 @@ public class AdminServiceImpl implements AdminService {
         } else if ("tel".equalsIgnoreCase(type)) {
             admin = adminMapper.findByTel(account);
         } else {
-            throw new BusinessException("无效的登录类型");
+            throw new BusinessException("不存在该用户");
         }
 
         if (admin == null || !StrUtil.equals(admin.getPassword(), password)) {
             throw new BusinessException("此用户无权访问系统");
         }
 
-        // TODO  4.生成token
-        // 避免将password打包进jwt中，有可能泄露的
-//        admin.setPassword(null);
-//        admin.setTel(null);
-//        admin.setEmail(null);
+        // 避免将password打包进jwt中，可能泄露的
+        admin.setPassword(null);
 
-//        Map<String, Object> map = BeanUtil.beanToMap(admin);
+        // 存放管理员数据
+        Map<String, Object> map = BeanUtil.beanToMap(admin);
 
-//        String token = jwtTemplate.createJWT(map);
-//        return token;
-        return "ok";
+        // 生成token
+        String token = jwtTemplate.createJWT(map);
+        return token;
     }
 
 
@@ -173,8 +174,45 @@ public class AdminServiceImpl implements AdminService {
             jwtTemplate.parseJWT(token);
         } catch (Exception e) {
             e.printStackTrace();
-//            throw new LoginException();
-            throw new BusinessException("失败");
+            throw new LoginException();
         }
     }
+
+    @Override
+    public Admin findByEmail(String email) {
+        Admin admin = adminMapper.findByEmail(email);
+        return admin;
+    }
+
+    @Override
+    public Admin findByTel(String tel) {
+        Admin admin = adminMapper.findByTel(tel);
+        return admin;
+    }
+
+    @Override
+    public Integer getAdminIdByToken(String token) {
+        Claims claims = jwtTemplate.parseJWT(token);
+        // 提取 id 字段，并转换为 Integer 类型
+        return claims.get("id", Integer.class);
+    }
+
+    @Override
+    public String getAdminNameByToken(String token) {
+        Claims claims = jwtTemplate.parseJWT(token);
+        // 提取 name 字段，并转换成String类型
+        return claims.get("name", String.class);
+    }
+
+    @Override
+    public void updatePasswordById(Integer id, String newPassword) {
+        Admin admin = adminMapper.findById(id);
+        if (admin == null) {
+            throw new BusinessException("管理员不存在");
+        }
+
+        adminMapper.updatePasswordById(id,newPassword);
+    }
+
+
 }

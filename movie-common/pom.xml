@@ -22,7 +22,6 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-
         <!-- springboot依赖：包含springboot redis的依赖，可以查看key和value -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -61,6 +60,12 @@
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
+        </dependency>
+
+        <!-- 解决jwt的compact()-->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
         </dependency>
 
     </dependencies>

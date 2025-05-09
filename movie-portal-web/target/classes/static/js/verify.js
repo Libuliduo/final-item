@@ -1,4 +1,3 @@
-// === 可切换存储来源 ===
 const TOKEN_KEY = "Authorization";
 const token = sessionStorage.getItem(TOKEN_KEY);  // 或用 localStorage.getItem(TOKEN_KEY)
 
