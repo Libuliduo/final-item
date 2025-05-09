@@ -403,24 +403,33 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword) {
-        // 参数校验
-        if (pageNum<=0) {
-            pageNum=1;
-        }
-        if (pageSize<=0) {
-            pageSize=5;
-        }
+        if (pageNum <= 0) pageNum = 1;
+        if (pageSize <= 0) pageSize = 5;
 
-        // 使用pageHelper完成分页查询
-        PageHelper.startPage(pageNum,pageSize);
-
-        // trim:去掉字符串两端空白
+        // 去除空格
         keyword = (keyword == null ? null : keyword.trim());
 
-        List<Movie> list = movieMapper.findList(genre,keyword);
+        // PageHelper 启动分页（拦截第一个查询）
+        PageHelper.startPage(pageNum, pageSize);
+        List<Integer> ids = movieMapper.findMovieIdsByCondition(genre, keyword);
 
-        //使用PageInfo构造器封装list,就可以获取总记录数和分页的一些其他参数
-        return new PageInfo(list);
+        if (ids.isEmpty()) {
+            return new PageInfo<>(Collections.emptyList());
+        }
+
+        // 拿到分页信息（总记录数、页码等）
+        PageInfo<Integer> idPageInfo = new PageInfo<>(ids);
+
+        // 第二次查询：查电影详情
+        List<Movie> movies = movieMapper.findMoviesByIds(ids);
+
+        // 把分页信息复制到最终 PageInfo
+        PageInfo<Movie> result = new PageInfo<>(movies);
+        result.setTotal(idPageInfo.getTotal());
+        result.setPageNum(idPageInfo.getPageNum());
+        result.setPageSize(idPageInfo.getPageSize());
+        result.setPages(idPageInfo.getPages());
+        return result;
     }
 
     // 置轮播
@@ -428,7 +437,5 @@ public class MovieServiceImpl implements MovieService {
     public void saveBanner(Integer movieId) {
         bannerService.saveByMovieId(movieId);
     }
-
-
 
 }

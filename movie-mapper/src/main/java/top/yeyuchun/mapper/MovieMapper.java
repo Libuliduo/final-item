@@ -34,8 +34,6 @@ public interface MovieMapper {
 
     void deleteMovieGenresBatch(Integer[] movieIds);
 
-    List<Movie> findList(String genre, String keyword);
-
     List<Movie> findChinese();
 
     List<Movie> findEnglish();
@@ -46,4 +44,6 @@ public interface MovieMapper {
 
     // 返回推荐的电影列表：通过ids查询movies
     List<Movie> findMoviesByIds(List<Integer> ids);
+
+    List<Integer> findMovieIdsByCondition(String genre, String keyword);
 }

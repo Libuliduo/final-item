@@ -101,12 +101,13 @@
                     show-overflow-tooltip>
             </el-table-column>
 
-            <!-- 把数组用空格拼接起来显示 -->
             <el-table-column label="影视类型" width="150" show-overflow-tooltip>
-                <template slot-scope="{ row }">
-                    {{ Array.isArray(row.genres) ? row.genres.join(' ') : '' }}
+                <template slot-scope="scope">
+                    <!-- 使用 scope.row.genres 来访问每行数据中的 genres 数组 -->
+                    {{ Array.isArray(scope.row.genres) ? scope.row.genres.join(' ') : '无类型信息' }}
                 </template>
             </el-table-column>
+
 
             <el-table-column
                     prop="releaseDate"
@@ -185,38 +186,7 @@
                 pageNum: 1, //默认页
                 pageSize: 5, //每页显示条目
                 total: 20,
-                list: [
-                    {
-                        id: 1,
-                        title: "星际穿越",
-                        originalTitle: "Interstellar",
-                        genres: ["科幻", "冒险", "剧情"],
-                        country: "美国",
-                        releaseDate: "2014-11-07",
-                        overview: "在不久的未来，地球逐渐变得不适宜居住，一组宇航员穿越虫洞寻找人类新家园。",
-                        director: "克里斯托弗·诺兰",
-                        actors: "马修·麦康纳, 安妮·海瑟薇, 杰西卡·查斯坦, 迈克尔·凯恩",
-                        backdropPath: "https://example.com/backdrop.jpg",
-                        posterPath: "https://lsky.yeyuchun.top:23333/thumbnails/af6bb727b4723827f4254e1594e94608.png",
-                        url: "https://example.com/play/interstellar",
-                        popularity: 9.1
-                    },
-                    {
-                        id: 2,
-                        title: "星际穿越",
-                        originalTitle: "Interstellar",
-                        genres: ["科幻", "冒险", "剧情"],
-                        country: "美国",
-                        releaseDate: "2014-11-07",
-                        overview: "在不久的未来，地球逐渐变得不适宜居住，一组宇航员穿越虫洞寻找人类新家园。",
-                        director: "克里斯托弗·诺兰",
-                        actors: "马修·麦康纳, 安妮·海瑟薇, 杰西卡·查斯坦, 迈克尔·凯恩",
-                        backdropPath: "https://example.com/backdrop.jpg",
-                        posterPath: "https://lsky.yeyuchun.top:23333/thumbnails/af6bb727b4723827f4254e1594e94608.png",
-                        url: "https://example.com/play/interstellar",
-                        popularity: 9.1
-                    }
-                ]
+                list: []
             }
         },
         methods: {
