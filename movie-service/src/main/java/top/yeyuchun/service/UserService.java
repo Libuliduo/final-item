@@ -20,7 +20,9 @@ public interface UserService {
 
     List<Integer> findMovieIdsByUserId(Integer userId);
 
-    // 获取所有用户
     List<User> findAllUsers();
 
+    void updatePwdByEmail(String email, String newPwd);
+
+    String resetUserPwd(Map<String, String> paramMap);
 }

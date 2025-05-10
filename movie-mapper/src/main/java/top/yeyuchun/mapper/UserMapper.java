@@ -1,15 +1,15 @@
 package top.yeyuchun.mapper;
 
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import top.yeyuchun.entity.User;
 
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
+
+    @Select("select * from tb_user where id = #{id}")
+    User findById(Integer id);
 
     @Select("select * from tb_user where email = #{email}")
     User findByEmail(String email);
@@ -31,4 +31,7 @@ public interface UserMapper {
 
     @Insert("INSERT INTO tb_user (email, username, password) VALUES (#{email}, #{username}, #{password})")
     void save(User user);
+
+    @Update("UPDATE tb_user SET password = #{password} WHERE email = #{email}")
+    void updatePwdByEmail(String email, String password);
 }

@@ -104,6 +104,53 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void updatePwdByEmail(String email, String newPwd) {
+        User user = userMapper.findByEmail(email);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        userMapper.updatePwdByEmail(email, newPwd);
+    }
+
+    @Override
+    public String resetUserPwd(Map<String, String> paramMap) {
+        // 1. 获取参数：邮箱、新密码、验证码
+        String email = paramMap.get("email");
+        String newPassword = paramMap.get("newPassword");
+        String code = paramMap.get("code");
+
+        // 2. 参数校验
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) {
+            throw new BusinessException("邮箱和新密码不能为空");
+        } else if (StrUtil.isBlank(code)) {
+            throw new BusinessException("验证码不能为空");
+        }
+
+        // 3.从Redis中取出验证码
+        Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
+
+        // 判断redis中是否有该验证码
+        if (redisCode == null) {
+            throw new BusinessException("请先发送验证码");
+        }
+
+        // 4.验证码校验————与redis中比较
+        if (!StrUtil.equals(redisCode.toString(), code)) {
+            throw new BusinessException("请输入正确的验证码");
+        }
+
+        // 5..查询数据库是否存在该用户，若存在则更新密码
+        User user = userMapper.findByEmail(email);
+        if (user != null) {
+            userMapper.updatePwdByEmail(user.getEmail(),newPassword);
+        } else {
+            throw new BusinessException("该用户不存在");
+        }
+
+        return "重置密码成功";
+    }
+
+    @Override
     public String registerUser(Map<String, String> paramMap) {
         // 1. 获取参数: email、username、password、验证码
         String email = paramMap.get("email");
