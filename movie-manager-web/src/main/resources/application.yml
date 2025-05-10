@@ -22,13 +22,14 @@ spring:
     password: a123@456 # 有密码你才写（切换本地注释掉这行）
     database: 0 # redis默认有16个数据库， 操作的数据库是哪个
     # 连接池配置,默认不使用连接池,只有配置了才会使用,且用的是lettuce的连接池
-#    lettuce:
-#      pool:
-#        max-active: 10 # 最大链接数，连接池中最多有10个
-#        max-idle: 5   # 最大空闲数
-#        min-idle: 1   # 最小空闲数
-#        # 举个例子： 连接池初始化3个链接， 客户拿走2个链接，空闲1个,达到最小的空闲数，必须马上增加
-#        max-wait: 1ms #连接池最大阻塞等待时间
+    lettuce:
+      pool:
+        max-active: 10 # 最大链接数，连接池中最多有10个
+        max-idle: 5   # 最大空闲数
+        min-idle: 1   # 最小空闲数
+        # 举个例子： 连接池初始化3个链接， 客户拿走2个链接，空闲1个,达到最小的空闲数，必须马上增加
+        max-wait: 1ms #连接池最大阻塞等待时间
+
   mail:
     host: smtp.163.com
     username: yeyuchunL@163.com

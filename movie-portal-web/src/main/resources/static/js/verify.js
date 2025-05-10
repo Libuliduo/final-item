@@ -21,7 +21,7 @@ axios.interceptors.response.use(
 );
 
 // === 验证 token 是否有效 ===
-axios.get('/user/verify', {
+axios.get('/token/verify', {
     headers: {
         Authorization: token
     }

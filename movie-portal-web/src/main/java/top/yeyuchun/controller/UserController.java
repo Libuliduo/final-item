@@ -26,12 +26,6 @@ public class UserController {
         return Result.success(ok);
     }
 
-    @GetMapping("verify")
-    public Result verify(@RequestHeader("Authorization") String token) {
-        userService.verify(token);
-        return Result.success();
-    }
-
     // 从jwt获取用户id
     @GetMapping("/jwtUserId")
     public Result getJwtUserId(@RequestHeader("Authorization") String token) {

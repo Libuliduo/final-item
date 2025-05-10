@@ -15,7 +15,6 @@ public interface AdminMapper {
     @Select("select * from tb_admin where tel = #{tel}")
     Admin findByTel(String tel);
 
-    // TODO 按name是否存在进行动态sql
     @Insert("INSERT INTO tb_admin (email, tel, password) VALUES (#{email}, #{tel}, #{password})")
     void save(Admin admin);
 

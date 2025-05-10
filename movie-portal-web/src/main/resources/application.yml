@@ -10,6 +10,20 @@ spring:
       url: jdbc:mysql://server.yeyuchun.icu:3306/finalitem_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: a123@456
+
+  redis:
+    host: server.yeyuchun.icu
+    port: 7788
+    password: a123@456
+    database: 0
+    lettuce:
+      pool:
+        max-active: 10 # 最大链接数，连接池中最多有10个
+        max-idle: 5   # 最大空闲数
+        min-idle: 1   # 最小空闲数
+        # 举个例子： 连接池初始化3个链接， 客户拿走2个链接，空闲1个,达到最小的空闲数，必须马上增加
+        max-wait: 1ms #连接池最大阻塞等待时间
+
   mail:
     host: smtp.163.com
     username: yeyuchunL@163.com
@@ -20,7 +34,6 @@ spring:
         smtp:
           ssl:
             enable: true
-
 
 mybatis:
   type-aliases-package: top.yeyuchun.domain

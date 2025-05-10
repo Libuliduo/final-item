@@ -8,7 +8,7 @@ import java.util.Map;
 public interface UserService {
     String login(Map<String,String> paramMap);
 
-    void verify(String token);
+    String registerUser(Map<String, String> paramMap);
 
     void addFavorite(Integer userId, Integer movieId);
 
@@ -23,5 +23,4 @@ public interface UserService {
     // 获取所有用户
     List<User> findAllUsers();
 
-    String registerUser(Map<String, String> paramMap);
 }

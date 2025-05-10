@@ -63,16 +63,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void verify(String token) {
-        try {
-            jwtTemplate.parseJWT(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new LoginException();
-        }
-    }
-
-    @Override
     public void addFavorite(Integer userId, Integer movieId) {
         if (!userMapper.isFavorite(userId, movieId)) {
             userMapper.insertFavorite(userId, movieId);
@@ -132,7 +122,7 @@ public class UserServiceImpl implements UserService {
             throw new BusinessException("验证码不能为空");
         }
 
-        // 3. 从redis中取出验证码 TODO 和前端存放名一致
+        // 3. 从redis中取出验证码
         Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
 
         // 4. 判断redis中是否有该验证码
@@ -153,6 +143,7 @@ public class UserServiceImpl implements UserService {
             user.setUsername(username);
             user.setPassword(password);
             // 保存该用户到数据库中
+
             userMapper.save(user);
         } else {
             throw new BusinessException("注册失败：该用户已存在");

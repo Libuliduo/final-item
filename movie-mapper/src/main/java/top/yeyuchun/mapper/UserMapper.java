@@ -29,6 +29,6 @@ public interface UserMapper {
     @Select("select * from tb_user")
     List<User> findAllUsers();
 
-    @Insert("INSERT INTO tb_user (email,username,password) VALUES (#{email},#{username},#{password}))")
+    @Insert("INSERT INTO tb_user (email, username, password) VALUES (#{email}, #{username}, #{password})")
     void save(User user);
 }
