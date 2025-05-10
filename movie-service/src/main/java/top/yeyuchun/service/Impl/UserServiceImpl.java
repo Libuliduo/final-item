@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.User;
 import top.yeyuchun.exception.BusinessException;
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private JWTTemplate jwtTemplate;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Override
     public String login(Map<String ,String> paramMap) {
@@ -107,6 +111,53 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsers() {
         List<User> allUsers = userMapper.findAllUsers();
         return allUsers;
+    }
+
+    @Override
+    public String registerUser(Map<String, String> paramMap) {
+        // 1. 获取参数: email、username、password、验证码
+        String email = paramMap.get("email");
+        String username = paramMap.get("username");
+        String password = paramMap.get("password");
+        String code = paramMap.get("code");
+
+        // 2. 参数校验
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(username)) {
+            throw new BusinessException("邮箱和用户名不能为空");
+        }
+        else if (StrUtil.isBlank(password)) {
+            throw new BusinessException("密码不能为空");
+        }
+        else if (StrUtil.isBlank(code)) {
+            throw new BusinessException("验证码不能为空");
+        }
+
+        // 3. 从redis中取出验证码 TODO 和前端存放名一致
+        Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
+
+        // 4. 判断redis中是否有该验证码
+        if (redisCode == null) {
+            throw new BusinessException("请先发送验证码");
+        }
+
+        // 5. 验证码校验————与redis中存放的进行比较
+        if (!StrUtil.equals(redisCode.toString(),code)) {
+            throw new BusinessException("请输入正确的验证码");
+        }
+
+        // 6.查询数据库是否存在该用户，若不存在则存入数据库
+        User user = userMapper.findByEmail(email);
+        if (user == null) {
+            user = new User();
+            user.setEmail(email);
+            user.setUsername(username);
+            user.setPassword(password);
+            // 保存该用户到数据库中
+            userMapper.save(user);
+        } else {
+            throw new BusinessException("注册失败：该用户已存在");
+        }
+        return "ok";
     }
 
 

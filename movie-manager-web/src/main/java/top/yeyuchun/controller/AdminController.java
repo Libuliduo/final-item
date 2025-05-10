@@ -3,7 +3,6 @@ package top.yeyuchun.controller;
 import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.yeyuchun.entity.Admin;
 import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.AdminService;
@@ -16,13 +15,6 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
-
-    // 发送邮箱验证码
-    @GetMapping("sendEmail")
-    public Result sendEmail(String email) {
-        adminService.sendEmail(email);
-        return Result.success();
-    }
 
     // 管理员注册
     @PostMapping("register")

@@ -20,6 +20,12 @@ public class UserController {
         return Result.success(token);
     }
 
+    @PostMapping("register")
+    public Result register(@RequestBody Map<String,String> paramMap) {
+        String ok = userService.registerUser(paramMap);
+        return Result.success(ok);
+    }
+
     @GetMapping("verify")
     public Result verify(@RequestHeader("Authorization") String token) {
         userService.verify(token);

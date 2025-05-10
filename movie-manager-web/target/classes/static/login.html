@@ -118,7 +118,7 @@
                 }
 
                 // 发送获取验证码的请求
-                axios.get("/admin/sendEmail?email=" + this.email).then(resp => {
+                axios.get("/email/sendEmail?email=" + this.email).then(resp => {
                     if (1 === resp.data.code) {
                         alert("验证码已发送");
                         // 开始倒计时

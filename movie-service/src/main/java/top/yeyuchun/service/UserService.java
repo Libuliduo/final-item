@@ -22,4 +22,6 @@ public interface UserService {
 
     // 获取所有用户
     List<User> findAllUsers();
+
+    String registerUser(Map<String, String> paramMap);
 }

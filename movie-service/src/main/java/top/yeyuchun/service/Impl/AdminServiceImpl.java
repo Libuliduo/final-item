@@ -6,8 +6,6 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.MailException;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Admin;
@@ -15,12 +13,11 @@ import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.mapper.AdminMapper;
 import top.yeyuchun.service.AdminService;
+import top.yeyuchun.service.EmailService;
 import top.yeyuchun.template.JWTTemplate;
 
 import javax.annotation.Resource;
-import java.time.Duration;
 import java.util.Map;
-import java.util.Random;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -40,51 +37,9 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private JWTTemplate jwtTemplate;
 
-    @Override
-    public String generateCode() {
+    @Autowired
+    private EmailService emailService;
 
-        int code = 100000 + new Random().nextInt(900000);
-        return String.valueOf(code);
-    }
-
-    @Override
-    public void sendEmail(String email) {
-        // 邮件标题
-        String subject = "您正在注册popcorn管理员";
-        // 生成随机验证码
-        String code = generateCode();
-        System.out.println("正在生成验证码："+ code);
-        // 邮件内容
-        String text = "尊敬的用户：您好！您正在进行注册账号操作，验证码为：" + code + " 有效时间为5分钟。";
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        // 设置发送邮件地址
-        simpleMailMessage.setFrom(server);
-        // 设置接受邮件地址
-        simpleMailMessage.setTo(email);
-        // 设置邮件主题
-        simpleMailMessage.setSubject(subject);
-        // 设置邮件内容
-        simpleMailMessage.setText(text);
-        // 发送邮件
-        try {
-            javaMailSender.send(simpleMailMessage); // 没抛异常就说明发送成功
-
-            // 邮件发送成功，存入验证码
-            redisTemplate.opsForValue().set("REGISTER_CODE:" + email, code, Duration.ofMinutes(5));
-
-            // 输出一下存放进去的验证码
-            Object storedObjectCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
-            if (storedObjectCode != null) {
-                String storedCode = (String) storedObjectCode; // 强制转换为 String 类型
-                System.out.println("存入 Redis 的验证码是: " + storedCode);  // 打印输出存入的验证码
-            } else {
-                System.out.println("验证码未找到或已过期");
-            }
-        } catch (MailException e) {
-            e.printStackTrace();
-            throw new BusinessException("邮件发送失败，请稍后再试");
-        }
-    }
 
     @Override
     public String registerAdmin(Map<String, String> paramMap) {
@@ -115,7 +70,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // 5.查询数据库是否存在该用户，若不存在则存入数据库
-        Admin admin = adminMapper.findByEmail(email);
+        Admin admin = emailService.findAdminByEmail(email);
         if (admin == null) {
             admin = new Admin();
             admin.setEmail(email);
@@ -145,7 +100,7 @@ public class AdminServiceImpl implements AdminService {
         // 3.处理登录业务
         Admin admin = null;
         if ("email".equalsIgnoreCase(type)) {
-            admin = adminMapper.findByEmail(account);
+            admin = emailService.findAdminByEmail(account);
         } else if ("tel".equalsIgnoreCase(type)) {
             admin = adminMapper.findByTel(account);
         } else {
@@ -179,12 +134,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public Admin findByEmail(String email) {
-        Admin admin = adminMapper.findByEmail(email);
-        return admin;
-    }
-
-    @Override
     public Admin findByTel(String tel) {
         Admin admin = adminMapper.findByTel(tel);
         return admin;
@@ -210,7 +159,6 @@ public class AdminServiceImpl implements AdminService {
         if (admin == null) {
             throw new BusinessException("管理员不存在");
         }
-
         adminMapper.updatePasswordById(id,newPassword);
     }
 
