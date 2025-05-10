@@ -1,3 +1,4 @@
+
 .login-register-item {
     /* 容器本身 */
     width: 350px;
@@ -73,4 +74,10 @@
     color: var(--secondary-text);
     font-size: 12px;
     cursor: pointer;
+}
+
+.reset-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
 }

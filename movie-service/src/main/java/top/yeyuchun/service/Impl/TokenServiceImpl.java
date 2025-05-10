@@ -3,6 +3,7 @@ package top.yeyuchun.service.Impl;
 import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.service.TokenService;
 import top.yeyuchun.template.JWTTemplate;
 
@@ -24,6 +25,16 @@ public class TokenServiceImpl implements TokenService {
         Claims claims = jwtTemplate.parseJWT(token);
         // 提取 name 字段，并转换成String类型
         return claims.get("name", String.class);
+    }
+
+    @Override
+    public void verify(String token) {
+        try {
+            jwtTemplate.parseJWT(token);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new LoginException();
+        }
     }
 
 

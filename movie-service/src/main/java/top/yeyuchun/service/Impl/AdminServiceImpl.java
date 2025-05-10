@@ -2,31 +2,20 @@ package top.yeyuchun.service.Impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import top.yeyuchun.entity.Admin;
 import top.yeyuchun.exception.BusinessException;
-import top.yeyuchun.exception.LoginException;
 import top.yeyuchun.mapper.AdminMapper;
 import top.yeyuchun.service.AdminService;
 import top.yeyuchun.service.EmailService;
 import top.yeyuchun.template.JWTTemplate;
 
-import javax.annotation.Resource;
 import java.util.Map;
 
 @Service
 public class AdminServiceImpl implements AdminService {
-
-    @Value("${spring.mail.username}")
-    private String server;
-
-    @Resource
-    private JavaMailSender javaMailSender;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -40,7 +29,6 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     private EmailService emailService;
 
-
     @Override
     public String registerAdmin(Map<String, String> paramMap) {
         // 1.获取参数：邮箱、手机号、密码、验证码
@@ -52,7 +40,7 @@ public class AdminServiceImpl implements AdminService {
         // 2.用huTool工具做参数校验
         if (StrUtil.isBlank(email) || StrUtil.isBlank(tel)) {
             throw new BusinessException("手机号码或邮箱不能为空");
-        } else if(StrUtil.isBlank(password) || StrUtil.isBlank(code)) {
+        } else if (StrUtil.isBlank(password) || StrUtil.isBlank(code)) {
             throw new BusinessException("密码或验证码不能为空");
         }
 
@@ -65,7 +53,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         // 4.验证码校验————与redis中比较
-        if (!StrUtil.equals(redisCode.toString(),code)) {
+        if (!StrUtil.equals(redisCode.toString(), code)) {
             throw new BusinessException("请输入正确的验证码");
         }
 
@@ -83,6 +71,44 @@ public class AdminServiceImpl implements AdminService {
 
         // 若没问题，返回ok
         return "ok";
+    }
+
+    @Override
+    public String resetPassword(Map<String, String> paramMap) {
+        // 1. 获取参数：邮箱、新密码、验证码
+        String email = paramMap.get("email");
+        String newPassword = paramMap.get("newPassword");
+        String code = paramMap.get("code");
+
+        // 2. 参数校验
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) {
+            throw new BusinessException("邮箱和新密码不能为空");
+        } else if (StrUtil.isBlank(code)) {
+            throw new BusinessException("验证码不能为空");
+        }
+
+        // 3. 从Redis中取出验证码
+        Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
+
+        // 判断Redis中是否有该验证码
+        if (redisCode == null) {
+            throw new BusinessException("请先发送验证码");
+        }
+
+        // 4.验证码校验————与Redis中进行比较
+        if (!StrUtil.equals(redisCode.toString(), code)) {
+            throw new BusinessException("请输入正确的验证码");
+        }
+
+        // 5.查询数据库是否存在该管理员，若存在则更新密码
+        Admin admin = emailService.findAdminByEmail(email);
+        if (admin != null) {
+            adminMapper.updatePasswordById(admin.getId(),newPassword);
+        } else {
+            throw new BusinessException("该管理员不存在");
+        }
+
+        return "重置密码成功";
     }
 
     @Override
@@ -122,35 +148,10 @@ public class AdminServiceImpl implements AdminService {
         return token;
     }
 
-
-    @Override
-    public void verify(String token) {
-        try {
-            jwtTemplate.parseJWT(token);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new LoginException();
-        }
-    }
-
     @Override
     public Admin findByTel(String tel) {
         Admin admin = adminMapper.findByTel(tel);
         return admin;
-    }
-
-    @Override
-    public Integer getAdminIdByToken(String token) {
-        Claims claims = jwtTemplate.parseJWT(token);
-        // 提取 id 字段，并转换为 Integer 类型
-        return claims.get("id", Integer.class);
-    }
-
-    @Override
-    public String getAdminNameByToken(String token) {
-        Claims claims = jwtTemplate.parseJWT(token);
-        // 提取 name 字段，并转换成String类型
-        return claims.get("name", String.class);
     }
 
     @Override
@@ -159,8 +160,7 @@ public class AdminServiceImpl implements AdminService {
         if (admin == null) {
             throw new BusinessException("管理员不存在");
         }
-        adminMapper.updatePasswordById(id,newPassword);
+        adminMapper.updatePasswordById(id, newPassword);
     }
-
 
 }

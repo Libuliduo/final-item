@@ -30,13 +30,6 @@ public class AdminController {
         return Result.success(token);
     }
 
-    // 浏览器验证是否登录
-    @GetMapping("verify")
-    public Result verify(@RequestHeader("Authorization") String token) {
-        adminService.verify(token);
-        return Result.success();
-    }
-
     // 修改密码
     @PostMapping("updateAdminPwd")
     public Result updateAdminPwd(@RequestBody Map<String, String> paramMap) {
@@ -52,19 +45,11 @@ public class AdminController {
         return Result.success();
     }
 
-
-    // 通过token获取adminId
-    @GetMapping("getAdminIdByToken")
-    public Result getAdminIdByToken(@RequestHeader("Authorization") String token) {
-        Integer adminId = adminService.getAdminIdByToken(token);
-        return Result.success(adminId);
-    }
-
-    // 通过token获取admin.name
-    @GetMapping("getAdminNameByToken")
-    public Result getAdminNameByToken(@RequestHeader("Authorization") String token) {
-        String adminName = adminService.getAdminNameByToken(token);
-        return Result.success(adminName);
+    // 忘记密码
+    @PostMapping("resetAdminPwd")
+    public Result resetAdminPwd(@RequestBody Map<String, String> paramMap) {
+        String ok = adminService.resetPassword(paramMap);
+        return Result.success(ok);
     }
 
 }

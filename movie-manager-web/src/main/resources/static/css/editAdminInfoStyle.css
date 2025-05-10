@@ -21,14 +21,13 @@
 
 .title-bar {
     height: 50px;
-    /*background: lightblue;*/
 }
 
 /* admin信息的父容器：圆圈+name */
 .adminInfo {
     display: flex;
     align-items: center;
-    gap: 10px; /* 间距 */
+    gap: 10px;
     margin: 20px 0;
 }
 
@@ -53,7 +52,23 @@
     color: var(--text-color);
 }
 
-.new-password-label,
-.confirm-password-label {
+/* 自定义 element */
+/* element-表单项-标签：新密码、确认密码 */
+.el-form-item__label {
+    font-weight: bold;
+    font-size: 24px;
     color: var(--text-color);
+}
+/* element-表单项-输入框 */
+.el-form-item {
+    width: 70%;
+}
+/* element-按钮 */
+.el-button--primary {
+    background-color: var(--button-color);
+    color: var(--button-font-color);
+    border-radius: 15px;
+    font-weight: bold;
+    width: 140px;
+    height: 40px;
 }

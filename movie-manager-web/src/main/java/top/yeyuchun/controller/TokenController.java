@@ -29,4 +29,11 @@ public class TokenController {
         return Result.success(adminName);
     }
 
+    // 验证token是否有效
+    @GetMapping("verify")
+    public Result verify(@RequestHeader("Authorization") String token) {
+        tokenService.verify(token);
+        return Result.success();
+    }
+
 }
