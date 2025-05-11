@@ -5,15 +5,14 @@
     <title>首页</title>
     <link rel="stylesheet" type="text/css" href="css/portalCommonStyle.css">
     <link rel="stylesheet" type="text/css" href="css/iframeCommonStyle.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
+    <script src="js/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
 </head>
 <body>
 <div id="portal-home-page">
     <div class="box-group">
         <div class="movieBox" v-for="(movie) in movieList" :key="movie.id">
-<!--            <a :href="'/detailPage.html?id=' + movie.id">-->
             <a @click="iframeGoToDetailPage(movie.id)">
                 <img :src="movie.posterPath" class="box-img">
                 <div class="box-name">{{ movie.title }}</div>
@@ -27,22 +26,22 @@
         el: '#portal-home-page',
         data: {
             movieList: [],
+        },
+        methods: {
             iframeGoToDetailPage(movieId) {
                 const userId = sessionStorage.getItem("userId");
-                console.log("=========正在执行iframeGoToDetailPage------------");
                 if (userId) {
-                    window.parent.location.href = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                    window.parent.app.showBanner = false;
+                    window.parent.app.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
                 }
             }
         },
-        methods: {},
         created() {
             axios.get("/index/findAll").then(resp => {
                 if (resp.data.code == 1) {
                     this.movieList = resp.data.data;
                 }
             })
-
         }
     })
 </script>

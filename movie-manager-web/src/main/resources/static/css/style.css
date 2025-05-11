@@ -102,6 +102,7 @@ a {
 }
 #theme-switch svg {
     fill: var(--text-color);
+    cursor: pointer;
 }
 /*默认状态下，隐藏第第二个图标：太阳，显示月亮图标 */
 #theme-switch svg:last-child {

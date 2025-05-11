@@ -1,3 +1,14 @@
+#portal-login-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url("/images/trees_lake.jpg");
+    background-size: cover; /* 等比缩放，可能裁剪 */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
 .login-register-item {
     /* 容器本身 */
     width: 350px;
@@ -48,6 +59,7 @@
     display: flex;
     justify-content: center;
 }
+
 .el-form-item__content {
     width: 80%;
     display: flex;

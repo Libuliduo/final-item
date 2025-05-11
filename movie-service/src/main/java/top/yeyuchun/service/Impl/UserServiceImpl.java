@@ -41,7 +41,6 @@ public class UserServiceImpl implements UserService {
 
         // 验证数据库中是否存在该用户
         User user = userMapper.findByEmail(email);
-        System.out.println(user);
         if (user == null) {
             throw new BusinessException("不存在该用户");
         }

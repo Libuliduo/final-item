@@ -1,9 +1,7 @@
 package top.yeyuchun.controller;
 
-import cn.hutool.core.util.StrUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.UserService;
 
@@ -27,20 +25,6 @@ public class UserController {
         String ok = userService.registerUser(paramMap);
         return Result.success(ok);
     }
-
-
-//    @PostMapping("updateUserPwd")
-//    public Result updateUserPwd(@RequestBody Map<String, String> paramMap) {
-//        String email = paramMap.get("email");
-//        String newPwd = paramMap.get("newPassword");
-//
-//        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPwd)) {
-//            throw new BusinessException("用户ID或新密码不能为空");
-//        }
-//
-//        userService.updatePwdByEmail(email, newPwd);
-//        return Result.success();
-//    }
 
     // 重置密码
     @PostMapping("resetUserPwd")

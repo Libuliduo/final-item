@@ -46,6 +46,7 @@
 
 #theme-switch svg {
     fill: var(--text-color);
+    cursor: pointer;
 }
 /*默认状态下，隐藏第第二个图标：太阳，显示月亮图标 */
 #theme-switch svg:last-child {
@@ -79,22 +80,28 @@ a {
     text-decoration: none;
     color: var(--secondary-text);
 }
-.section {
-    width: 70%;
-    max-width: 1200px;
+
+.top-container {
+    width: 100%;
+    height: 70px;
+    background-color: var(--base-color);
+    z-index: 1000; /* 保证在最上层 */
+
+    top: 0;
+    position: fixed;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+
 .header-bar {
-    height: 70px;
-    position: fixed;
-    top: 0;
+    width: 1000px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 1000; /* 保证在最上层 */
-    background-color: var(--base-color);
 }
-
 
 .header-bar-left {
     display: flex;
@@ -168,4 +175,5 @@ a {
 
 .top-user-button svg {
     fill: var(--text-color);
+    cursor: pointer;
 }

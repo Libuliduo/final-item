@@ -3,32 +3,14 @@
 <head>
     <meta charset="UTF-8"/>
     <title></title>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/movieListStyle.css">
+
     <script src="js/vue.js"></script>
     <script src="/js/axios-0.18.0.js"></script>
-    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <script src="element-ui/lib/index.js"></script>
-    <!-- element 自定义样式-->
-    <style>
-        /* 下拉框和表格的自定义颜色 */
-        .el-input__inner,
-        .el-select-dropdown,
-        .el-table,
-        .el-table th,
-        .el-table tr
-        {
-            background-color: var(--base-color);
-            color: var(--secondary-text);
-        }
 
-        /* 分页组件的自定义颜色 */
-        .el-pagination {
-            background-color: var(--base-color);
-        }
-
-
-    </style>
 </head>
 <body>
 <div id="movie-list-container">
@@ -224,65 +206,107 @@
 
             // 删除单个movie
             deleteById(id) {
-                if (confirm("你确定要删除吗?")) {
+                this.$confirm('此操作将删除该影视, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 用户点击了确定
                     axios.delete("/movie/deleteById?id=" + id).then(resp => {
                         if (resp.data.code == 1) {
+                            // 提示成功
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                            // 进行分页查询
                             const totalPage = Math.ceil((this.pagination.total - 1) / this.pagination.pageSize) // 计算总页数
                             this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
                             this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
                             this.findByPage();
                         } else {
-                            alert(resp.data.msg);
+                            this.$message.error(resp.data.msg);
                         }
                     });
-                }
+                }).catch(() => {
+                    // 用户点击取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
             },
 
             //批量删除
             deleteBatch() {
                 if (this.selectedIds.length > 0) {
-                    console.log(this.selectedIds);
-                    if (confirm("您确定要删除这些吗?")) {
+                    this.$confirm('此操作将永久删除选中的内容，是否继续？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // 用户点击确定
                         axios.delete("/movie/deleteByIds?ids=" + this.selectedIds).then(resp => {
                             if (resp.data.code == 1) {
+                                // 提示成功
+                                this.$message({
+                                    type: 'success',
+                                    message: '批量删除成功!'
+                                })
+                                // 进行分页查询
                                 const totalPage = Math.ceil((this.pagination.total - this.selectedIds.length) / this.pagination.pageSize) // 计算总页数
                                 this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
                                 this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
                                 this.findByPage();
                             } else {
-                                alert(resp.data.msg);
-                            }
-                        });
-                    }
-                }
-            },
-
-            toBanner(movieId){
-                if(confirm("你确定要添加到banner中吗?")){
-                    axios.post("/movie/saveBanner?movieId="+movieId).then(resp=>{
-                        if (resp.data.code == 1) {
-                            alert("添加成功");
-                        }else{
-                            alert("该影片已经在横幅列表中，请勿重复添加");
-                        }
-                    });
-                }
-            },
-
-            toBanner(movieId) {
-                if (confirm("你确定要添加到banner中吗?")) {
-                    axios.post("/movie/saveBanner?movieId=" + movieId)
-                        .then(resp => {
-                            if (resp.data.code == 1) {
-                                alert("添加成功");
+                                this.$message.error(resp.data.msg);
                             }
                         })
-                        .catch(error => {
-                                alert("该影片已存在或轮播图已满");
-
+                    }).catch(() => {
+                        // 用户点击取消
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
                         });
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: '请先选择要删除的内容'
+                    })
                 }
+            },
+
+
+            toBanner(movieId) {
+                this.$confirm('确定要置为轮播吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 用户点击确定
+                    axios.post("/movie/saveBanner?movieId=" + movieId).then(resp => {
+                        if (resp.data.code == 1) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功'
+                            });
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: '该影片已经在横幅列表中，请勿重复添加'
+                            });
+                        }
+                    });
+                }).catch(() => {
+                    // 用户点击取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消添加'
+                    });
+                });
             }
+
         },
         created:function (){
             this.findByPage();

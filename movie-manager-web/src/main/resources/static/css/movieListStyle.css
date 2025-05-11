@@ -63,10 +63,30 @@
     gap: 10px;
 }
 
+<!-- element 自定义样式-->
+
 .pagination-wrapper {
     margin-top: 10px;
     width: 100%;
     /* flex 默认主轴方向是水平方向 */
     display: flex;
     justify-content: center;
+}
+
+
+
+/* 下拉框和表格的自定义颜色 */
+.el-input__inner,
+.el-select-dropdown,
+.el-table,
+.el-table th,
+.el-table tr
+{
+    background-color: var(--base-color);
+    color: var(--secondary-text);
+}
+
+/* 分页组件的自定义颜色 */
+.el-pagination {
+    background-color: var(--base-color);
 }

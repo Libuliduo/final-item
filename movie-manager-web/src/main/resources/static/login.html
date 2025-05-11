@@ -4,11 +4,14 @@
     <meta charset="UTF-8">
     <title>登录</title>
     <link rel="icon" href="images/videoPlay.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css">
+
     <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/style.css">
+
     <script src="js/vue.js"></script>
     <script src="/js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
+
     <style>
         #login-register-container {
             width: 100%;
@@ -148,9 +151,9 @@
                 // 发送获取验证码的请求
                 axios.get("/email/sendEmail?email=" + this.email).then(resp => {
                     if (1 === resp.data.code) {
-                        alert("验证码已发送");
+                        this.$message.success("验证码已发送");
                     } else {
-                        alert(resp.data.msg);
+                        this.$message.warning(resp.data.msg);
                     }
                 })
             },
