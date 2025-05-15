@@ -16,6 +16,8 @@
     --button-color: #2173DF;
     /*   按钮字体颜色 */
     --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #F3F4F6;
 }
 
 /* darkMode: 暗色主题*/
@@ -36,17 +38,27 @@
     --button-color: #2173DF;
     /*   按钮字体颜色 */
     --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #2A2F34;
 }
 
 /* 切换明暗按钮样式 */
 #theme-switch {
-    border: none;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #DCDFE6;
+    border-radius: 50%;
     background-color: var(--base-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
 #theme-switch svg {
+    width: 20px;
+    height: 20px;
     fill: var(--text-color);
-    cursor: pointer;
 }
 /*默认状态下，隐藏第第二个图标：太阳，显示月亮图标 */
 #theme-switch svg:last-child {
@@ -166,14 +178,90 @@ a {
     width: 100%;
 }
 
-/* 顶部用户按钮 */
+ /*顶部用户按钮*/
 .top-user-button {
-    border: none;
-    background-color: var(--base-color);
     margin-right: 10px;
 }
 
-.top-user-button svg {
-    fill: var(--text-color);
-    cursor: pointer;
+.top-user-button .el-button {
+    background-color: transparent;
+}
+
+.top-user-button .el-button i {
+    color: var(--text-color);
+}
+
+/* 搜索:图标和输入框的组合 */
+/* 搜索建议项 */
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    width: 100%;
+    height: 100px;
+    border-bottom: 1px solid var(--text-color);
+}
+/* 建议项的封面图 */
+.target-poster {
+    margin-right: 5px;
+    width: 70px;
+    height: 100%;
+}
+.target-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+}
+/* 建议项的信息：电影名 电影导演 */
+.target-info {
+    display: flex;
+    flex-direction: column;
+}
+.target-info .target-title{
+    font-weight: bold;
+}
+.el-scrollbar__wrap, .popper__arrow::after {
+    background-color: var(--base-color);
+}
+
+.el-autocomplete-suggestion li {
+    color: var(--text-color);
+}
+
+.el-autocomplete-suggestion li:hover {
+    background-color: var(--background-hover-color);
+    color: var(--text-color);
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    border: 1px solid #DCDFE6;
+    border-radius: 50px;
+    padding: 0 10px;
+    background: transparent;
+}
+
+/* 搜索图标样式 */
+.search-box i {
+    color: var(--text-color);
+    font-size: 18px;
+}
+
+/* 搜索输入框样式 */
+.search-box input {
+    width: 30px;
+    height: 40px;
+    font-size: 14px;
+    color: var(--text-color);
+    background: transparent;
+    border: none;
+    outline: none;
+    transition: width 0.4s ease, background 0.3s;
+}
+
+/* 输入框聚焦效果 */
+.search-box input:focus {
+    width: 200px;
 }

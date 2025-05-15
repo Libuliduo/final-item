@@ -47,3 +47,4 @@ public interface MovieMapper {
 
     List<Integer> findMovieIdsByCondition(String genre, String keyword);
 }
+

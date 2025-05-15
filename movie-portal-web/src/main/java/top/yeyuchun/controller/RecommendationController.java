@@ -16,7 +16,6 @@ import java.util.List;
 @RequestMapping("recommendation")
 public class RecommendationController {
 
-
     @Autowired
     private UserMovieFavoriteService userMovieFavoriteService;
 

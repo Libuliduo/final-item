@@ -78,7 +78,7 @@ public class MovieServiceImpl implements MovieService {
                                 HttpClient.create().proxy(proxy -> proxy
                                         .type(ProxyProvider.Proxy.HTTP)
                                         .host("127.0.0.1")
-                                        .port(7897)
+                                        .port(7890)
                                 )
                         )
                 )

@@ -5,15 +5,18 @@
     <title>欧美剧</title>
     <link rel="stylesheet" type="text/css" href="css/portalCommonStyle.css">
     <link rel="stylesheet" type="text/css" href="css/iframeCommonStyle.css">
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
 
 </head>
 <body>
+<h2>欧美影视</h2>
+
 <div id="portal-English-page">
     <div class="box-group">
         <div class="movieBox" v-for="(movie) in movieList">
-            <a :href="'/detailPage.html?id=' + movie.id">
+            <a @click="iframeGoToDetailPage(movie.id)">
                 <img :src="movie.posterPath" class="box-img">
                 <div class="box-name">{{ movie.title }}</div>
             </a>
@@ -27,7 +30,15 @@
         data: {
             movieList: []
         },
-        methods: {},
+        methods: {
+            iframeGoToDetailPage(movieId) {
+                const userId = sessionStorage.getItem("userId");
+                if (userId) {
+                    window.parent.app.showBanner = false;
+                    window.parent.app.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                }
+            }
+        },
         created() {
             axios.get("/index/findEnglish").then(resp => {
                 if (resp.data.code == 1) {

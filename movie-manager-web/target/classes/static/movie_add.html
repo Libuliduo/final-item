@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <style>
+        .body-content {
+            margin: 20px;
+            width: 800px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: var(--base-variant);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div id="moviesAddDiv">
+    <div style="margin: 5px"><h2>增加影视</h2></div>
+    <hr>
+
+    <div class="body-content">
+        <form method="post" class="auto-form">
+            <!-- 隐藏 -->
+            <input class="auto-input" type="hidden" name="id" v-model="movie.id">
+
+            <!-- 影视标题 -->
+            <div class="form-item">
+                <label class="auto-label">影视标题：</label>
+                <input class="auto-input" type="text" v-model="movie.title" name="title"/>
+                <a class="auto-button" style="margin-left: 10px;" href="javascript:void(0)" @click="fetchMovieInfo">自动获取信息</a>
+            </div>
+
+            <!-- 影视发行Title TODO：如果为空，则设为和title值一样 -->
+            <div class="form-item">
+                <label class="auto-label">影视发行名：</label>
+                <input class="auto-input" type="text" v-model="movie.originalTitle" name="originalTitle"/>
+            </div>
+
+            <!-- TODO 影视类型：List<String> genres -->
+            <div class="form-item">
+                <label class="auto-label">类型：</label>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <label v-for="genre in genreOptions" :key="genre" style="margin-right: 10px;">
+                        <input type="checkbox" :value="genre" v-model="movie.genres"> {{ genre }}
+                    </label>
+                </div>
+            </div>
+
+            <!--影视产地-->
+            <div class="form-item">
+                <label class="auto-label">地区：</label>
+                <input type="text" class="auto-input" v-model="movie.country" name="country"/>
+            </div>
+
+            <!--上映时间-->
+            <div class="form-item">
+                <label class="auto-label">上映时间：</label>
+                <input type="date" class="auto-input" v-model="movie.releaseDate" name="releaseDate"/>
+            </div>
+
+            <!--影视简介-->
+            <div class="form-item">
+                <label class="auto-label">影视简介：</label>
+                <textarea  class="auto-input" style="height:250px; border:1px solid #ddd;" v-model="movie.overview"
+                           name="overview"></textarea>
+            </div>
+
+            <!-- 导演 -->
+            <div class="form-item">
+                <label class="auto-label">导演：</label>
+                <input class="auto-input" type="text" class="input w50" v-model="movie.director" name="director"/>
+            </div>
+
+            <!--主要演员-->
+            <div class="form-item">
+                <label class="auto-label">主要演员：</label>
+                <input class="auto-input" type="text" v-model="movie.actors" name="actors"/>
+            </div>
+
+            <!--播放链接-->
+            <div class="form-item">
+                <label class="auto-label">播放链接：</label>
+                <input class="auto-input" type="text" class="input w50" v-model="movie.url" name="url"/>
+            </div>
+
+            <!--影视海报-->
+            <div class="form-item">
+                <label class="auto-label">影视海报链接：</label>
+                <input class="auto-input" type="text" v-model="movie.posterPath" name="posterPath"/>
+            </div>
+
+            <!--影视横屏图片-->
+            <div class="form-item">
+                <label class="auto-label">横图链接：</label>
+                <input class="auto-input" type="text" v-model="movie.backdropPath" name="backdropPath"/>
+            </div>
+
+            <!--影视评分 TODO Movie里面的定义为 Double popularity" -->
+            <div class="form-item">
+                <label class="auto-label">影视评分：</label>
+                <input type="text" class="auto-input" v-model="movie.popularity" name="popularity"/>
+            </div>
+
+            <!--提交按钮-->
+            <div class="form-item" style="justify-content: center">
+                <a class="auto-button" href="javascript:void(0)" @click="saveOrUpdate()"> 提交</a>
+            </div>
+        </form>
+    </div>
+
+</div>
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#moviesAddDiv',
+        data: {
+            movie: {
+                id: null,
+                title: '',
+                originalTitle: '',
+                genres: [],
+                country: '',
+                releaseDate: '',
+                overview: '',
+                director: '',
+                actors: '',
+                url: '',
+                posterPath: '',
+                backdropPath: '',
+                popularity: ''
+            },
+            genreOptions: [
+                "动作", "剧情", "喜剧", "爱情", "科幻", "悬疑", "恐怖",
+                "犯罪", "战争", "历史", "动画", "音乐", "体育", "奇幻", "冒险"
+            ],
+        },
+        methods: {
+            saveOrUpdate() {
+                //发送ajax的post请求,保存影视 this.movie传过去的是json数据
+                axios.post("/movie/saveOrUpdate", this.movie).then(resp => {
+                    if (1 == resp.data.code) {
+                        //清空表单中的数据
+                        this.movie = {};
+                        //重定向到影视列表页面
+                        location.href = "movie_list.html";
+                    } else {
+                        alert(resp.data.msg);
+                    }
+                });
+            },
+            fetchMovieInfo() {
+                if (!this.movie.title) {
+                    alert("请输入影视标题");
+                    return;
+                }
+
+                axios.get("/movie/info?title=" + this.movie.title).then(resp => {
+                    if (resp.data.code === 1 && resp.data.data) {
+                        const info = resp.data.data;
+
+                        this.movie.originalTitle = info.originalTitle || this.movie.title;
+                        this.movie.genres = info.genres || [];
+                        this.movie.country = info.country || '';
+                        this.movie.releaseDate = info.releaseDate || '';
+                        this.movie.overview = info.overview || '';
+                        this.movie.director = info.director || '';
+                        this.movie.actors = info.actors || ''; // 是字符串就直接赋值
+                        this.movie.backdropPath = info.backdropPath || '';
+                        this.movie.posterPath = info.posterPath || '';
+                        this.movie.url = info.url || '';
+                        this.movie.popularity = info.popularity || '';
+                    } else {
+                        alert(resp.data.msg || "获取信息失败");
+                    }
+                }).catch(error => {
+                    console.error("请求失败:", error);
+                    alert("请求失败，请检查网络或后台接口。");
+                });
+            }
+            ,
+
+            findById(id) {
+                axios.get("/movie/findById?id=" + id).then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movie = resp.data.data
+                    } else {
+                        alert(resp.data.msg);
+                    }
+                });
+            }
+        },
+        created() {
+            //如果是修改的话，id会有值，需要数据回显
+            //1.获取影视的id值
+            let id = location.search.split("=")[1];
+            //2.发送ajax请求查询影视信息
+            if (id) {
+                this.findById(id);
+            }
+        }
+    })
+</script>
+</body>
+<script src="/js/verify.js"></script>
+</html>

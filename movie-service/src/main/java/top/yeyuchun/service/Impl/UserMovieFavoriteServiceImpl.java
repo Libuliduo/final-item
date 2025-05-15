@@ -72,6 +72,8 @@ public class UserMovieFavoriteServiceImpl implements UserMovieFavoriteService {
                 List<Integer> otherUserMovies = entry.getValue();
                 double similarity = calculateCosineSimilarity(targetUserMovies, otherUserMovies);
                 similarityMap.put(otherUserId, similarity);
+                System.out.println("用户" + otherUserId + "的收藏列表: " + otherUserMovies);
+                System.out.println("目标用户" + "与用户 " + otherUserId + "的余弦相似度: " + similarity);
             }
         }
 
@@ -85,6 +87,7 @@ public class UserMovieFavoriteServiceImpl implements UserMovieFavoriteService {
                 for (Integer movieId : similarUserMovies) {
                     if (!targetUserMovies.contains(movieId)) {
                         recommendedMovies.add(movieId);
+                        System.out.println("用户" + similarUserId + "收藏了目标用户" + userId + "未收藏的电影 " + movieId + "，相似度: " + similarity);
                     }
                 }
             }
@@ -92,9 +95,5 @@ public class UserMovieFavoriteServiceImpl implements UserMovieFavoriteService {
         System.out.println("推荐的电影: " + recommendedMovies);
 
         return movieService.findMoviesByIds(new ArrayList<>(recommendedMovies));
-
     }
-
-
-
 }
