@@ -265,3 +265,7 @@ a {
 .search-box input:focus {
     width: 200px;
 }
+/* 当输入框为空且未聚焦时才收缩 */
+.search-box input:not(:focus):not(:placeholder-shown) {
+    width: 30px;
+}

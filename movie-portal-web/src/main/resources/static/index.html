@@ -44,21 +44,23 @@
             </div>
 
             <!-- 用户操作 -->
-
             <div class="top-user-button">
                 <div class="search-box">
                     <i class="el-icon-search"></i>
                     <!-- el-autocomplete 可带输入建议的输入框组件
                         fetch-suggestions: 返回输入建议的方法属性 在你的输入建议数据准备好时通过 cb(data) 返回到 autocomplete 组件中
                         select: 当用户从自动补全建议中选中某一项时，触发的事件
+                        blur: 搜索框失去焦点（blur）时清空 searchInput
                     -->
                     <el-autocomplete
+                            ref="autocomplete"
                             placeholder="搜索"
                             class="inline-input"
                             v-model="searchInput"
                             :trigger-on-focus="false"
                             :fetch-suggestions="querySearch"
                             @select="handleSelect"
+                            @blur="clearSearchInput"
                     >
                         <!-- Vue 2.x 插槽语法 -->
                         <template slot-scope="props">
@@ -104,7 +106,6 @@
             </button>
         </div>
 -->
-
             <!-- 右侧 切换主题颜色、搜索等按钮-->
             <div class="right-buttons">
                 <button id="theme-switch">
@@ -151,8 +152,18 @@
             userId: null,
             isLoggedIn: false,  // 用来保存用户是否已登录
             showBanner: true, // 控制轮播区域是否显示
+            isSelecting: false, // 标记是否正在选择建议项
         },
         methods: {
+            // 清空搜索框并重置建议列表
+            clearSearchInput() {
+                this.searchInput = '';
+
+                // 使用 $refs 直接访问组件实例并调用其方法
+                this.$nextTick(() => {
+                    this.$refs.autocomplete.suggestions = []; // 直接清空建议列表
+                });
+            },
             // 输入时自动匹配建议
             querySearch(queryString, cb) {
                 const results = queryString
@@ -164,11 +175,11 @@
                     : [];
                 // 直接返回电影对象数组
                 cb(results);
-                console.log(results);
             },
 
             // 选中建议项
             handleSelect(item) {
+                this.isSelecting = true; // 标记正在选择
                 this.searchInput = item.title;
                 this.doSearch(item.id);
             },
