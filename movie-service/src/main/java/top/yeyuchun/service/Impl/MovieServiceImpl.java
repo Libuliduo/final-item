@@ -320,8 +320,8 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public List<Movie> findJPandKR() {
-        return movieMapper.findJPandKR();
+    public List<Movie> findJPAndKR() {
+        return movieMapper.findJPAndKR();
     }
 
     @Override

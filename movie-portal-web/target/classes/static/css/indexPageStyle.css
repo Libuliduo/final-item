@@ -48,21 +48,19 @@
     box-sizing: border-box;
 }
 
-
 /* 外层div，负责撑开页面 */
 .iframe-wrapper {
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 20px;
+    align-items: flex-start; /* 确保内容从顶部开始 */
 }
 
 /* iframe本体，重点设置！ */
-#iframe-wrapper iframe,
 #main-iframe {
     width: 70%;
-    min-height: 0;
-    height: auto; /* 由js动态设置 */
+    height: auto;
     border: none;
-    overflow: hidden; /* 禁止iframe自己滚动 */
+    overflow: hidden; /* 禁止 iframe 自己滚动 */
 }

@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
+
+    User findById(Integer id);
+
     String login(Map<String,String> paramMap);
 
     String registerUser(Map<String, String> paramMap);
@@ -25,4 +28,8 @@ public interface UserService {
     void updatePwdByEmail(String email, String newPwd);
 
     String resetUserPwd(Map<String, String> paramMap);
+
+    String resetInfo(Map<String, String> paramMap);
+
+    void updatePasswordById(Integer id, String newPwd);
 }

@@ -38,7 +38,7 @@ public interface MovieMapper {
 
     List<Movie> findEnglish();
 
-    List<Movie> findJPandKR();
+    List<Movie> findJPAndKR();
 
     List<Movie> findOther();
 

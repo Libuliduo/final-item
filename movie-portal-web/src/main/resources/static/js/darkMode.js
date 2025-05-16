@@ -14,21 +14,17 @@
 let darkMode = localStorage.getItem('darkMode')
 // 获取按钮
 const themeSwitch = document.getElementById('theme-switch')
-// 获取iframe
-const iframe = document.querySelector("iframe")
 
 // 启用暗黑模式
 const enableDarkMode = () => {
     document.body.classList.add('darkMode')
     localStorage.setItem('darkMode','active')
-    applyDarkModeToIframe()
 }
 
 // 关闭暗黑模式
 const disableDarkMode = () => {
     document.body.classList.remove('darkMode')
     localStorage.setItem('darkMode',null)
-    removeDarkModeFromIframe()
 }
 
 // 页面初始化时，根据 localStorage 的状态判断是否启用暗黑模式
@@ -41,38 +37,5 @@ themeSwitch.addEventListener("click",()=> {
         enableDarkMode()
     } else {
         disableDarkMode()
-    }
-})
-
-// 给iframe加上darkMode类
-function applyDarkModeToIframe() {
-    try {
-        const iframeDoc = iframe.contentWindow.document
-        const iframeBody = iframeDoc.body
-        if (iframeBody) {
-            iframeBody.classList.add("darkMode")
-        }
-    } catch (e) {
-        console.error("应用 darkMode 到 iframe 时出错:", e)
-    }
-}
-
-// 移除iframe中的darkMode类
-function removeDarkModeFromIframe() {
-    try {
-        const iframeDoc = iframe.contentWindow.document
-        const iframeBody = iframeDoc.body
-        if (iframeBody) {
-            iframeBody.classList.remove("darkMode")
-        }
-    } catch (e) {
-        console.error("移除 iframe 中的 darkMode 时出错:", e)
-    }
-}
-
-// 监听iframe切换页面后自动加darkMode
-iframe.addEventListener("load",()=> {
-    if(localStorage.getItem('darkMode') === 'active') {
-        applyDarkModeToIframe()
     }
 })

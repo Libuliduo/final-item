@@ -45,9 +45,9 @@ public class IndexController {
     }
 
     // 日韩剧 JP KR
-    @GetMapping("findJPandKR")
-    public Result findJPandKR() {
-        List<Movie> movieList = movieService.findJPandKR();
+    @GetMapping("findJPAndKR")
+    public Result findJPAndKR() {
+        List<Movie> movieList = movieService.findJPAndKR();
         return Result.success(movieList);
     }
 

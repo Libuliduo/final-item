@@ -55,7 +55,7 @@
     </select>
 
     <!-- 查询地区为日韩的影视 -->
-    <select id="findJPandKR" resultMap="movieResultMap">
+    <select id="findJPAndKR" resultMap="movieResultMap">
         SELECT movie.*,
                genre.genre
         FROM tb_movie AS movie

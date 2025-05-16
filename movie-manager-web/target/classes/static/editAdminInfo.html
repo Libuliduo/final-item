@@ -121,15 +121,13 @@
             submitForm(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
-                        alert('密码校验通过，可提交请求');
-
                         // 发起请求
                         axios.post("/admin/updateAdminPwd", {
                             id: this.adminId,
                             newPassword: this.ruleForm.pass
                         }).then(resp => {
                             if (resp.data.code === 1) {
-                                alert("密码修改成功！");
+                                this.$message.success("密码修改成功");
                                 // 清空保存的信息
                                 sessionStorage.removeItem("Authorization");
                                 // 500ms后跳转到登录页
@@ -137,7 +135,7 @@
                                     window.parent.location.href = "/login.html";
                                 }, 500);
                             } else {
-                                alert(resp.data.msg || "修改失败");
+                                this.$message.error("修改失败");
                             }
                         }).catch(err => {
                             console.error(err);

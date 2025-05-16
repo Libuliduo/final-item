@@ -29,6 +29,12 @@ public class UserServiceImpl implements UserService {
     private RedisTemplate redisTemplate;
 
     @Override
+    public User findById(Integer id) {
+        User user = userMapper.findById(id);
+        return user;
+    }
+
+    @Override
     public String login(Map<String ,String> paramMap) {
         // 先获取邮箱和密码
         String email = paramMap.get("email");
@@ -147,6 +153,25 @@ public class UserServiceImpl implements UserService {
         }
 
         return "重置密码成功";
+    }
+
+    @Override
+    public String resetInfo(Map<String ,String> paramMap) {
+        // 1. 获取参数 id, userName
+        String idStr = paramMap.get("id");
+        String userName = paramMap.get("userName");
+        Integer id = Integer.parseInt(idStr);
+        userMapper.updateUserInfo(id,userName);
+        return "ok";
+    }
+
+    @Override
+    public void updatePasswordById(Integer id, String newPassword) {
+        User user = userMapper.findById(id);
+        if (user == null) {
+            throw new BusinessException("用户不存在");
+        }
+        userMapper.updatePwdById(id, newPassword);
     }
 
     @Override
