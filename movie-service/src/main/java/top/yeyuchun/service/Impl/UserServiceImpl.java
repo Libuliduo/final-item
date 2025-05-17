@@ -6,9 +6,11 @@ import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
+import top.yeyuchun.entity.Movie;
 import top.yeyuchun.entity.User;
 import top.yeyuchun.exception.BusinessException;
 import top.yeyuchun.exception.LoginException;
+import top.yeyuchun.mapper.MovieMapper;
 import top.yeyuchun.mapper.UserMapper;
 import top.yeyuchun.service.UserService;
 import top.yeyuchun.template.JWTTemplate;
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private MovieMapper movieMapper;
 
     @Autowired
     private JWTTemplate jwtTemplate;
@@ -103,6 +108,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<Movie> findFavorByUserId(Integer userId) {
+        List<Integer> movieIds = userMapper.findMovieIdsByUserId(userId);
+        List<Movie> movieList = movieMapper.findMoviesByIds(movieIds);
+        return movieList;
+    }
+
+    @Override
     public List<User> findAllUsers() {
         List<User> allUsers = userMapper.findAllUsers();
         return allUsers;
@@ -156,16 +168,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String resetInfo(Map<String ,String> paramMap) {
-        // 1. 获取参数 id, userName
-        String idStr = paramMap.get("id");
-        String userName = paramMap.get("userName");
-        Integer id = Integer.parseInt(idStr);
-        userMapper.updateUserInfo(id,userName);
-        return "ok";
-    }
-
-    @Override
     public void updatePasswordById(Integer id, String newPassword) {
         User user = userMapper.findById(id);
         if (user == null) {
@@ -173,6 +175,17 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.updatePwdById(id, newPassword);
     }
+
+    @Override
+    public void resetUserName(Integer id, String userName) {
+        userMapper.resetUserName(id,userName);
+    }
+
+    @Override
+    public void resetUserAvatar(Integer id, String url) {
+        userMapper.resetUserAvatar(id,url);
+    }
+
 
     @Override
     public String registerUser(Map<String, String> paramMap) {

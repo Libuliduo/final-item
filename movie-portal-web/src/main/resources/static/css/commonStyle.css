@@ -55,7 +55,7 @@ html, body {
 #portal-index-page {
     background-color: var(--base-color);
     width: 100%;
-    min-height: 100%; /* 使用 min-height 确保内容不足时也能占满视口 */
+    min-height: 100%;
 }
 
 /* 标题 h2 */
@@ -121,12 +121,39 @@ html, body {
 
 /* 用户头像 */
 .el-avatar {
-    height: 80px;
-    width: 80px;
+    height: 220px;
+    width: 220px;
+    margin-bottom: 5px;
 }
 .el-form-item__content {
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
 }
 
+/* 表单样式 */
+.el-dialog {
+    background-color: var(--base-color);
+}
+.el-dialog__title {
+    color: var(--text-color);
+}
+.el-form-item__label {
+    color: var(--text-color);
+}
+
+/* 上传文件按钮 */
+.upload-demo {
+    width: 80px;
+    height: 30px;
+}
+.changeAvatarBtn {
+    width: 80px;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 

@@ -80,6 +80,7 @@
                         <i class="el-icon-user"></i>
                     </el-button>
                     <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item><a @click="findFavorById">我的收藏</a></el-dropdown-item>
                         <el-dropdown-item><a @click="visibleEditDialog">修改信息</a></el-dropdown-item>
                         <el-dropdown-item><a @click="visibleResetDialog">重置密码</a></el-dropdown-item>
                         <el-dropdown-item><a @click="exit">退出登录</a></el-dropdown-item>
@@ -133,10 +134,24 @@
             width="30%">
         <el-form :model="user" status-icon label-position="top" label-width="100px"
                  class="demo-ruleForm">
-            <el-form-item prop = "avatar"  v-if="user">
-                <el-avatar class="" :src="user.avatar" fit="fit"></el-avatar>
+            <el-form-item prop="avatar" v-if="user">
+                <el-avatar class="" :src="avatarUrl" fit="fit"></el-avatar>
+
+                <el-upload
+                        class="upload-demo"
+                        action="https://lsky.yeyuchun.top:23333/api/v1/upload"
+                        :headers="uploadHeaders"
+                        :data="uploadData"
+                        :on-success="handleUploadSuccess"
+                        :on-error="handleUploadError"
+                        :before-upload="beforeUpload"
+                        :show-file-list="false"
+                >
+                    <el-button class="changeAvatarBtn" type="primary">更换头像</el-button>
+                </el-upload>
+
             </el-form-item>
-            <el-form-item label="你的昵称" prop = "username">
+            <el-form-item label="你的昵称" prop="username">
                 <el-input style="width: 70%;" v-model="user.username" placeholder="你的昵称"></el-input>
             </el-form-item>
         </el-form>
@@ -153,14 +168,15 @@
             :visible.sync="resetDialog"
             :show-close="false"
             width="30%"
-            >
+    >
         <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-position="top" label-width="100px"
                  class="demo-ruleForm">
             <el-form-item label="新密码" prop="pass">
                 <el-input style="width: 70%;" type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="确认密码" prop="checkPass">
-                <el-input style="width: 70%;" type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+                <el-input style="width: 70%;" type="password" v-model="ruleForm.checkPass"
+                          autocomplete="off"></el-input>
             </el-form-item>
         </el-form>
 
@@ -178,12 +194,14 @@
         data: {
             userId: null,
             user: {},
+            avatarUrl: '',
             movieList: [],
             movieBannerList: [],
             recommendList: [],
             searchInput: '',
             editDialog: false, // 控制对话框显示状态
             resetDialog: false,
+            token: '1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR',
             ruleForm: {
                 pass: '',
                 checkPass: ''
@@ -198,7 +216,51 @@
             }
 
         },
+
+        computed: {
+            uploadHeaders() {
+                return {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Accept': 'application/json'
+                };
+            },
+            uploadData() {
+                return {
+                    strategy_id: 2
+                };
+            }
+        },
+
         methods: {
+            beforeUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+
+            // 上传成功处理
+            handleUploadSuccess(response, file, fileList) {
+                if (response.status) {
+                    this.$message.success('头像上传成功!');
+                    // 更新用户头像
+                    this.avatarUrl = response.data.links.url;
+                } else {
+                    this.$message.error('上传失败: ' + response.message || '未知错误');
+                }
+            },
+
+            // 上传失败处理
+            handleUploadError(err, file, fileList) {
+                console.error('上传错误:', err);
+                this.$message.error('上传失败，请稍后重试');
+            },
 
             // 跳转到详情页
             goToDetailPage(movieId) {
@@ -222,11 +284,13 @@
             ,
             // 输入时自动匹配建议
             querySearch(queryString, cb) {
-                const results = queryString
+                const trimmedQuery = queryString.trim();
+
+                const results = trimmedQuery
                     ? this.movieList.filter(item =>
                         // 匹配电影名或者导演名
-                        item.title.toLowerCase().includes(queryString.toLowerCase()) ||
-                        item.director.toLowerCase().includes(queryString.toLowerCase())
+                        item.title.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
+                        item.director.toLowerCase().includes(trimmedQuery.toLowerCase())
                     )
                     : [];
                 // 直接返回电影对象数组
@@ -244,8 +308,8 @@
 
             visibleResetDialog() {
                 this.ruleForm.pass = '',
-                this.ruleForm.checkPass = '',
-                this.resetDialog = !this.resetDialog;
+                    this.ruleForm.checkPass = '',
+                    this.resetDialog = !this.resetDialog;
                 console.log(this.resetDialog)
             },
             visibleEditDialog() {
@@ -255,9 +319,10 @@
 
             editUserInfo() {
                 if (this.userId) {
-                    axios.post('/user/editInfo',{
+                    axios.post('/user/editInfo', {
                         id: this.userId,
-                        userName: this.user.username
+                        userName: this.user.username,
+                        url: this.avatarUrl
                     })
                         .then(resp => {
                             if (resp.data.code == 1) {
@@ -330,11 +395,23 @@
                     .then(resp => {
                         if (resp.data.code == 1) {
                             this.user = resp.data.data;
+                            this.avatarUrl = this.user.avatar;
                         }
                     })
                     .catch(error => {
                         console.error("获取用户信息失败:", error);
                     });
+            },
+
+            // 查询用户收藏的影视
+            findFavorById() {
+                const id = this.userId;
+                axios.get(`/user/findFavorite?userId=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.movieList = resp.data.data;
+                        }
+                    })
             },
 
             // 查询所有影视

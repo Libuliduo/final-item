@@ -35,9 +35,13 @@ public interface UserMapper {
     @Update("UPDATE tb_user SET password = #{password} WHERE email = #{email}")
     void updatePwdByEmail(String email, String password);
 
-    @Update("UPDATE tb_user SET username = #{userName} WHERE id = #{id}")
-    void updateUserInfo(Integer id, String userName);
 
     @Update("UPDATE tb_user SET password = #{password} WHERE id = #{id}")
     void updatePwdById(Integer id, String password);
+
+    @Update("UPDATE tb_user SET username = #{userName} WHERE id = #{id}")
+    void resetUserName(Integer id, String userName);
+
+    @Update("UPDATE tb_user SET avatar = #{url} WHERE id = #{id}")
+    void resetUserAvatar(Integer id, String url);
 }

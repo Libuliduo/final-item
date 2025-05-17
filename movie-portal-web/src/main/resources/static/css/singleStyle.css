@@ -1,10 +1,8 @@
 #portal-single-page {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    overflow: hidden;
     background-color: var(--base-color);
     color: var(--text-color);
+    width: 100%;
+    min-height: 100%;
 }
 
 /*播放器*/

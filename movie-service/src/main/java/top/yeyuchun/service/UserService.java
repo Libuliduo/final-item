@@ -1,5 +1,6 @@
 package top.yeyuchun.service;
 
+import top.yeyuchun.entity.Movie;
 import top.yeyuchun.entity.User;
 
 import java.util.List;
@@ -29,7 +30,11 @@ public interface UserService {
 
     String resetUserPwd(Map<String, String> paramMap);
 
-    String resetInfo(Map<String, String> paramMap);
-
     void updatePasswordById(Integer id, String newPwd);
+
+    void resetUserName(Integer id, String userName);
+
+    void resetUserAvatar(Integer id, String url);
+
+    List<Movie> findFavorByUserId(Integer userId);
 }
