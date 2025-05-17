@@ -33,6 +33,10 @@
     column-gap: 20px;
 }
 
+a {
+    text-decoration: none;
+}
+
 .login-name {
     color: #c4c2c2;
 }

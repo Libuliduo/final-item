@@ -13,6 +13,17 @@
     <script src="js/axios-0.18.0.js"></script>
     <script src="js/vue.js"></script>
     <script src="element-ui/lib/index.js"></script>
+    <style>
+        html {
+            background-color: var(--base-color);
+        }
+        .iframe-content {
+            width: 100%;
+            height: 100vh; /* 设置固定高度为视口高度 */
+            overflow-y: auto; /* 当内容溢出时显示垂直滚动条 */
+            overflow-x: hidden; /* 隐藏水平滚动条 */
+        }
+    </style>
 </head>
 <body>
 <div id="portal-index-page">
@@ -100,33 +111,7 @@
         </div>
     </div>
 
-    <!-- 2. 轮播区域 -->
-    <div class="portal-banner">
-        <h2 class="portal-title">为你推荐</h2>
-        <el-carousel :interval="4000" type="card">
-            <el-carousel-item v-for="movie in movieBannerList" :key="movie.id">
-                <a class="banner-link" @click="goToDetailPage(movie.id)">
-                    <img :src="movie.posterPath" class="banner-img">
-                    <div class="banner-title">{{ movie.title }}</div>
-                </a>
-            </el-carousel-item>
-        </el-carousel>
-    </div>
-
-    <!-- 2. 显示区域 -->
-    <div class="portal-content">
-        <h2 class="portal-title">电影</h2>
-        <div class="box-group">
-            <div class="box-item" v-for="(movie) in movieList" :key="movie.id">
-                <a @click="goToDetailPage(movie.id)">
-                    <img class="box-img" :src="movie.posterPath">
-                    <div class="box-name">{{ movie.title }}</div>
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. 修改信息的表单 -->
+    <!-- 1.6 修改信息的表单 -->
     <el-dialog
             title="修改信息"
             :visible.sync="editDialog"
@@ -162,7 +147,7 @@
   </span>
     </el-dialog>
 
-    <!-- 4. 修改密码的表单 -->
+    <!-- 1.7 修改密码的表单 -->
     <el-dialog
             title="修改密码"
             :visible.sync="resetDialog"
@@ -185,6 +170,50 @@
     <el-button type="primary" @click="resetPassword('ruleForm')">确 定</el-button>
   </span>
     </el-dialog>
+
+    <!-- 2. 轮播区域 -->
+    <div class="portal-banner" v-if="showBanner">
+        <h2 class="portal-title">最新上映</h2>
+        <el-carousel :interval="4000" type="card">
+            <el-carousel-item v-for="movie in movieBannerList" :key="movie.id">
+                <a class="banner-link" @click="goToDetailPage(movie.id)">
+                    <img :src="movie.posterPath" class="banner-img">
+                    <div class="banner-title">{{ movie.title }}</div>
+                </a>
+            </el-carousel-item>
+        </el-carousel>
+    </div>
+
+
+    <!-- 2. 显示区域 -->
+    <div class="portal-content" v-if="showContent">
+        <h2 class="portal-title">电影</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in movieList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+<!-- 3. 其他页面的显示: 详情页和播放页面 -->
+    <iframe class="iframe-content" v-if="showIframe" :src="iframeSrc" frameborder="0" scrolling="no" @load="adjustIframeHeight" ></iframe>
+
+<!--  4. 推荐区域： 当页面是详情页和播放页的时候显示  -->
+    <div class="recommend-content" v-if="showIframe">
+        <h2 class="portal-title">为你推荐</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in recommendList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -192,15 +221,19 @@
     const app = new Vue({
         el: '#portal-index-page',
         data: {
-            userId: null,
-            user: {},
-            avatarUrl: '',
-            movieList: [],
-            movieBannerList: [],
-            recommendList: [],
-            searchInput: '',
-            editDialog: false, // 控制对话框显示状态
-            resetDialog: false,
+            userId: null, // 登录的用户ID
+            user: {}, // 登录的用户信息
+            avatarUrl: '', // 用户头像链接
+            movieList: [], // 影视显示列表
+            movieBannerList: [], // 轮播的影视列表
+            recommendList: [], // 推荐的影视列表
+            searchInput: '', // 搜索栏的文字
+            editDialog: false, // 控制修改信息框显示状态
+            resetDialog: false, // 控制重置密码框的显示状态
+            showBanner: true, // 控制轮播的显示
+            showContent: true, // 控制页面影视的显示
+            showIframe: false, // 控制detailPage和singlePage的显示
+            iframeSrc: '', // 当前iframe显示的页面
             token: '1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR',
             ruleForm: {
                 pass: '',
@@ -228,10 +261,38 @@
                 return {
                     strategy_id: 2
                 };
-            }
+            },
         },
 
         methods: {
+            // 动态调整iframe的高度
+            adjustIframeHeight() {
+                const iframe = this.$el.querySelector('.iframe-content');
+                if (iframe) {
+                    try {
+                        const contentHeight = iframe.contentWindow.document.body.scrollHeight;
+                        iframe.style.height = contentHeight + 'px';
+                    } catch (error) {
+                        console.error('无法获取 iframe 内容高度:', error);
+                    }
+                }
+            },
+
+            // 首页显示轮播
+            resetIndexViewState() {
+                this.showIframe = false;
+                this.iframeSrc = '';
+                this.showBanner = true;
+                this.showContent = true;
+            },
+            // 其他页面不显示轮播
+            resetViewState() {
+                this.showIframe = false;
+                this.iframeSrc = '';
+                this.showBanner = false;
+                this.showContent = true;
+            },
+
             beforeUpload(file) {
                 const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
                 const isLt2M = file.size / 1024 / 1024 < 2;
@@ -267,7 +328,10 @@
                 const userId = this.userId;
 
                 if (userId) {
-                    location.href = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                    this.showBanner = false;
+                    this.showContent = false;
+                    this.showIframe = true;
+                    this.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
                 }
             },
 
@@ -403,26 +467,6 @@
                     });
             },
 
-            // 查询用户收藏的影视
-            findFavorById() {
-                const id = this.userId;
-                axios.get(`/user/findFavorite?userId=${id}`)
-                    .then(resp => {
-                        if (resp.data.code == 1) {
-                            this.movieList = resp.data.data;
-                        }
-                    })
-            },
-
-            // 查询所有影视
-            findMovieList() {
-                axios.get("/index/findAll").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.movieList = resp.data.data;
-                    }
-                })
-            },
-
             // 查询首页轮播影视
             findBannerList() {
                 axios.get("/banner/findBannerList").then(resp => {
@@ -432,11 +476,34 @@
                 })
             },
 
+            // 查询用户收藏的影视
+            findFavorById() {
+                const id = this.userId;
+                axios.get(`/user/findFavorite?userId=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.movieList = resp.data.data;
+                            this.resetViewState();
+                        }
+                    })
+            },
+
+            // 查询所有影视
+            findMovieList() {
+                axios.get("/index/findAll").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetIndexViewState();
+                    }
+                })
+            },
+
             // 查询华语影视
             loadChinese() {
                 axios.get("/index/findChinese").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
+                        this.resetViewState();
                     }
                 })
             },
@@ -446,6 +513,7 @@
                 axios.get("/index/findEnglish").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
+                        this.resetViewState();
                     }
                 })
             },
@@ -455,6 +523,7 @@
                 axios.get("/index/findJPAndKR").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
+                        this.resetViewState();
                     }
                 })
             },
@@ -464,19 +533,24 @@
                 axios.get("/index/findOther").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
+                        this.resetViewState();
                     }
                 })
             },
 
             // 查询推荐影视
             loadRecommendation() {
+                this.movieList = this.recommendList;
+                this.resetViewState();
+            },
+
+            findRecommendation() {
                 console.log(this.userId)
                 if (this.userId) {
                     axios.get(`/recommendation/getRecommendations?userId=${this.userId}`)
                         .then(resp => {
                             if (resp.data.code == 1) {
                                 this.recommendList = resp.data.data;
-                                this.movieList = this.recommendList;
                             }
                         })
                         .catch(error => {
@@ -507,6 +581,7 @@
                     this.findMovieList();
                     this.findBannerList();
                     this.findUserById(this.userId);
+                    this.findRecommendation();
                 }).catch(err => {
                     console.error("获取用户ID失败：", err);
                     this.$message.error("登录状态已失效，请重新登录！");
@@ -520,6 +595,7 @@
         mounted() {
             this.rules.pass[0].validator = this.validatePass;
             this.rules.checkPass[0].validator = this.validatePass2;
+            this.adjustIframeHeight();
         }
     })
 </script>

@@ -10,6 +10,11 @@
     <script src="js/vue.js"></script>
     <script src="js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
+    <style>
+        html {
+            background-color: var(--base-color);
+        }
+    </style>
 </head>
 <body>
 <div id="portal-detail-page">
@@ -46,7 +51,9 @@
                 {{ isFavorite ? '已收藏' : '收藏' }}
             </el-button>
         </div>
-        <p class="overview">{{ movie.overview }}</p>
+        <el-tooltip :content="movie.overview" placement="bottom" effect="light">
+            <span class="overview">{{ movie.overview }}</span>
+        </el-tooltip>
     </div>
 </div>
 
@@ -140,7 +147,6 @@
         }
     })
 </script>
-<script type="text/javascript" src="js/darkMode.js" defer></script>
-<script src="/js/verify.js"></script>
+<script type="text/javascript" src="js/darkModeForIframe.js" defer></script>
 </body>
 </html>

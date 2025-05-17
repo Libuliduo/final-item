@@ -2,7 +2,6 @@
     background-color: var(--base-color);
     color: var(--text-color);
     width: 100%;
-    min-height: 100%;
 }
 
 /*播放器*/
@@ -12,3 +11,4 @@
     aspect-ratio: 16 / 9;
     background-color: var(--base-color);
 }
+
