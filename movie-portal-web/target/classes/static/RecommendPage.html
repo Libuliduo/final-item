@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>推荐</title>
+  <link rel="stylesheet" type="text/css" href="css/portalCommonStyle.css">
+  <link rel="stylesheet" type="text/css" href="css/iframeCommonStyle.css">
+
+  <script src="js/vue.js"></script>
+  <script src="js/axios-0.18.0.js"></script>
+
+</head>
+<body>
+<h2>为你推荐</h2>
+
+<div id="portal-recommend-page">
+  <div class="box-group">
+    <div class="movieBox" v-for="(movie) in recommendList" :key="movie.id">
+      <a @click="iframeGoToDetailPage(movie.id)">
+        <img :src="movie.posterPath" class="box-img">
+        <div class="box-name">{{ movie.title }}</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  const app = new Vue({
+    el: '#portal-recommend-page',
+    data: {
+      recommendList: [],
+      userId: null,
+    },
+    methods: {
+      iframeGoToDetailPage(movieId) {
+        const userId = sessionStorage.getItem("userId");
+        if (userId) {
+          window.parent.app.showBanner = false;
+          window.parent.app.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
+        }
+      }
+    },
+    created() {
+      // 获取userId
+      this.userId = sessionStorage.getItem("userId");
+      if (this.userId) {
+        axios.get(`/recommendation/getRecommendations?userId=${this.userId}`)
+                .then(resp => {
+                  if (resp.data.code == 1) {
+                    this.recommendList = resp.data.data;
+                  }
+                })
+                .catch(error => {
+                  console.error("获取推荐失败:", error);
+                });
+      } else {
+        this.$message.warning("请先登录");
+        // window.parent.location.href = '/login.html';
+      }
+
+    }
+  })
+</script>
+<script src="/js/verify.js"></script>
+</body>
+</html>

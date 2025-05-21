@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Popcorn影视</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="css/commonStyle.css">
+    <link rel="stylesheet" type="text/css" href="css/detailStyle.css">
+
+    <script src="js/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <style>
+        html {
+            background-color: var(--base-color);
+        }
+    </style>
+</head>
+<body>
+<div id="portal-detail-page">
+    <!-- 内容区 -->
+    <div class="movie-detail">
+        <!-- 背景封面 和 影视名称 -->
+        <img class="detailImg" :src="movie.backdropPath" alt="图片显示失败">
+        <h1 class="title">{{ movie.title }}</h1>
+
+        <!-- 电影详情 -->
+        <div class="sub-info">
+            <span class="popularity" style="color: #ff9900">{{ movie.popularity }}</span>
+            <span> / </span>
+            <span class="year">{{ movie.releaseDate.substring(0, 4) }}</span>
+            <span> / </span>
+            <span class="genres">{{ movie.genres.join(' ') }}</span>
+            <span> / </span>
+            <span class="country">{{ movie.country }}</span>
+        </div>
+        <div>
+            <span>导演：</span>
+            <span>{{ movie.director }}</span>
+        </div>
+        <div>
+            <span>演员：</span>
+            <span>{{ movie.actors }}</span>
+        </div>
+        <div class="buttons">
+            <el-button type="primary" icon="el-icon-video-play" @click="goToSinglePage(movie.url)">播放</el-button>
+            <el-button
+                    :icon="isFavorite ? 'el-icon-star-on' : 'el-icon-star-off'"
+                    type="warning"
+                    @click="toggleFavorite">
+                {{ isFavorite ? '已收藏' : '收藏' }}
+            </el-button>
+        </div>
+        <el-tooltip :content="movie.overview" placement="bottom" effect="light">
+            <span class="overview">{{ movie.overview }}</span>
+        </el-tooltip>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#portal-detail-page',
+        data: {
+            userId: 1,
+            movieId: 1,
+            isFavorite: false,
+            movie: {
+                "id": 27,
+                "title": "三傻大闹宝莱坞",
+                "originalTitle": "3 Idiots",
+                "genres": [
+                    "剧情",
+                    "喜剧"
+                ],
+                "country": "IN",
+                "releaseDate": "2009-12-23",
+                "overview": "本片根据印度畅销书作家奇坦·巴哈特（Chetan Bhagat）的处女作小说《五点人》（Five Point Someone）改编而成。法兰、拉杜与兰乔是皇家工程学院的学生，三人共居一室，结为好友。在以严格著称的学院里，兰乔是个非常与众不同的学生，他不死记硬背，甚至还公然顶撞校长“病毒”，质疑他的教学方法。他不仅鼓动法兰与拉杜去勇敢追寻理想，还劝说校长的二女儿碧雅离开满眼铜臭的未婚夫。兰乔的特立独行引起了模范学生“消音器”的不满，他约定十年后再与兰乔一决高下，看哪种生活方式更能取得成功。本片获孟买电影博览奖最佳影片、最佳导演、最佳配角（波曼·伊拉尼）、最佳剧本等六项大奖，并获国际印度电影协会最佳影片、最佳导演、最佳剧情、最佳摄影等十六项大奖。",
+                "director": "拉吉库马尔·希拉尼",
+                "actors": "阿米尔·汗, 马达范 R, 沙尔曼·乔什, 卡琳娜·卡普, 博曼·伊拉尼",
+                "backdropPath": "https://image.tmdb.org/t/p/w500/e0PVYBaGdKLtvyIp2uEUzT1JUO7.jpg",
+                "posterPath": "https://image.tmdb.org/t/p/w500/qEVZeu6ODIpS3zwyhOxKEmvkDpH.jpg",
+                "url": "https://alist.yeyuchun.top:23333/p/NASVideo/%E5%8A%9F%E5%A4%AB/%E5%8A%9F~%E5%A4%AB4K120%E5%B8%A7%E7%B2%A4%E8%AF%AD.mp4?sign=FyfAV24tapK1Txdfc3wJVzaWAz4MYSOpL1yBPyWCcpw=:0",
+                "popularity": 12.5
+            },
+        },
+        methods: {
+            // 进入界面时调用该方法，通过id获取该movie信息
+            findMovieById(id) {
+                axios.get("/index/findMovieById?id=" + id).then(resp => {
+                    if(resp.data.code == 1) {
+                        this.movie = resp.data.data;
+                    }
+                })
+            },
+
+            goToSinglePage(url) {
+                // url 中可能有中文，浏览器不会自动编码 需要自行编码
+                if (url == null) {
+                    alert("播放链接不存在");
+                }
+                window.location.href = `/singlePage.html?url=${encodeURIComponent(url)}`;
+            },
+
+            checkFavorite() {
+                axios.get("/user/isFavorite", {
+                    params: {
+                        userId: this.userId,
+                        movieId: this.movieId
+                    }
+                }).then(resp => {
+                    this.isFavorite = resp.data.data;
+                }).catch(err => {
+                    console.error("获取收藏状态失败：", err);
+                    this.$message.error("获取收藏状态失败，请重试！");
+                });
+            },
+
+            toggleFavorite() {
+                const url = this.isFavorite ? '/user/remove' : '/user/add';
+                axios.post(url, null, {
+                    params: {
+                        userId: this.userId,
+                        movieId: this.movieId
+                    }
+                }).then(resp => {
+                    this.isFavorite = !this.isFavorite;
+                    this.$message.success(this.isFavorite ? "收藏成功！" : "已取消收藏！");
+                }).catch(err => {
+                    console.error("操作失败：", err);
+                    this.$message.error("操作失败，请重试！");
+                });
+            }
+
+        },
+        created() {
+            const params = new URLSearchParams(location.search);
+            this.movieId = params.get('id');
+            this.userId = params.get('userId');
+
+            if (this.movieId && this.userId) {
+                this.findMovieById(this.movieId); //获取影视详情
+                this.checkFavorite(); // 获取收藏状态
+            } else {
+                this.$message.warning("用户信息或电影信息丢失，请重新登录");
+                window.location.href = 'login.html';
+            }
+        }
+    })
+</script>
+<script type="text/javascript" src="js/darkModeForIframe.js" defer></script>
+</body>
+</html>

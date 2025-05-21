@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Popcorn影视</title>
+    <link rel="icon" href="images/videoPlay.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="css/bannerStyle.css">
+    <link rel="stylesheet" type="text/css" href="css/commonStyle.css">
+    <link rel="stylesheet" type="text/css" href="css/HeaderStyle.css">
+
+    <script src="js/axios-0.18.0.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+    <style>
+        html {
+            background-color: var(--base-color);
+        }
+        .iframe-content {
+            width: 100%;
+            height: 100vh; /* 设置固定高度为视口高度 */
+            overflow-y: auto; /* 当内容溢出时显示垂直滚动条 */
+            overflow-x: hidden; /* 隐藏水平滚动条 */
+        }
+    </style>
+</head>
+<body>
+<div id="portal-index-page">
+
+    <!-- 1. 顶部栏 -->
+    <div class="portal-top">
+        <div class="header-bar">
+            <div class="header-bar-left">
+                <!-- 1.1 logo + 名 -->
+                <svg fill="#2173df" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50px" height="50px">
+                    <path d="M 29.625 2 C 22.394531 2 18.871094 5.601563 17.734375 9.75 C 16.769531 8.769531 15.304688 8 13.167969 8 C 9.601563 8 6 10.085938 6 14.75 C 6 16.617188 7.105469 18.375 8.632813 19.308594 C 7.363281 20.242188 6 21.710938 6 24 C 6 25.527344 6.460938 26.714844 7.109375 27.621094 C 7.902344 27.226563 8.796875 27 9.75 27 C 10.582031 27 11.417969 27.136719 12.21875 27.402344 C 12.953125 27.136719 13.726563 27 14.5 27 C 15.359375 27 16.210938 27.160156 17 27.472656 C 17.789063 27.160156 18.640625 27 19.5 27 C 20.359375 27 21.210938 27.160156 22 27.472656 C 22.789063 27.160156 23.640625 27 24.5 27 C 25.359375 27 26.210938 27.160156 27 27.472656 C 27.789063 27.160156 28.640625 27 29.5 27 C 30.359375 27 31.210938 27.160156 32 27.472656 C 32.789063 27.160156 33.640625 27 34.5 27 C 35.273438 27 36.046875 27.136719 36.78125 27.402344 C 37.578125 27.136719 38.417969 27 39.25 27 C 40.5625 27 41.769531 27.429688 42.738281 28.140625 C 42.816406 28.054688 42.910156 27.9375 43.019531 27.777344 C 43.996094 26.351563 44 24.882813 44 24.25 C 44 21.117188 42.742188 19.292969 41.308594 18.464844 C 41.921875 16.59375 42 14.109375 42 13 C 42 6.316406 37.144531 2 29.625 2 Z M 17.5 16 C 18.882813 16 20 17.117188 20 18.5 C 20 19.882813 18.882813 21 17.5 21 C 16.117188 21 15 19.882813 15 18.5 C 15 17.117188 16.117188 16 17.5 16 Z M 33.5 16 C 34.882813 16 36 17.117188 36 18.5 C 36 19.882813 34.882813 21 33.5 21 C 32.117188 21 31 19.882813 31 18.5 C 31 17.117188 32.117188 16 33.5 16 Z M 18 17 C 17.449219 17 17 17.449219 17 18 C 17 18.550781 17.449219 19 18 19 C 18.550781 19 19 18.550781 19 18 C 19 17.449219 18.550781 17 18 17 Z M 34 17 C 33.449219 17 33 17.449219 33 18 C 33 18.550781 33.449219 19 34 19 C 34.550781 19 35 18.550781 35 18 C 35 17.449219 34.550781 17 34 17 Z M 23 21 L 28 21 C 28.550781 21 29 21.449219 29 22 C 29 23.65625 27.65625 25 26 25 L 25 25 C 23.34375 25 22 23.65625 22 22 C 22 21.449219 22.449219 21 23 21 Z M 9.75 29 C 7.683594 29 6 30.570313 6 32.5 C 6 32.589844 6.011719 32.679688 6.035156 32.765625 L 10.035156 47.265625 C 10.15625 47.699219 10.550781 48 11 48 L 38 48 C 38.449219 48 38.84375 47.699219 38.964844 47.265625 L 42.964844 32.765625 C 42.988281 32.679688 43 32.589844 43 32.5 C 43 30.570313 41.316406 29 39.25 29 C 38.332031 29 37.476563 29.222656 36.75 29.566406 C 36.082031 29.214844 35.316406 29 34.5 29 C 33.582031 29 32.71875 29.257813 32 29.695313 C 31.28125 29.257813 30.417969 29 29.5 29 C 28.582031 29 27.71875 29.257813 27 29.695313 C 26.28125 29.257813 25.417969 29 24.5 29 C 23.582031 29 22.71875 29.257813 22 29.695313 C 21.28125 29.257813 20.417969 29 19.5 29 C 18.582031 29 17.71875 29.257813 17 29.695313 C 16.28125 29.257813 15.417969 29 14.5 29 C 13.683594 29 12.917969 29.214844 12.25 29.566406 C 11.523438 29.222656 10.667969 29 9.75 29 Z M 9.75 31 C 11.066406 31 11.890625 31.5625 12.15625 31.886719 L 14.695313 46 L 11.761719 46 L 8.007813 32.386719 C 8.078125 31.621094 8.847656 31 9.75 31 Z M 19.5 31 C 20.703125 31 21.742188 31.761719 22 32.625 C 21.992188 32.625 22.46875 46 22.46875 46 L 18.640625 46 L 17.152344 32.378906 C 17.492188 31.625 18.414063 31 19.5 31 Z M 29.5 31 C 30.59375 31 31.515625 31.628906 31.855469 32.390625 L 30.410156 46 L 26.53125 46 C 26.53125 46 27.007813 32.625 27 32.625 C 27.253906 31.761719 28.289063 31 29.5 31 Z M 39.25 31 C 40.152344 31 40.921875 31.621094 40.996094 32.386719 L 37.238281 46 L 34.304688 46 L 36.839844 31.886719 C 37.105469 31.5625 37.933594 31 39.25 31 Z"/>
+                </svg>
+                <div class="header-title">Popcorn</div>
+
+                <!-- 1.2 水平无序列表 首页 电影 动漫-->
+                <ul class="header-bar-ul">
+                    <li><a @click="findMovieList()">首页</a></li>
+                    <li><a @click="loadChinese()">华语剧</a></li>
+                    <li><a @click="loadEnglish()">欧美剧</a></li>
+                    <li><a @click="loadJPAndKR()">日韩剧</a></li>
+                    <li><a @click="loadOther()">其他</a></li>
+                    <li><a @click="loadRecommendation()">推荐</a></li>
+                </ul>
+            </div>
+
+            <!-- 1.3 搜索 -->
+            <div class="header-bar-user-button">
+                <div class="header-bar-search">
+                    <i class="el-icon-search"></i>
+                    <!-- el-autocomplete 可带输入建议的输入框组件
+                        fetch-suggestions: 返回输入建议的方法属性 在你的输入建议数据准备好时通过 cb(data) 返回到 autocomplete 组件中
+                        select: 当用户从自动补全建议中选中某一项时，触发的事件
+                        blur: 搜索框失去焦点（blur）时清空 searchInput
+                    -->
+                    <el-autocomplete
+                            ref="autocomplete"
+                            placeholder="搜索"
+                            class="inline-input"
+                            v-model="searchInput"
+                            :trigger-on-focus="false"
+                            :fetch-suggestions="querySearch"
+                            @select="handleSelect"
+                            @blur="clearSearchInput"
+                    >
+                        <!-- Vue 2.x 插槽语法 -->
+                        <template slot-scope="props">
+                            <div class="suggestion-item">
+                                <div class="target-poster">
+                                    <img :src="props.item.posterPath" alt="Movie Poster">
+                                </div>
+                                <div class="target-info">
+                                    <div class="target-title">{{ props.item.title }}</div>
+                                    <div class="target-director">{{ props.item.director }}</div>
+                                </div>
+                            </div>
+                        </template>
+                    </el-autocomplete>
+                </div>
+            </div>
+
+            <!-- 1.4 用户操作 -->
+            <div class="header-bar-user-button">
+                <el-dropdown>
+                    <el-button circle>
+                        <i class="el-icon-user"></i>
+                    </el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item><a @click="findFavorById">我的收藏</a></el-dropdown-item>
+                        <el-dropdown-item><a @click="visibleEditDialog">修改信息</a></el-dropdown-item>
+                        <el-dropdown-item><a @click="visibleResetDialog">重置密码</a></el-dropdown-item>
+                        <el-dropdown-item><a @click="exit">退出登录</a></el-dropdown-item>
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+
+            <!-- 1.5 切换主题颜色按钮-->
+            <button id="theme-switch">
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                    <path d="M480-280q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-446.67H40v-66.66h160v66.66Zm720 0H760v-66.66h160v66.66ZM446.67-760v-160h66.66v160h-66.66Zm0 720v-160h66.66v160h-66.66ZM260-655.33l-100.33-97 47.66-49 96 100-43.33 46Zm493.33 496-97.66-100.34 45-45.66 99.66 97.66-47 48.34Zm-98.66-541.34 97.66-99.66 49 47L702-656l-47.33-44.67ZM159.33-207.33 259-305l46.33 45.67-97.66 99.66-48.34-47.66Z"/>
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" height="40px" viewBox="0 -960 960 960" width="40px">
+                    <path d="M480-120q-150 0-255-105T120-480q0-150 105-255t255-105q10 0 20.5.67 10.5.66 24.17 2-37.67 31-59.17 77.83T444-660q0 90 63 153t153 63q53 0 99.67-20.5 46.66-20.5 77.66-56.17 1.34 12.34 2 21.84.67 9.5.67 18.83 0 150-105 255T480-120Z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- 1.6 修改信息的表单 -->
+    <el-dialog
+            title="修改信息"
+            :visible.sync="editDialog"
+            :show-close="false"
+            width="30%">
+        <el-form :model="user" status-icon label-position="top" label-width="100px"
+                 class="demo-ruleForm">
+            <el-form-item prop="avatar" v-if="user">
+                <el-avatar class="" :src="avatarUrl" fit="fit"></el-avatar>
+
+                <el-upload
+                        class="upload-demo"
+                        action="https://lsky.yeyuchun.top:23333/api/v1/upload"
+                        :headers="uploadHeaders"
+                        :data="uploadData"
+                        :on-success="handleUploadSuccess"
+                        :on-error="handleUploadError"
+                        :before-upload="beforeUpload"
+                        :show-file-list="false"
+                >
+                    <el-button class="changeAvatarBtn" type="primary">更换头像</el-button>
+                </el-upload>
+
+            </el-form-item>
+            <el-form-item label="你的昵称" prop="username">
+                <el-input style="width: 70%;" v-model="user.username" placeholder="你的昵称"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="visibleEditDialog">取 消</el-button>
+    <el-button type="primary" @click="editUserInfo">确 定</el-button>
+  </span>
+    </el-dialog>
+
+    <!-- 1.7 修改密码的表单 -->
+    <el-dialog
+            title="修改密码"
+            :visible.sync="resetDialog"
+            :show-close="false"
+            width="30%"
+    >
+        <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-position="top" label-width="100px"
+                 class="demo-ruleForm">
+            <el-form-item label="新密码" prop="pass">
+                <el-input style="width: 70%;" type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="checkPass">
+                <el-input style="width: 70%;" type="password" v-model="ruleForm.checkPass"
+                          autocomplete="off"></el-input>
+            </el-form-item>
+        </el-form>
+
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="visibleResetDialog">取 消</el-button>
+    <el-button type="primary" @click="resetPassword('ruleForm')">确 定</el-button>
+  </span>
+    </el-dialog>
+
+    <!-- 2. 轮播区域 -->
+    <div class="portal-banner" v-if="showBanner">
+        <h2 class="portal-title">最新上映</h2>
+        <el-carousel :interval="4000" type="card">
+            <el-carousel-item v-for="movie in movieBannerList" :key="movie.id">
+                <a class="banner-link" @click="goToDetailPage(movie.id)">
+                    <img :src="movie.posterPath" class="banner-img">
+                    <div class="banner-title">{{ movie.title }}</div>
+                </a>
+            </el-carousel-item>
+        </el-carousel>
+    </div>
+
+
+    <!-- 2. 显示区域 -->
+    <div class="portal-content" v-if="showContent">
+        <h2 class="portal-title">电影</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in movieList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+<!-- 3. 其他页面的显示: 详情页和播放页面 -->
+    <iframe class="iframe-content" v-if="showIframe" :src="iframeSrc" frameborder="0" scrolling="no" @load="adjustIframeHeight" ></iframe>
+
+<!--  4. 推荐区域： 当页面是详情页和播放页的时候显示  -->
+    <div class="recommend-content" v-if="showIframe">
+        <h2 class="portal-title">为你推荐</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in recommendList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#portal-index-page',
+        data: {
+            userId: null, // 登录的用户ID
+            user: {}, // 登录的用户信息
+            avatarUrl: '', // 用户头像链接
+            movieList: [], // 影视显示列表
+            movieBannerList: [], // 轮播的影视列表
+            recommendList: [], // 推荐的影视列表
+            searchInput: '', // 搜索栏的文字
+            editDialog: false, // 控制修改信息框显示状态
+            resetDialog: false, // 控制重置密码框的显示状态
+            showBanner: true, // 控制轮播的显示
+            showContent: true, // 控制页面影视的显示
+            showIframe: false, // 控制detailPage和singlePage的显示
+            iframeSrc: '', // 当前iframe显示的页面
+            token: '1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR',
+            ruleForm: {
+                pass: '',
+                checkPass: ''
+            },
+            rules: {
+                pass: [
+                    {validator: null, trigger: 'blur'}
+                ],
+                checkPass: [
+                    {validator: null, trigger: 'blur'}
+                ]
+            }
+
+        },
+
+        computed: {
+            uploadHeaders() {
+                return {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Accept': 'application/json'
+                };
+            },
+            uploadData() {
+                return {
+                    strategy_id: 2
+                };
+            },
+        },
+
+        methods: {
+            // 动态调整iframe的高度
+            adjustIframeHeight() {
+                const iframe = this.$el.querySelector('.iframe-content');
+                if (iframe) {
+                    try {
+                        const contentHeight = iframe.contentWindow.document.body.scrollHeight;
+                        iframe.style.height = contentHeight + 'px';
+                    } catch (error) {
+                        console.error('无法获取 iframe 内容高度:', error);
+                    }
+                }
+            },
+
+            // 首页显示轮播
+            resetIndexViewState() {
+                this.showIframe = false;
+                this.iframeSrc = '';
+                this.showBanner = true;
+                this.showContent = true;
+            },
+            // 其他页面不显示轮播
+            resetViewState() {
+                this.showIframe = false;
+                this.iframeSrc = '';
+                this.showBanner = false;
+                this.showContent = true;
+            },
+
+            beforeUpload(file) {
+                const isJPG = file.type === 'image/jpeg' || file.type === 'image/png';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+
+            // 上传成功处理
+            handleUploadSuccess(response, file, fileList) {
+                if (response.status) {
+                    this.$message.success('头像上传成功!');
+                    // 更新用户头像
+                    this.avatarUrl = response.data.links.url;
+                } else {
+                    this.$message.error('上传失败: ' + response.message || '未知错误');
+                }
+            },
+
+            // 上传失败处理
+            handleUploadError(err, file, fileList) {
+                console.error('上传错误:', err);
+                this.$message.error('上传失败，请稍后重试');
+            },
+
+            // 跳转到详情页
+            goToDetailPage(movieId) {
+                const userId = this.userId;
+
+                if (userId) {
+                    this.showBanner = false;
+                    this.showContent = false;
+                    this.showIframe = true;
+                    this.iframeSrc = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                }
+            },
+
+            // 搜索按钮相关方法
+            // 清空搜索框并重置建议列表
+            clearSearchInput() {
+                setTimeout(() => {
+                    this.searchInput = '';
+                    this.$nextTick(() => {
+                        this.$refs.autocomplete.suggestions = [];
+                    });
+                }, 300); // 给 select 留出时间触发
+            }
+            ,
+            // 输入时自动匹配建议
+            querySearch(queryString, cb) {
+                const trimmedQuery = queryString.trim();
+
+                const results = trimmedQuery
+                    ? this.movieList.filter(item =>
+                        // 匹配电影名或者导演名
+                        item.title.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
+                        item.director.toLowerCase().includes(trimmedQuery.toLowerCase())
+                    )
+                    : [];
+                // 直接返回电影对象数组
+                cb(results);
+            },
+
+            // 选中建议项 跳转详情页面
+            handleSelect(item) {
+                this.searchInput = item.title;
+
+                if (!item.id) return;
+
+                this.goToDetailPage(item.id);
+            },
+
+            visibleResetDialog() {
+                this.ruleForm.pass = '',
+                    this.ruleForm.checkPass = '',
+                    this.resetDialog = !this.resetDialog;
+                console.log(this.resetDialog)
+            },
+            visibleEditDialog() {
+                this.editDialog = !this.editDialog;
+                console.log(this.editDialog)
+            },
+
+            editUserInfo() {
+                if (this.userId) {
+                    axios.post('/user/editInfo', {
+                        id: this.userId,
+                        userName: this.user.username,
+                        url: this.avatarUrl
+                    })
+                        .then(resp => {
+                            if (resp.data.code == 1) {
+                                this.editDialog = false;
+                                this.$message.success("修改成功");
+                            }
+                        })
+                        .catch(error => {
+                            console.error("修改失败:", error);
+                        });
+                }
+            },
+            resetPassword(formName) {
+                this.$refs[formName].validate(valid => {
+                    if (valid) {
+                        // 发起请求
+                        axios.post("/user/updatePwd", {
+                            id: this.userId,
+                            newPassword: this.ruleForm.pass
+                        }).then(resp => {
+                            if (resp.data.code === 1) {
+                                this.$message.success("密码修改成功");
+                                // 清空保存的信息
+                                this.resetDialog = false;
+                                this.ruleForm.checkPass = '';
+                                sessionStorage.removeItem("Authorization");
+                                // 500ms后跳转到登录页
+                                setTimeout(() => {
+                                    location.href = "/login.html";
+                                }, 500);
+                            } else {
+                                this.$message.error("修改失败");
+                            }
+                        }).catch(err => {
+                            console.error(err);
+                            alert("请求出错");
+                        })
+                    } else {
+                        console.log('校验失败');
+                        return false;
+                    }
+                });
+            },
+            // 校验密码是否合法
+            validatePass(rule, value, callback) {
+                if (value === '') {
+                    callback(new Error('请输入新密码'));
+                } else {
+                    if (this.ruleForm.checkPass !== '') {
+                        this.$refs.ruleForm.validateField('checkPass');
+                    }
+                    callback();
+                }
+            },
+
+            // 校验 确认密码是否一致
+            validatePass2(rule, value, callback) {
+                if (value === '') {
+                    callback(new Error('请再次输入密码'));
+                } else if (value !== this.ruleForm.pass) {
+                    callback(new Error('两次输入密码不一致!'));
+                } else {
+                    callback();
+                }
+            },
+
+            // 查询当前用户信息
+            findUserById(id) {
+                axios.get(`/user/findById?id=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.user = resp.data.data;
+                            this.avatarUrl = this.user.avatar;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("获取用户信息失败:", error);
+                    });
+            },
+
+            // 查询首页轮播影视
+            findBannerList() {
+                axios.get("/banner/findBannerList").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieBannerList = resp.data.data;
+                    }
+                })
+            },
+
+            // 查询用户收藏的影视
+            findFavorById() {
+                const id = this.userId;
+                axios.get(`/user/findFavorite?userId=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.movieList = resp.data.data;
+                            this.resetViewState();
+                        } else {
+                            this.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+
+            // 查询所有影视
+            findMovieList() {
+                axios.get("/index/findAll").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetIndexViewState();
+                    }
+                })
+            },
+
+            // 查询华语影视
+            loadChinese() {
+                axios.get("/index/findChinese").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询欧美影视
+            loadEnglish() {
+                axios.get("/index/findEnglish").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询日韩影视
+            loadJPAndKR() {
+                axios.get("/index/findJPAndKR").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询其他地区影视
+            loadOther() {
+                axios.get("/index/findOther").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询推荐影视
+            loadRecommendation() {
+                this.movieList = this.recommendList;
+                this.resetViewState();
+            },
+
+            findRecommendation() {
+                if (this.userId) {
+                    axios.get(`/recommendation/getRecommendations?userId=${this.userId}`)
+                        .then(resp => {
+                            if (resp.data.code == 1) {
+                                this.recommendList = resp.data.data;
+                            }
+                        })
+                        .catch(error => {
+                            console.error(resp.data.msg);
+                        });
+                } else {
+                    this.$message.warning("请先登录");
+                }
+            },
+
+            exit() {
+                this.userId = null;
+                sessionStorage.removeItem("Authorization");
+                location.href = "login.html";
+            },
+
+        },
+        created() {
+            // 登录进来 从sessionStorage获取token 解析用户id
+            const token = sessionStorage.getItem("Authorization");
+
+            if (token) {
+                // 获取用户id
+                axios.get("/user/jwtUserId", {
+                    headers: {Authorization: token}
+                }).then(resp => {
+                    this.userId = resp.data.data;
+                    this.findMovieList();
+                    this.findBannerList();
+                    this.findUserById(this.userId);
+                    this.findRecommendation();
+                }).catch(err => {
+                    console.error("获取用户ID失败：", err);
+                    this.$message.error("登录状态已失效，请重新登录！");
+                });
+            } else {
+                this.$message.warning("请先登录！");
+                location.href = "login.html";
+            }
+        },
+        // DOM 渲染完成执行
+        mounted() {
+            this.rules.pass[0].validator = this.validatePass;
+            this.rules.checkPass[0].validator = this.validatePass2;
+            this.adjustIframeHeight();
+        }
+    })
+</script>
+<script src="js/darkMode.js" defer></script>
+</body>
+</html>

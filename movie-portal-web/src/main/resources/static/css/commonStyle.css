@@ -1,0 +1,158 @@
+/*
+    通用样式
+*/
+/* 默认颜色: 浅色主题*/
+:root {
+    /* 背景色 */
+    --base-color: #FFFFFF;
+    /* 次级背景色: 侧边栏颜色*/
+    --base-variant: #F1F4F9;
+    /* 主要文字颜色: 如电影名称颜色 */
+    --text-color: #202327;
+    /* 次级文字颜色 如侧边栏文字颜色*/
+    --secondary-text: #202327;
+    /* 主色: 可能用于按钮、导航栏或其他主要 UI 组件的背景色*/
+    --primary-color: #4A5568;
+    /* 强调色: 用于高亮元素，比如链接、按钮或选中状态。*/
+    --accent-color: #202327;
+    /*  按钮色  */
+    --button-color: #2173DF;
+    /*   按钮字体颜色 */
+    --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #F3F4F6;
+}
+
+/* darkMode: 暗色主题*/
+.darkMode {
+    /* 背景色 */
+    --base-color: #1A1E23;
+    /* 次级背景色: 侧边栏颜色*/
+    --base-variant: #14171A;
+    /* 主要文字颜色: 比如main里面的颜色 */
+    --text-color: #FFFFFF;
+    /* 次级文字颜色: 如侧边栏文字颜色 */
+    --secondary-text: #CBD5E0;
+    /* 主色: 可能用于按钮、导航栏或其他主要 UI 组件的背景色*/
+    --primary-color: #CBD5E0;
+    /* 强调色: 用于高亮元素，比如链接、按钮或选中状态。*/
+    --accent-color: #FFFFFF;
+    /*  按钮色  */
+    --button-color: #2173DF;
+    /*   按钮字体颜色 */
+    --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #2A2F34;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    font-family: "Kanit", sans-serif;
+    background-color: var(--base-color);
+}
+
+#portal-index-page {
+    width: 100%;
+}
+
+/* 标题 h2 */
+.portal-title {
+    color: var(--text-color);
+}
+/*
+    内容显示区域
+*/
+.portal-content,
+.recommend-content {
+    width: 70%;
+    margin: 5px auto;
+}
+.box-group {
+    display: flex;
+    gap: 5px;
+
+    /* 主轴方向 */
+    flex-direction: row;
+
+    /*  主轴排列方式 */
+    justify-content: left;
+
+    /*  换行方式 */
+    flex-wrap: wrap;
+}
+.box-item {
+    width: 180px;
+    height: 300px;
+    background-color: var(--base-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.box-item:hover {
+    transform: scale(1.05);
+}
+
+.box-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    display: block;
+    border-radius: 8px;
+    padding-top: 2px;
+}
+.box-name {
+    font-size: 16px;
+    text-align: center;
+    /* 禁止文本换行，强制在一行内显示 */
+    white-space: nowrap;
+    overflow: hidden;
+    /* 对隐藏的文本使用省略号(...)表示截断 */
+    text-overflow: ellipsis;
+    color: var(--text-color);
+}
+
+/* 用户头像 */
+.el-avatar {
+    height: 220px;
+    width: 220px;
+    margin-bottom: 5px;
+}
+.el-form-item__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 表单样式 */
+.el-dialog {
+    background-color: var(--base-color);
+}
+.el-dialog__title {
+    color: var(--text-color);
+}
+.el-form-item__label {
+    color: var(--text-color);
+}
+
+/* 上传文件按钮 */
+.upload-demo {
+    width: 80px;
+    height: 30px;
+}
+.changeAvatarBtn {
+    width: 80px;
+    height: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+

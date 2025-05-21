@@ -1,0 +1,64 @@
+server:
+  port: 8080
+
+spring:
+  main:
+    allow-circular-references: true #允许 Spring 容器中的 Bean 出现循环依赖（Circular Dependency）
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://server.yeyuchun.icu:3306/finalitem_db?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: root
+      password: a123@456
+
+  servlet: # 文件上传限制
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 100MB
+
+  redis: # Redis 配置
+    host: server.yeyuchun.icu
+    port: 7788 # 端口,不配置会使用默认值6379（切换本地注释掉这行）
+    password: a123@456 # 有密码你才写（切换本地注释掉这行）
+    database: 0 # redis默认有16个数据库， 操作的数据库是哪个
+    # 连接池配置,默认不使用连接池,只有配置了才会使用,且用的是lettuce的连接池
+    lettuce:
+      pool:
+        max-active: 10 # 最大链接数，连接池中最多有10个
+        max-idle: 5   # 最大空闲数
+        min-idle: 1   # 最小空闲数
+        # 举个例子： 连接池初始化3个链接， 客户拿走2个链接，空闲1个,达到最小的空闲数，必须马上增加
+        max-wait: 1ms #连接池最大阻塞等待时间
+
+  mail:
+    host: smtp.163.com
+    username: yeyuchunL@163.com
+    password: BHdre32jQSk7AF7j
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+
+mybatis:
+  type-aliases-package: top.yeyuchun.domain
+  configuration:
+    # 开启驼峰命名规则映射  表 user_name  -> 实体类 userName
+    map-underscore-to-camel-case: true
+    # 控制台打印SQL日志
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+movies:
+  jwt:
+    admin:
+      # 设置jwt签名加密时使用的秘钥
+      admin-secret: itcast
+      # 设置jwt过期时间(30分钟)--自己可以设置得长点,目前项目中没有涉及到token续约的操作
+      admin-ttl: 1800000
+
+tmdb:
+  tmdb-api-key: 91dd7a8fcde8a96c6816312d93447677
+
+alist:
+  alist-api-key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InlleXVjaHVuIiwicHdkX3RzIjoxNzQ0MjgyMTU1LCJleHAiOjE3NDcxNDgxNzAsIm5iZiI6MTc0Njk3NTM3MCwiaWF0IjoxNzQ2OTc1MzcwfQ.EzF6Elw_HR-W1a4lLFQ7uOdJjAV3N8nuRROzrxsPKGI

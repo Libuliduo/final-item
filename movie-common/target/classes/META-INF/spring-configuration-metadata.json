@@ -1,0 +1,42 @@
+{
+  "groups": [
+    {
+      "name": "lsky",
+      "type": "top.yeyuchun.template.LSkyTemplate",
+      "sourceType": "top.yeyuchun.template.LSkyTemplate"
+    },
+    {
+      "name": "movies.jwt.admin",
+      "type": "top.yeyuchun.template.JWTTemplate",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    }
+  ],
+  "properties": [
+    {
+      "name": "lsky.strategy-id",
+      "type": "java.lang.Integer",
+      "sourceType": "top.yeyuchun.template.LSkyTemplate"
+    },
+    {
+      "name": "lsky.token",
+      "type": "java.lang.String",
+      "sourceType": "top.yeyuchun.template.LSkyTemplate"
+    },
+    {
+      "name": "lsky.upload-api",
+      "type": "java.lang.String",
+      "sourceType": "top.yeyuchun.template.LSkyTemplate"
+    },
+    {
+      "name": "movies.jwt.admin.admin-secret",
+      "type": "java.lang.String",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    },
+    {
+      "name": "movies.jwt.admin.admin-ttl",
+      "type": "java.lang.Long",
+      "sourceType": "top.yeyuchun.template.JWTTemplate"
+    }
+  ],
+  "hints": []
+}

@@ -1,0 +1,66 @@
+#portal-index-page {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    align-items: center;
+    /* 为顶部栏留出空间，防止遮挡 */
+    padding-top: 100px;
+}
+
+/*轮播图*/
+    /* 轮播外层 */
+.banner-wrapper {
+    width: 1100px;
+    height: 500px;
+    margin-bottom: 20px;
+}
+
+    /* 每一张轮播卡片 */
+.banner-link {
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+    /* 图片设置 */
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* 标题设置（叠在图片上） */
+.banner-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+/* 外层div，负责撑开页面 */
+.iframe-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    align-items: flex-start; /* 确保内容从顶部开始 */
+}
+
+/* iframe本体，重点设置！ */
+#main-iframe {
+    width: 70%;
+    height: auto;
+    border: none;
+    overflow: hidden; /* 禁止 iframe 自己滚动 */
+}

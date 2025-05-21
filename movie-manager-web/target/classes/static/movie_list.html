@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8"/>
+    <title></title>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/movieListStyle.css">
+
+    <script src="js/vue.js"></script>
+    <script src="/js/axios-0.18.0.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+
+</head>
+<body>
+<div id="movie-list-container">
+    <!-- 顶部 -->
+    <div class="movie-section title-bar">影视列表</div>
+    <hr style="width: 70%;">
+    <!-- 工具栏：添加影视按钮、按类型搜索和根据关键字搜索按钮 -->
+    <div class="movie-section tool-bar">
+        <div><a href="/movie_add.html" class="auto-button">添加影视</a></div>
+
+        <form>
+            <ul class="horizontal-ul">
+                <li>搜索：</li>
+                <li>
+                    <el-select v-model="genre" placeholder="请选择类型" clearable>
+                        <el-option
+                                v-for="genreItem in genres"
+                                :key="genreItem"
+                                :label="genreItem"
+                                :value="genreItem"
+                        />
+                    </el-select>
+                </li>
+                <li>
+                    <input class="auto-input" type="text" placeholder="请输入搜索关键字" name="keyword" v-model="keyword">
+                    <!-- 由于搜索按钮在无序列表中，点击后父元素也会提交表单，这样就会执行2次，所以用stop阻止父级事件-->
+                    <button class="auto-button" type="button" @click.stop="findByPage()">搜索</button>
+                </li>
+            </ul>
+        </form>
+    </div>
+
+    <hr style="width: 70%;">
+    <!-- 表格
+        show-overflow-tooltip：为真时，多余的内容会在鼠标悬停时显示
+        ref：指定表格引用名，可以在Vue方法中获取表格实例
+        tooltip-effect：单元格内容溢出时，鼠标悬停显示dark风格
+        @selection-change：多选框发生变化时触发该方法
+    -->
+    <div class="movie-section movie-table-wrapper">
+        <el-table
+                ref="multipleTable"
+                :data="pagination.list"
+                tooltip-effect="dark"
+                style="width: 100%"
+                @selection-change="handleSelectionChange">
+            <!-- 多选框 -->
+            <el-table-column
+                    type="selection"
+                    width="55">
+            </el-table-column>
+
+            <el-table-column label="封面" width="120">
+                <template slot-scope="{ row }">
+                    <img :src="row.posterPath" alt="封面" width="55" height="70"/>
+                </template>
+            </el-table-column>
+
+            <el-table-column
+                    prop="title"
+                    label="影视名称"
+                    width="150"
+                    show-overflow-tooltip>
+            </el-table-column>
+
+            <el-table-column
+                    prop="director"
+                    label="导演"
+                    width="150"
+                    show-overflow-tooltip>
+            </el-table-column>
+
+            <el-table-column label="影视类型" width="150" show-overflow-tooltip>
+                <template slot-scope="scope">
+                    <!-- 使用 scope.row.genres 来访问每行数据中的 genres 数组 -->
+                    {{ Array.isArray(scope.row.genres) ? scope.row.genres.join(' ') : '无类型信息' }}
+                </template>
+            </el-table-column>
+
+
+            <el-table-column
+                    prop="releaseDate"
+                    label="上映时间"
+                    width="120"></el-table-column>
+
+            <el-table-column label="操作" width="150">
+                <template slot-scope="{ row }">
+                    <div class="svg-group">
+                        <a :href="'/movie_add.html?id=' + row.id" title="修改">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M80 0v-160h800V0H80Zm80-240v-170l448-447q11-11 25.5-17t30.5-6q16 0 31 6t27 18l55 56q12 11 17.5 26t5.5 31q0 15-5.5 29.5T777-687L330-240H160Zm504-448 56-56-56-56-56 56 56 56Z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:void(0)" @click="deleteById(row.id)" title="删除">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm80-160h80v-360h-80v360Zm160 0h80v-360h-80v360Z"/>
+                            </svg>
+                        </a>
+                        <a href="javascript:void(0)" @click="toBanner(row.id)" title="置轮播">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960"
+                                 width="24px"
+                                 fill="#e3e3e3">
+                                <path d="M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-440H200v440Z"/>
+                            </svg>
+                        </a>
+                    </div>
+                </template>
+            </el-table-column>
+        </el-table>
+
+
+        <div style="margin-top: 10px">
+            <a href="javascript:void(0)" class="auto-button" @click="deleteBatch()"> 批量删除</a>
+            <span class="auto-label">总记录数：{{pagination.total}}</span>
+        </div>
+        <!-- 分页组件:
+            @size-change：每页条数改变时触发
+            @current-change：当前页发生变化时调用的函数
+            current-page：设置默认页
+            page-size：每页条数
+         -->
+        <div class="block" style="margin:10px auto;">
+            <el-pagination
+                    background
+                    @current-change="handleCurrentChange"
+                    :current-page="pagination.pageNum"
+                    :page-size="5"
+                    :total="pagination.total"
+                    layout="prev, pager, next">
+            </el-pagination>
+        </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#movie-list-container',
+        data: {
+            // 复选框选中的id的数组
+            selectedIds: [],
+            // 影视类型
+            keyword: "",
+            genre: "",
+            genres: [
+                "动作", "剧情", "喜剧", "爱情", "科幻", "悬疑", "恐怖",
+                "犯罪", "战争", "历史", "动画", "音乐", "体育", "奇幻", "冒险"
+            ],
+            // 分页对象
+            pagination: {
+                pageNum: 1, //默认页
+                pageSize: 5, //每页显示条目
+                total: 20,
+                list: []
+            }
+        },
+        methods: {
+            findByPage() {
+                axios.get("/movie/list",{
+                    params: {
+                        pageNum: this.pagination.pageNum,
+                        pageSize: this.pagination.pageSize,
+                        genre: this.genre,
+                        keyword: this.keyword
+                    }
+                }).then(resp => {
+                    if (resp.data.code = 1){
+                        this.pagination.total=resp.data.data.total;
+                        this.pagination.list=resp.data.data.list;
+                    }else{
+                        this.$message.error("resp.data.msg");
+                    }
+                })
+            },
+
+            handleSelectionChange(selection) {
+                // 把选中的行的id提取出来，存入 selectedIds 中
+                this.selectedIds = selection.map(item => item.id);
+            },
+
+            handleCurrentChange(pageNum) {
+                // 当前页发生变化时，需要同步当前页的数值，并进行分页查询当前页的内容
+                this.pagination.pageNum = pageNum;
+                console.log(`当前页: ${pageNum}`);
+
+                // 从新发起分页请求
+                this.findByPage();
+            },
+
+            // 删除单个movie
+            deleteById(id) {
+                this.$confirm('此操作将删除该影视, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 用户点击了确定
+                    axios.delete("/movie/deleteById?id=" + id).then(resp => {
+                        if (resp.data.code == 1) {
+                            // 提示成功
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            })
+                            // 进行分页查询
+                            const totalPage = Math.ceil((this.pagination.total - 1) / this.pagination.pageSize) // 计算总页数
+                            this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
+                            this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
+                            this.findByPage();
+                        } else {
+                            this.$message.error(resp.data.msg);
+                        }
+                    });
+                }).catch(() => {
+                    // 用户点击取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    })
+                })
+            },
+
+            //批量删除
+            deleteBatch() {
+                if (this.selectedIds.length > 0) {
+                    this.$confirm('此操作将永久删除选中的内容，是否继续？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        // 用户点击确定
+                        axios.delete("/movie/deleteByIds?ids=" + this.selectedIds).then(resp => {
+                            if (resp.data.code == 1) {
+                                // 提示成功
+                                this.$message({
+                                    type: 'success',
+                                    message: '批量删除成功!'
+                                })
+                                // 进行分页查询
+                                const totalPage = Math.ceil((this.pagination.total - this.selectedIds.length) / this.pagination.pageSize) // 计算总页数
+                                this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
+                                this.pagination.pageNum = this.pagination.pageNum < 1 ? 1 : this.pagination.pageNum;
+                                this.findByPage();
+                            } else {
+                                this.$message.error(resp.data.msg);
+                            }
+                        })
+                    }).catch(() => {
+                        // 用户点击取消
+                        this.$message({
+                            type: 'info',
+                            message: '已取消删除'
+                        });
+                    })
+                } else {
+                    this.$message({
+                        type: 'warning',
+                        message: '请先选择要删除的内容'
+                    })
+                }
+            },
+
+
+            toBanner(movieId) {
+                this.$confirm('确定要置为轮播吗？', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // 用户点击确定
+                    axios.post("/movie/saveBanner?movieId=" + movieId).then(resp => {
+                        if (resp.data.code == 1) {
+                            this.$message({
+                                type: 'success',
+                                message: '添加成功'
+                            });
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: '该影片已经在横幅列表中，请勿重复添加'
+                            });
+                        }
+                    });
+                }).catch(() => {
+                    // 用户点击取消
+                    this.$message({
+                        type: 'info',
+                        message: '已取消添加'
+                    });
+                });
+            }
+
+        },
+        created:function (){
+            this.findByPage();
+        }
+    })
+</script>
+</body>
+<script src="/js/verify.js"></script>
+</html>

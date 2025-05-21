@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="css/commonStyle.css">
+    <link rel="stylesheet" type="text/css" href="css/singleStyle.css">
+
+    <script src="js/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/dplayer@1.25.0/dist/DPlayer.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dplayer@1.25.0/dist/DPlayer.min.css">
+
+</head>
+<body>
+<div id="portal-single-page">
+    <!-- 播放器容器 -->
+    <div id="dplayer"></div>
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#portal-single-page',
+        data: {
+            videoUrl: null,  // 获取到的视频地址
+            dp: null // DPlayer实例
+        },
+        methods: {
+            // 初始化播放器方法，接收视频链接参数
+            initPlayer(videoUrl) {
+                this.dp = new DPlayer({
+                    container: document.getElementById('dplayer'),
+                    autoplay: true, // 自动播放
+                    video: {
+                        url: videoUrl,
+                        type: 'auto'  // 自动识别视频类型
+                    }
+                });
+            },
+            // 异步方法：检查url是否有效。若url不为空，但是无效，响应值为404
+            async checkVideoUrl(url) {
+                try {
+                    // 发送head请求
+                    const response = await fetch(url, { method: 'HEAD' });
+                    // 如果响应状态码为 200-299，返回 true
+                    return response.ok;
+                } catch (e) {
+                    return false;
+                }
+            }
+        },
+        created() {
+            // 页面加载时获取传过来的url
+            const urlParams = new URLSearchParams(window.location.search);
+            this.videoUrl = urlParams.get('url');
+        },
+        async mounted() {
+            // Vue 挂载完成后执行
+            let finalUrl = '';
+
+            // 如果 URL 参数存在且不为空字符串
+            if (this.videoUrl && this.videoUrl.trim() !== '') {
+
+                // 检查链接有效性
+                const isValid = await this.checkVideoUrl(this.videoUrl);
+                if (isValid) {
+                    finalUrl = this.videoUrl;
+                } else {
+                    console.log("视频链接无效");
+                    this.$message.error("视频链接无效");
+                }
+            } else {
+                console.log("视频地址为空");
+                this.$message.error("视频地址为空");
+            }
+
+            // 无论是否有效都初始化播放器
+            this.initPlayer(finalUrl);
+        }
+    });
+</script>
+<script type="text/javascript" src="js/darkModeForIframe.js" defer></script>
+</body>
+</html>

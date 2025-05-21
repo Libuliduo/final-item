@@ -1,0 +1,24 @@
+#portal-detail-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 10px;
+    max-height: 100vh;
+}
+
+.movie-detail {
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    width: 70%;
+    color: var(--text-color);
+}
+
+.overview {
+    width: 100%;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

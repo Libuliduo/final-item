@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="top.yeyuchun.mapper.MovieMapper">
+    <!-- =============== 定义类型 =================-->
+    <!-- 将数据库字段映射（驼峰映射）到实体类Movie字段 -->
+    <resultMap id="movieResultMap" type="top.yeyuchun.entity.Movie">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="originalTitle" column="original_title"/>
+        <result property="country" column="country"/>
+        <result property="releaseDate" column="release_date"/>
+        <result property="overview" column="overview"/>
+        <result property="director" column="director"/>
+        <result property="actors" column="actors"/>
+        <result property="backdropPath" column="backdrop_path"/>
+        <result property="posterPath" column="poster_path"/>
+        <result property="url" column="url"/>
+        <result property="popularity" column="popularity"/>
+
+        <!-- 处理多对多：实体类中 genres 是 List<String>，每部电影可以对应多个类型 -->
+        <!-- 数据库一行只能查询出一个genre，下面将每条记录的genre字段收集起来，存放到genres集合里面-->
+        <collection property="genres" ofType="string">
+            <result column="genre"/>
+        </collection>
+    </resultMap>
+
+    <!-- =============== 前端查询：查询所有、根据地区查询=================-->
+    <!-- 定义SQL查询方法findAll，返回结果用上面的movieResultMap -->
+    <select id="findAll" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+    </select>
+
+    <!-- 查询地区为中国的影视 -->
+    <select id="findChinese" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE movie.country IN ('CN', 'HK', 'TW')
+    </select>
+
+    <!-- 查询地区为欧美的影视 -->
+    <select id="findEnglish" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE movie.country IN ('US', 'GB', 'FR', 'DE', 'IT', 'IE')
+    </select>
+
+    <!-- 查询地区为日韩的影视 -->
+    <select id="findJPAndKR" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE movie.country IN ('JP', 'KR')
+    </select>
+
+    <!-- 查询其他地区的影视 -->
+    <select id="findOther" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE movie.country NOT IN ('CN', 'HK', 'TW', 'US', 'GB', 'FR', 'DE', 'IT', 'IE', 'JP', 'KR')
+    </select>
+
+    <!-- =============== 查询单个 =================-->
+    <select id="findById" resultMap="movieResultMap">
+        SELECT movie.*,
+               genre.genre
+        FROM tb_movie AS movie
+                 LEFT JOIN
+             tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+                 LEFT JOIN
+             tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE movie.id = #{id}
+    </select>
+
+<!-- 插入单条movie
+    在 MyBatis 的<insert>标签中，useGeneratedKeys="true"和keyProperty="id"这两个属性配合使用
+    1. 行插入操作之后，要获取数据库自动生成的主键值
+    2. 把获取到的主键值设置到传入参数对象的哪个属性上
+ -->
+    <insert id="addMovie" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tb_movie (title, original_title, country, release_date, overview,
+                              director, actors, backdrop_path, poster_path, url, popularity)
+        VALUES (#{title}, #{originalTitle}, #{country}, #{releaseDate}, #{overview},
+                #{director}, #{actors}, #{backdropPath}, #{posterPath}, #{url}, #{popularity})
+    </insert>
+
+    <!-- 根据传入的类型名称列表查 genre.id -->
+    <select id="findGenreIdsByNames" resultType="int">
+        SELECT id FROM tb_genre WHERE genre IN
+        <foreach collection="genres" item="genre" open="(" separator="," close=")">
+            #{genre}
+        </foreach>
+    </select>
+
+    <!-- 插入 tb_movie_genre 中间表 -->
+    <insert id="addMovieGenres">
+        INSERT INTO tb_movie_genre (movie_id, genre_id)
+        VALUES
+        <foreach collection="genreIds" item="genreId" separator=",">
+            (#{movieId}, #{genreId})
+        </foreach>
+    </insert>
+
+    <!-- =============== 更新单条movie =================-->
+    <!-- 1. 更新 tb_movie 主表 -->
+    <update id="updateById">
+        UPDATE tb_movie
+        SET title          = #{title},
+            original_title = #{originalTitle},
+            country        = #{country},
+            release_date   = #{releaseDate},
+            overview       = #{overview},
+            director       = #{director},
+            actors         = #{actors},
+            backdrop_path  = #{backdropPath},
+            poster_path    = #{posterPath},
+            url            = #{url},
+            popularity     = #{popularity}
+        WHERE id = #{id};
+    </update>
+
+    <!-- 2. 删除旧的电影-类型关系 -->
+    <delete id="deleteMovieGenres">
+        DELETE
+        FROM tb_movie_genre
+        WHERE movie_id = #{movieId}
+    </delete>
+
+    <!-- 3. 查询 genre 名称对应的id：在上面已经实现 -->
+
+    <!-- 4. 插入新的电影-类型关系 -->
+    <insert id="insertMovieGenres">
+        INSERT INTO tb_movie_genre (movie_id, genre_id)
+        VALUES
+        <foreach collection="genreIds" item="genreId" separator=",">
+            (#{movieId}, #{genreId})
+        </foreach>
+    </insert>
+
+
+    <!-- =============== 删除单个movie =================-->
+    <!-- 1. 删除中间表 上面已经实现：deleteMovieGenres -->
+    <!-- 2. 删除主表tb_movie中的记录 -->
+    <delete id="deleteMovieById">
+        DELETE
+        FROM tb_movie
+        WHERE id = #{id}
+    </delete>
+
+    <!-- =============== 批量删除movies =================-->
+    <!-- 1. 批量删除中间表中的记录 -->
+    <delete id="deleteMovieGenresBatch">
+        DELETE FROM tb_movie_genre WHERE movie_id IN
+        <foreach collection="movieIds" item="movieId" open="(" separator="," close=")">
+            #{movieId}
+        </foreach>
+    </delete>
+
+    <!-- 2. 批量删除主表中的记录 -->
+    <!-- 动态sql,实现 delete from tb_movie where id in (1,3,5) -->
+    <!-- 括号里面的id与我们的选中有关,所以需要动态sql -->
+    <!--
+        动态sql:foreach：循环
+               collection：用来指定遍历的容器 若容器为list 可以写list 或者 collection 或 参数名；若容器为数组则写array或参数名
+               open：指定动态sql开始的内容
+               close：指定动态sql结束的内容
+               item：指定遍历时获取的每个元素，起临时变量名
+               separator：多个元素之间的分隔符
+    -->
+    <delete id="deleteMoviesBatch">
+        DELETE FROM tb_movie WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <delete id="deleteMovieFavorBatch">
+        DELETE FROM tb_user_movie WHERE movie_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- =============== 类型和关键词限制条件查询影视id =================-->
+    <select id="findMovieIdsByCondition" resultType="int">
+        SELECT m.id
+        FROM tb_movie m
+        LEFT JOIN tb_movie_genre mg ON m.id = mg.movie_id
+        LEFT JOIN tb_genre g ON mg.genre_id = g.id
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (
+                m.title LIKE CONCAT('%', #{keyword}, '%')
+                OR m.original_title LIKE CONCAT('%', #{keyword}, '%')
+                OR m.director LIKE CONCAT('%', #{keyword}, '%')
+                OR m.actors LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="genre != null and genre != ''">
+                AND g.genre = #{genre}
+            </if>
+        </where>
+        GROUP BY m.id
+    </select>
+
+    <!-- =============== 查询多个 =================-->
+    <select id="findMoviesByIds" resultMap="movieResultMap">
+        SELECT
+        movie.*,
+        genre.genre
+        FROM
+        tb_movie AS movie
+        LEFT JOIN
+        tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
+        LEFT JOIN
+        tb_genre AS genre ON movieGenre.genre_id = genre.id
+        WHERE
+        movie.id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        movie.id
+    </select>
+
+
+
+</mapper>

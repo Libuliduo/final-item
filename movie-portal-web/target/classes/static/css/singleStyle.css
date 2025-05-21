@@ -1,0 +1,14 @@
+#portal-single-page {
+    background-color: var(--base-color);
+    color: var(--text-color);
+    width: 100%;
+}
+
+/*播放器*/
+#dplayer {
+    max-width: 1200px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    background-color: var(--base-color);
+}
+

@@ -1,0 +1,219 @@
+/*
+    顶部栏
+*/
+.portal-top {
+    width: 100%;
+    height: 70px;
+    background-color: var(--base-color);
+    z-index: 1000; /* 保证在最上层 */
+
+    top: 0;
+    position: fixed;
+
+    display: flex;
+    align-items: center;
+}
+.header-bar {
+    width: 1000px;
+    margin: 0 auto;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+
+.header-title {
+    font-size: 25px;
+    color: var(--text-color);
+}
+
+/* 切换明暗按钮样式 */
+#theme-switch {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #DCDFE6;
+    border-radius: 50%;
+    background-color: var(--base-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+#theme-switch svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--text-color);
+}
+/*默认状态下，隐藏第第二个图标：太阳，显示月亮图标 */
+#theme-switch svg:last-child {
+    display: none;
+}
+/* 暗色模式时，隐藏第一个图标，显示太阳图标 */
+.darkMode #theme-switch svg:first-child {
+    display: none;
+}
+/* 暗色模式时，显示第二个图标：太阳 */
+.darkMode #theme-switch svg:last-child {
+    display: block;
+}
+
+
+/*
+    顶部栏：搜索
+ */
+/* 搜索:图标和输入框的组合 */
+/* 搜索建议项 */
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    width: 100%;
+    height: 100px;
+    border-bottom: 1px solid var(--text-color);
+}
+/* 建议项的封面图 */
+.target-poster {
+    margin-right: 5px;
+    width: 70px;
+    height: 100%;
+}
+.target-poster img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    padding: 0;
+}
+/* 建议项的信息：电影名 电影导演 */
+.target-info {
+    display: flex;
+    flex-direction: column;
+}
+.target-info .target-title{
+    font-weight: bold;
+}
+.el-scrollbar__wrap, .popper__arrow::after {
+    background-color: var(--base-color);
+}
+
+.el-autocomplete-suggestion li {
+    color: var(--text-color);
+}
+
+.el-autocomplete-suggestion li:hover {
+    background-color: var(--background-hover-color);
+    color: var(--text-color);
+}
+
+.header-bar-search {
+    display: flex;
+    align-items: center;
+    border: 1px solid #DCDFE6;
+    border-radius: 50px;
+    padding: 0 10px;
+    background: transparent;
+}
+
+/* 搜索图标样式 */
+.header-bar-search i {
+    color: var(--text-color);
+    font-size: 18px;
+}
+
+/* 搜索输入框样式 */
+.header-bar-search input {
+    width: 60px;
+    height: 40px;
+    font-size: 14px;
+    color: var(--text-color);
+    background: transparent;
+    border: none;
+    outline: none;
+    transition: width 0.4s ease, background 0.3s;
+}
+
+/* 输入框聚焦效果 */
+.header-bar-search input:focus {
+    width: 200px;
+}
+/* 当输入框为空且未聚焦时才收缩 */
+.header-bar-search input:not(:focus):not(:placeholder-shown) {
+    width: 30px;
+}
+
+
+/*  横向列表 */
+.header-bar-ul {
+    padding-left: 30px;
+    /* 去掉列表前面的小圆点 */
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 20px;
+}
+.header-bar-ul li a {
+    /* 让::after能相对于a正确定位 */
+    position: relative;
+    text-decoration: none;
+    color: var(--text-color);
+    padding-bottom: 4px; /* 给底部留空间 */
+    transition: color 0.3s ease;
+}
+
+/* 悬停时更换颜色 + 显示下划线条 */
+.header-bar-ul li a:hover {
+    color: var(--button-color);
+    cursor: pointer;
+}
+
+/* 创建一个伪元素放在文字底部，初始宽度为0，悬停时展开到100% */
+.header-bar-ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--button-color);
+    transition: width 0.3s ease;
+}
+/* 悬停时小条展开 */
+.header-bar-ul li a:hover::after {
+    width: 100%;
+}
+
+/* 当前选中的菜单，显示下划线 */
+.header-bar-ul li a.active::after {
+    width: 100%;
+}
+/*
+    顶部用户按钮
+*/
+.header-bar-user-button {
+    margin-right: 10px;
+}
+
+.header-bar-user-button .el-button {
+    background-color: transparent;
+}
+
+.header-bar-user-button .el-button i {
+    color: var(--text-color);
+}
+/* 点击用户按钮的下拉框 */
+.el-dropdown-menu {
+    background-color: var(--base-color);
+    color: var(--text-color);
+}
+
+.el-dropdown-menu__item {
+    color: var(--text-color);
+}

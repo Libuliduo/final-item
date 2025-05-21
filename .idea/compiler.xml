@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="movie-manager-web" />
+        <module name="movie-domain" />
+        <module name="movie-service" />
+        <module name="movie-mapper" />
+        <module name="movie-portal-web" />
+        <module name="movie-common" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="11" />
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="movie-common" options="-parameters" />
+      <module name="movie-domain" options="-parameters" />
+      <module name="movie-manager-web" options="-parameters" />
+      <module name="movie-mapper" options="-parameters" />
+      <module name="movie-portal-web" options="-parameters" />
+      <module name="movie-service" options="-parameters" />
+    </option>
+  </component>
+</project>

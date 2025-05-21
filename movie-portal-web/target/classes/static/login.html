@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="icon" href="images/videoPlay.png" type="image/x-icon">
+
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" href="css/commonStyle.css">
+    <link rel="stylesheet" href="css/loginStyle.css">
+
+    <script src="/js/axios-0.18.0.js"></script>
+    <script src="js/vue.js"></script>
+    <script src="element-ui/lib/index.js"></script>
+</head>
+<body>
+<div id="portal-login-container">
+    <!-- 1. 注册框 -->
+    <div class="login-register-item" v-if="isRegister && !isResetPassword">
+        <svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100px" height="100px">
+            <path d="M 29.625 2 C 22.394531 2 18.871094 5.601563 17.734375 9.75 C 16.769531 8.769531 15.304688 8 13.167969 8 C 9.601563 8 6 10.085938 6 14.75 C 6 16.617188 7.105469 18.375 8.632813 19.308594 C 7.363281 20.242188 6 21.710938 6 24 C 6 25.527344 6.460938 26.714844 7.109375 27.621094 C 7.902344 27.226563 8.796875 27 9.75 27 C 10.582031 27 11.417969 27.136719 12.21875 27.402344 C 12.953125 27.136719 13.726563 27 14.5 27 C 15.359375 27 16.210938 27.160156 17 27.472656 C 17.789063 27.160156 18.640625 27 19.5 27 C 20.359375 27 21.210938 27.160156 22 27.472656 C 22.789063 27.160156 23.640625 27 24.5 27 C 25.359375 27 26.210938 27.160156 27 27.472656 C 27.789063 27.160156 28.640625 27 29.5 27 C 30.359375 27 31.210938 27.160156 32 27.472656 C 32.789063 27.160156 33.640625 27 34.5 27 C 35.273438 27 36.046875 27.136719 36.78125 27.402344 C 37.578125 27.136719 38.417969 27 39.25 27 C 40.5625 27 41.769531 27.429688 42.738281 28.140625 C 42.816406 28.054688 42.910156 27.9375 43.019531 27.777344 C 43.996094 26.351563 44 24.882813 44 24.25 C 44 21.117188 42.742188 19.292969 41.308594 18.464844 C 41.921875 16.59375 42 14.109375 42 13 C 42 6.316406 37.144531 2 29.625 2 Z M 17.5 16 C 18.882813 16 20 17.117188 20 18.5 C 20 19.882813 18.882813 21 17.5 21 C 16.117188 21 15 19.882813 15 18.5 C 15 17.117188 16.117188 16 17.5 16 Z M 33.5 16 C 34.882813 16 36 17.117188 36 18.5 C 36 19.882813 34.882813 21 33.5 21 C 32.117188 21 31 19.882813 31 18.5 C 31 17.117188 32.117188 16 33.5 16 Z M 18 17 C 17.449219 17 17 17.449219 17 18 C 17 18.550781 17.449219 19 18 19 C 18.550781 19 19 18.550781 19 18 C 19 17.449219 18.550781 17 18 17 Z M 34 17 C 33.449219 17 33 17.449219 33 18 C 33 18.550781 33.449219 19 34 19 C 34.550781 19 35 18.550781 35 18 C 35 17.449219 34.550781 17 34 17 Z M 23 21 L 28 21 C 28.550781 21 29 21.449219 29 22 C 29 23.65625 27.65625 25 26 25 L 25 25 C 23.34375 25 22 23.65625 22 22 C 22 21.449219 22.449219 21 23 21 Z M 9.75 29 C 7.683594 29 6 30.570313 6 32.5 C 6 32.589844 6.011719 32.679688 6.035156 32.765625 L 10.035156 47.265625 C 10.15625 47.699219 10.550781 48 11 48 L 38 48 C 38.449219 48 38.84375 47.699219 38.964844 47.265625 L 42.964844 32.765625 C 42.988281 32.679688 43 32.589844 43 32.5 C 43 30.570313 41.316406 29 39.25 29 C 38.332031 29 37.476563 29.222656 36.75 29.566406 C 36.082031 29.214844 35.316406 29 34.5 29 C 33.582031 29 32.71875 29.257813 32 29.695313 C 31.28125 29.257813 30.417969 29 29.5 29 C 28.582031 29 27.71875 29.257813 27 29.695313 C 26.28125 29.257813 25.417969 29 24.5 29 C 23.582031 29 22.71875 29.257813 22 29.695313 C 21.28125 29.257813 20.417969 29 19.5 29 C 18.582031 29 17.71875 29.257813 17 29.695313 C 16.28125 29.257813 15.417969 29 14.5 29 C 13.683594 29 12.917969 29.214844 12.25 29.566406 C 11.523438 29.222656 10.667969 29 9.75 29 Z M 9.75 31 C 11.066406 31 11.890625 31.5625 12.15625 31.886719 L 14.695313 46 L 11.761719 46 L 8.007813 32.386719 C 8.078125 31.621094 8.847656 31 9.75 31 Z M 19.5 31 C 20.703125 31 21.742188 31.761719 22 32.625 C 21.992188 32.625 22.46875 46 22.46875 46 L 18.640625 46 L 17.152344 32.378906 C 17.492188 31.625 18.414063 31 19.5 31 Z M 29.5 31 C 30.59375 31 31.515625 31.628906 31.855469 32.390625 L 30.410156 46 L 26.53125 46 C 26.53125 46 27.007813 32.625 27 32.625 C 27.253906 31.761719 28.289063 31 29.5 31 Z M 39.25 31 C 40.152344 31 40.921875 31.621094 40.996094 32.386719 L 37.238281 46 L 34.304688 46 L 36.839844 31.886719 C 37.105469 31.5625 37.933594 31 39.25 31 Z"/>
+        </svg>
+        <div class="login-name">Popcorn影视</div>
+        <!-- 注册输入：邮箱、用户名、密码 -->
+        <el-form
+                :model="registerForm"
+                :rules="rules"
+                style="width: 100%"
+                ref="registerForm">
+            <el-form-item prop="email">
+                <el-input placeholder="请输入邮箱" v-model="registerForm.email"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="username">
+                <el-input placeholder="请输入用户名" v-model="registerForm.username"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="password">
+                <el-input type="password" placeholder="请输入密码" v-model="registerForm.password" show-password
+                          autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="code">
+                <el-input placeholder="请输入验证码" v-model="registerForm.code">
+                    <template #suffix>
+                        <el-button class="get-code-btn" @click="sendEmailCode('registerForm')" type="text"
+                                   :loading="codeSendStatus === 'sending'"
+                                   :disabled="codeSendStatus !== 'idle'">
+                            <span v-if="codeSendStatus === 'idle'">获取验证码</span>
+                            <span v-else-if="codeSendStatus === 'countdown'">{{ countdown }}s后重试</span>
+                        </el-button>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <el-form-item>
+                <el-button type="primary" @click="register">注册</el-button>
+            </el-form-item>
+        </el-form>
+
+
+        <div><a href="javascript:void(0)" @click="switchToLogin">已有账号?立即登录</a></div>
+    </div>
+    <!-- 2. 登录框 -->
+    <div class="login-register-item" v-if="!isRegister && !isResetPassword">
+        <svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100px" height="100px">
+            <path d="M 29.625 2 C 22.394531 2 18.871094 5.601563 17.734375 9.75 C 16.769531 8.769531 15.304688 8 13.167969 8 C 9.601563 8 6 10.085938 6 14.75 C 6 16.617188 7.105469 18.375 8.632813 19.308594 C 7.363281 20.242188 6 21.710938 6 24 C 6 25.527344 6.460938 26.714844 7.109375 27.621094 C 7.902344 27.226563 8.796875 27 9.75 27 C 10.582031 27 11.417969 27.136719 12.21875 27.402344 C 12.953125 27.136719 13.726563 27 14.5 27 C 15.359375 27 16.210938 27.160156 17 27.472656 C 17.789063 27.160156 18.640625 27 19.5 27 C 20.359375 27 21.210938 27.160156 22 27.472656 C 22.789063 27.160156 23.640625 27 24.5 27 C 25.359375 27 26.210938 27.160156 27 27.472656 C 27.789063 27.160156 28.640625 27 29.5 27 C 30.359375 27 31.210938 27.160156 32 27.472656 C 32.789063 27.160156 33.640625 27 34.5 27 C 35.273438 27 36.046875 27.136719 36.78125 27.402344 C 37.578125 27.136719 38.417969 27 39.25 27 C 40.5625 27 41.769531 27.429688 42.738281 28.140625 C 42.816406 28.054688 42.910156 27.9375 43.019531 27.777344 C 43.996094 26.351563 44 24.882813 44 24.25 C 44 21.117188 42.742188 19.292969 41.308594 18.464844 C 41.921875 16.59375 42 14.109375 42 13 C 42 6.316406 37.144531 2 29.625 2 Z M 17.5 16 C 18.882813 16 20 17.117188 20 18.5 C 20 19.882813 18.882813 21 17.5 21 C 16.117188 21 15 19.882813 15 18.5 C 15 17.117188 16.117188 16 17.5 16 Z M 33.5 16 C 34.882813 16 36 17.117188 36 18.5 C 36 19.882813 34.882813 21 33.5 21 C 32.117188 21 31 19.882813 31 18.5 C 31 17.117188 32.117188 16 33.5 16 Z M 18 17 C 17.449219 17 17 17.449219 17 18 C 17 18.550781 17.449219 19 18 19 C 18.550781 19 19 18.550781 19 18 C 19 17.449219 18.550781 17 18 17 Z M 34 17 C 33.449219 17 33 17.449219 33 18 C 33 18.550781 33.449219 19 34 19 C 34.550781 19 35 18.550781 35 18 C 35 17.449219 34.550781 17 34 17 Z M 23 21 L 28 21 C 28.550781 21 29 21.449219 29 22 C 29 23.65625 27.65625 25 26 25 L 25 25 C 23.34375 25 22 23.65625 22 22 C 22 21.449219 22.449219 21 23 21 Z M 9.75 29 C 7.683594 29 6 30.570313 6 32.5 C 6 32.589844 6.011719 32.679688 6.035156 32.765625 L 10.035156 47.265625 C 10.15625 47.699219 10.550781 48 11 48 L 38 48 C 38.449219 48 38.84375 47.699219 38.964844 47.265625 L 42.964844 32.765625 C 42.988281 32.679688 43 32.589844 43 32.5 C 43 30.570313 41.316406 29 39.25 29 C 38.332031 29 37.476563 29.222656 36.75 29.566406 C 36.082031 29.214844 35.316406 29 34.5 29 C 33.582031 29 32.71875 29.257813 32 29.695313 C 31.28125 29.257813 30.417969 29 29.5 29 C 28.582031 29 27.71875 29.257813 27 29.695313 C 26.28125 29.257813 25.417969 29 24.5 29 C 23.582031 29 22.71875 29.257813 22 29.695313 C 21.28125 29.257813 20.417969 29 19.5 29 C 18.582031 29 17.71875 29.257813 17 29.695313 C 16.28125 29.257813 15.417969 29 14.5 29 C 13.683594 29 12.917969 29.214844 12.25 29.566406 C 11.523438 29.222656 10.667969 29 9.75 29 Z M 9.75 31 C 11.066406 31 11.890625 31.5625 12.15625 31.886719 L 14.695313 46 L 11.761719 46 L 8.007813 32.386719 C 8.078125 31.621094 8.847656 31 9.75 31 Z M 19.5 31 C 20.703125 31 21.742188 31.761719 22 32.625 C 21.992188 32.625 22.46875 46 22.46875 46 L 18.640625 46 L 17.152344 32.378906 C 17.492188 31.625 18.414063 31 19.5 31 Z M 29.5 31 C 30.59375 31 31.515625 31.628906 31.855469 32.390625 L 30.410156 46 L 26.53125 46 C 26.53125 46 27.007813 32.625 27 32.625 C 27.253906 31.761719 28.289063 31 29.5 31 Z M 39.25 31 C 40.152344 31 40.921875 31.621094 40.996094 32.386719 L 37.238281 46 L 34.304688 46 L 36.839844 31.886719 C 37.105469 31.5625 37.933594 31 39.25 31 Z"/>
+        </svg>
+        <div class="login-name">Popcorn影视</div>
+        <!-- 登录输入：邮箱、密码  -->
+        <el-form
+                :model="loginForm"
+                :rules="rules"
+                style="width: 100%"
+                ref="loginForm">
+            <el-form-item prop="email">
+                <el-input placeholder="请输入邮箱" v-model="loginForm.email"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="password">
+                <el-input placeholder="请输入密码" type="password" v-model="loginForm.password" show-password
+                          autocomplete="off"></el-input>
+            </el-form-item>
+
+            <div class="reset-wrapper"><a href="javascript:void(0)" @click="switchToReset">忘记密码？</a></div>
+
+            <el-form-item>
+                <el-button type="primary" @click="login('loginForm')">登录</el-button>
+            </el-form-item>
+        </el-form>
+
+        <div><a href="javascript:void(0)" @click="switchToRegister">没有账号?点击注册</a></div>
+    </div>
+    <!-- 3. 找回密码框 -->
+    <div class="login-register-item" v-if="isResetPassword">
+        <svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100px" height="100px">
+            <path d="M 29.625 2 C 22.394531 2 18.871094 5.601563 17.734375 9.75 C 16.769531 8.769531 15.304688 8 13.167969 8 C 9.601563 8 6 10.085938 6 14.75 C 6 16.617188 7.105469 18.375 8.632813 19.308594 C 7.363281 20.242188 6 21.710938 6 24 C 6 25.527344 6.460938 26.714844 7.109375 27.621094 C 7.902344 27.226563 8.796875 27 9.75 27 C 10.582031 27 11.417969 27.136719 12.21875 27.402344 C 12.953125 27.136719 13.726563 27 14.5 27 C 15.359375 27 16.210938 27.160156 17 27.472656 C 17.789063 27.160156 18.640625 27 19.5 27 C 20.359375 27 21.210938 27.160156 22 27.472656 C 22.789063 27.160156 23.640625 27 24.5 27 C 25.359375 27 26.210938 27.160156 27 27.472656 C 27.789063 27.160156 28.640625 27 29.5 27 C 30.359375 27 31.210938 27.160156 32 27.472656 C 32.789063 27.160156 33.640625 27 34.5 27 C 35.273438 27 36.046875 27.136719 36.78125 27.402344 C 37.578125 27.136719 38.417969 27 39.25 27 C 40.5625 27 41.769531 27.429688 42.738281 28.140625 C 42.816406 28.054688 42.910156 27.9375 43.019531 27.777344 C 43.996094 26.351563 44 24.882813 44 24.25 C 44 21.117188 42.742188 19.292969 41.308594 18.464844 C 41.921875 16.59375 42 14.109375 42 13 C 42 6.316406 37.144531 2 29.625 2 Z M 17.5 16 C 18.882813 16 20 17.117188 20 18.5 C 20 19.882813 18.882813 21 17.5 21 C 16.117188 21 15 19.882813 15 18.5 C 15 17.117188 16.117188 16 17.5 16 Z M 33.5 16 C 34.882813 16 36 17.117188 36 18.5 C 36 19.882813 34.882813 21 33.5 21 C 32.117188 21 31 19.882813 31 18.5 C 31 17.117188 32.117188 16 33.5 16 Z M 18 17 C 17.449219 17 17 17.449219 17 18 C 17 18.550781 17.449219 19 18 19 C 18.550781 19 19 18.550781 19 18 C 19 17.449219 18.550781 17 18 17 Z M 34 17 C 33.449219 17 33 17.449219 33 18 C 33 18.550781 33.449219 19 34 19 C 34.550781 19 35 18.550781 35 18 C 35 17.449219 34.550781 17 34 17 Z M 23 21 L 28 21 C 28.550781 21 29 21.449219 29 22 C 29 23.65625 27.65625 25 26 25 L 25 25 C 23.34375 25 22 23.65625 22 22 C 22 21.449219 22.449219 21 23 21 Z M 9.75 29 C 7.683594 29 6 30.570313 6 32.5 C 6 32.589844 6.011719 32.679688 6.035156 32.765625 L 10.035156 47.265625 C 10.15625 47.699219 10.550781 48 11 48 L 38 48 C 38.449219 48 38.84375 47.699219 38.964844 47.265625 L 42.964844 32.765625 C 42.988281 32.679688 43 32.589844 43 32.5 C 43 30.570313 41.316406 29 39.25 29 C 38.332031 29 37.476563 29.222656 36.75 29.566406 C 36.082031 29.214844 35.316406 29 34.5 29 C 33.582031 29 32.71875 29.257813 32 29.695313 C 31.28125 29.257813 30.417969 29 29.5 29 C 28.582031 29 27.71875 29.257813 27 29.695313 C 26.28125 29.257813 25.417969 29 24.5 29 C 23.582031 29 22.71875 29.257813 22 29.695313 C 21.28125 29.257813 20.417969 29 19.5 29 C 18.582031 29 17.71875 29.257813 17 29.695313 C 16.28125 29.257813 15.417969 29 14.5 29 C 13.683594 29 12.917969 29.214844 12.25 29.566406 C 11.523438 29.222656 10.667969 29 9.75 29 Z M 9.75 31 C 11.066406 31 11.890625 31.5625 12.15625 31.886719 L 14.695313 46 L 11.761719 46 L 8.007813 32.386719 C 8.078125 31.621094 8.847656 31 9.75 31 Z M 19.5 31 C 20.703125 31 21.742188 31.761719 22 32.625 C 21.992188 32.625 22.46875 46 22.46875 46 L 18.640625 46 L 17.152344 32.378906 C 17.492188 31.625 18.414063 31 19.5 31 Z M 29.5 31 C 30.59375 31 31.515625 31.628906 31.855469 32.390625 L 30.410156 46 L 26.53125 46 C 26.53125 46 27.007813 32.625 27 32.625 C 27.253906 31.761719 28.289063 31 29.5 31 Z M 39.25 31 C 40.152344 31 40.921875 31.621094 40.996094 32.386719 L 37.238281 46 L 34.304688 46 L 36.839844 31.886719 C 37.105469 31.5625 37.933594 31 39.25 31 Z"/>
+        </svg>
+        <div class="login-name">Popcorn影视</div>
+
+        <!-- 重置密码：需要邮箱、新密码、确认密码 -->
+        <el-form
+                :model="resetForm"
+                :rules="rules"
+                style="width: 100%"
+                ref="resetForm">
+            <el-form-item prop="email">
+                <el-input placeholder="请输入邮箱" v-model="resetForm.email"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="newPassword">
+                <el-input type="password" placeholder="请输入密码" v-model="resetForm.newPassword" show-password
+                          autocomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="checkPassword">
+                <el-input type="password" placeholder="请再次输入密码" v-model="resetForm.checkPassword" show-password
+                          form-itemcomplete="off"></el-input>
+            </el-form-item>
+
+            <el-form-item prop="code">
+                <el-input placeholder="请输入验证码" v-model="resetForm.code">
+                    <template #suffix>
+                        <el-button class="get-code-btn" @click="sendEmailCode('resetForm')" type="text"
+                                   :loading="codeSendStatus === 'sending'"
+                                   :disabled="codeSendStatus !== 'idle'">
+                            <span v-if="codeSendStatus === 'idle'">获取验证码</span>
+                            <span v-else-if="codeSendStatus === 'countdown'">{{ countdown }}s后重试</span>
+                        </el-button>
+                    </template>
+                </el-input>
+            </el-form-item>
+
+            <el-form-item>
+                    <el-button type="primary" @click="resetPassword">重置密码</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    const app = new Vue({
+        el: '#portal-login-container',
+        data: {
+            isRegister: false,  // 默认显示登录框
+            isResetPassword: false, // 是否点击忘记密码
+            codeSendStatus: 'idle', // 空闲状态idle 发送状态sending 计时状态：countdown
+            countdown: 60,
+            countdownTimer: null,
+            loginForm: {
+                email: '',
+                password: '',
+            },
+            registerForm: {
+                email: '',
+                username: '',
+                password: '',
+                code: '',
+            },
+            resetForm: {
+                email: '',
+                newPassword: '',
+                checkPassword: '',
+                code: ''
+            },
+
+            // 数据校验
+            rules: {
+                email: [
+                    {required: true, message: '请输入邮箱', trigger: 'blur'},
+                    {type: 'email', message: '邮箱格式不正确', trigger: ['blur', 'change']}
+                ],
+                password: [
+                    {required: true, message: '请输入密码', trigger: 'blur'},
+                    {min: 5, message: '密码不能少于5位', trigger: 'blur'}
+                ],
+                newPassword: [
+                    { required: true, message: '请输入新密码', trigger: 'blur' },
+                    { min: 5, message: '密码不能少于5位', trigger: 'blur' }
+                ],
+                checkPassword: [
+                    { required: true, message: '请确认新密码', trigger: 'blur' },
+                    { validator: (rule, value, callback) => {
+                            if (value !== app.resetForm.newPassword) {
+                                callback(new Error('两次密码输入不一致'));
+                            } else {
+                                callback();
+                            }
+                        }, trigger: 'blur'
+                    }
+                ]
+            }
+
+        },
+
+        methods: {
+            // 已有账号，点击登录，返回到登录
+            switchToLogin() {
+                this.isRegister = false;
+                this.isResetPassword = false;
+            },
+            // 忘记密码
+            switchToReset() {
+                this.isResetPassword = true;
+            },
+            // 没有账号，进行注册
+            switchToRegister() {
+                this.isRegister = true;
+                this.isResetPassword = false;
+            },
+
+            // 登录
+            login(formRef) {
+                this.$refs[formRef].validate((valid) => {
+                    if (valid) {
+                        axios.post("/user/login", {
+                            email: this.loginForm.email,
+                            password: this.loginForm.password
+                        }).then(resp => {
+                            if (0 == resp.data.code) {
+                                alert(resp.data.msg);
+                            } else {
+                                sessionStorage.setItem("Authorization", resp.data.data);
+                                location.href = "index.html";
+                            }
+                        }).catch(err => {
+                            console.log("登录失败", err);
+                            alert("登录失败，请重新输入账号密码");
+                        });
+                    } else {
+                        console.log('验证失败');
+                        return false;
+                    }
+                });
+            },
+
+            // 开始计时
+            startCountdown() {
+                this.codeSendStatus = 'countdown';
+                this.countdown = 60;
+                this.countdownTimer = setInterval(() => {
+                    this.countdown--;
+                    if (this.countdown <= 0) {
+                        clearInterval(this.countdownTimer);
+                        this.codeSendStatus = 'idle'; // 倒计时结束，恢复状态
+                    }
+                }, 1000);
+            },
+
+            sendEmailCode(formName) {
+                this.$refs[formName].validateField('email', (errorMessage) => {
+                    if (errorMessage) {
+                        console.log("校验失败——邮箱格式有误", errorMessage);
+                        return;
+                    }
+
+                    // 设置按钮状态为发送中
+                    this.codeSendStatus = 'sending';
+
+                    // 开始发送请求
+                    const targetForm = this[formName];
+                    axios.get("/email/sendEmail?email=" + targetForm.email)
+                        .then(resp => {
+                            if (resp.data.code === 1) {
+                                this.$message.success("验证码已送达");
+                                this.startCountdown();
+                            } else {
+                                this.$message.error(resp.data.msg || "发送失败");
+                                this.codeSendStatus = 'idle';
+                            }
+                        })
+                        .catch(err => {
+                            this.$message.error("网络错误，请稍后重试");
+                            this.codeSendStatus = 'idle';
+                        });
+                });
+            },
+
+
+            // 注册
+            register() {
+                this.$refs.registerForm.validate(valid => {
+                    if (!valid) {
+                        this.$message.warning("请检查输入内容");
+                        return;
+                    }
+
+                    // 表单校验通过后，发送注册请求
+                    axios.post("/user/register", {
+                        email: this.registerForm.email,
+                        username: this.registerForm.username,
+                        password: this.registerForm.password,
+                        code: this.registerForm.code
+                    }).then(resp => {
+                        if (resp.data.code === 1) {
+                            this.$message.success("注册成功，即将跳转到登录页面");
+                            this.switchToLogin();
+                        } else {
+                            this.$message.error(resp.data.msg || "注册失败");
+                        }
+                    }).catch(error => {
+                        console.error("注册失败", error);
+                        this.$message.error("注册失败，请稍后再试");
+                    });
+                });
+            },
+
+            // 重置密码
+            resetPassword() {
+                // 表单校验通过后，发送重置请求
+                axios.post("/user/resetUserPwd", {
+                    email: this.resetForm.email,
+                    newPassword: this.resetForm.newPassword,
+                    code: this.resetForm.code
+                }).then(resp => {
+                    if (resp.data.code === 1) {
+                        this.$message.success("重置成功，即将跳转到登录页面");
+                        this.switchToLogin();
+                    } else {
+                        this.$message.error(resp.data.msg || "重置失败");
+                    }
+                }).catch(error => {
+                    console.error("重置失败", error);
+                    this.$message.error("重置失败，请稍后再试");
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>
