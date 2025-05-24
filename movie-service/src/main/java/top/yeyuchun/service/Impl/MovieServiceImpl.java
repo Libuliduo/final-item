@@ -298,8 +298,7 @@ public class MovieServiceImpl implements MovieService {
             movie.setUrl(rawUrl);
 
         } catch (Exception e) {
-            System.out.println("发生异常：");
-            e.printStackTrace();
+            throw new BusinessException("获取影视信失败");
         }
 
         return movie;
@@ -413,31 +412,36 @@ public class MovieServiceImpl implements MovieService {
     public PageInfo findByPage(Integer pageNum, Integer pageSize, String genre, String keyword) {
         if (pageNum <= 0) pageNum = 1;
         if (pageSize <= 0) pageSize = 5;
+        if (pageSize > 100) pageSize = 100;
+
 
         // 去除空格
         keyword = (keyword == null ? null : keyword.trim());
+        try {
+            // PageHelper 启动分页（拦截第一个查询）
+            PageHelper.startPage(pageNum, pageSize);
+            List<Integer> ids = movieMapper.findMovieIdsByCondition(genre, keyword);
 
-        // PageHelper 启动分页（拦截第一个查询）
-        PageHelper.startPage(pageNum, pageSize);
-        List<Integer> ids = movieMapper.findMovieIdsByCondition(genre, keyword);
+            if (ids.isEmpty()) {
+                return new PageInfo<>(Collections.emptyList());
+            }
 
-        if (ids.isEmpty()) {
-            return new PageInfo<>(Collections.emptyList());
+            // 拿到分页信息（总记录数、页码等）
+            PageInfo<Integer> idPageInfo = new PageInfo<>(ids);
+
+            // 第二次查询：查电影详情
+            List<Movie> movies = movieMapper.findMoviesByIds(ids);
+
+            // 把分页信息复制到最终 PageInfo
+            PageInfo<Movie> result = new PageInfo<>(movies);
+            result.setTotal(idPageInfo.getTotal());
+            result.setPageNum(idPageInfo.getPageNum());
+            result.setPageSize(idPageInfo.getPageSize());
+            result.setPages(idPageInfo.getPages());
+            return result;
+        } catch (BusinessException e) {
+            throw new BusinessException(e.getMessage());
         }
-
-        // 拿到分页信息（总记录数、页码等）
-        PageInfo<Integer> idPageInfo = new PageInfo<>(ids);
-
-        // 第二次查询：查电影详情
-        List<Movie> movies = movieMapper.findMoviesByIds(ids);
-
-        // 把分页信息复制到最终 PageInfo
-        PageInfo<Movie> result = new PageInfo<>(movies);
-        result.setTotal(idPageInfo.getTotal());
-        result.setPageNum(idPageInfo.getPageNum());
-        result.setPageSize(idPageInfo.getPageSize());
-        result.setPages(idPageInfo.getPages());
-        return result;
     }
 
     // 置轮播

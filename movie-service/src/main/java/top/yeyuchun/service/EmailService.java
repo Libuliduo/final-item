@@ -5,9 +5,11 @@ import top.yeyuchun.entity.User;
 
 public interface EmailService {
 
-    void sendEmail(String email);
-
     String generateCode();
+
+    void sendRegisterCode(String email);
+
+    void sendResetCode(String email);
 
     // Admin
     Admin findAdminByEmail(String email);

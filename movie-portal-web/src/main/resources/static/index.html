@@ -167,7 +167,7 @@
 
         <span slot="footer" class="dialog-footer">
     <el-button @click="visibleResetDialog">取 消</el-button>
-    <el-button type="primary" @click="resetPassword('ruleForm')">确 定</el-button>
+    <el-button type="primary" @click="updatePassword('ruleForm')">确 定</el-button>
   </span>
     </el-dialog>
 
@@ -383,7 +383,7 @@
 
             editUserInfo() {
                 if (this.userId) {
-                    axios.post('/user/editInfo', {
+                    axios.post('/user/updateInfo', {
                         id: this.userId,
                         userName: this.user.username,
                         url: this.avatarUrl
@@ -391,24 +391,24 @@
                         .then(resp => {
                             if (resp.data.code == 1) {
                                 this.editDialog = false;
-                                this.$message.success("修改成功");
+                                this.$message.success(resp.data.data);
                             }
                         })
-                        .catch(error => {
-                            console.error("修改失败:", error);
+                        .catch(err => {
+                            console.error("修改失败" + err);
                         });
                 }
             },
-            resetPassword(formName) {
+            updatePassword(formName) {
                 this.$refs[formName].validate(valid => {
                     if (valid) {
                         // 发起请求
-                        axios.post("/user/updatePwd", {
+                        axios.post("/user/updatePassword", {
                             id: this.userId,
                             newPassword: this.ruleForm.pass
                         }).then(resp => {
                             if (resp.data.code === 1) {
-                                this.$message.success("密码修改成功");
+                                this.$message.success(resp.data.data);
                                 // 清空保存的信息
                                 this.resetDialog = false;
                                 this.ruleForm.checkPass = '';
@@ -418,7 +418,7 @@
                                     location.href = "/login.html";
                                 }, 500);
                             } else {
-                                this.$message.error("修改失败");
+                                this.$message.error(resp.data.msg);
                             }
                         }).catch(err => {
                             console.error(err);
@@ -479,7 +479,7 @@
             // 查询用户收藏的影视
             findFavorById() {
                 const id = this.userId;
-                axios.get(`/user/findFavorite?userId=${id}`)
+                axios.get(`/user/favorite/findFavorite?userId=${id}`)
                     .then(resp => {
                         if (resp.data.code == 1) {
                             this.movieList = resp.data.data;
@@ -492,7 +492,7 @@
 
             // 查询所有影视
             findMovieList() {
-                axios.get("/index/findAll").then(resp => {
+                axios.get("/index/movie/findAll").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
                         this.resetIndexViewState();
@@ -502,7 +502,7 @@
 
             // 查询华语影视
             loadChinese() {
-                axios.get("/index/findChinese").then(resp => {
+                axios.get("/index/movie/findChinese").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
                         this.resetViewState();
@@ -512,7 +512,7 @@
 
             // 查询欧美影视
             loadEnglish() {
-                axios.get("/index/findEnglish").then(resp => {
+                axios.get("/index/movie/findEnglish").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
                         this.resetViewState();
@@ -522,7 +522,7 @@
 
             // 查询日韩影视
             loadJPAndKR() {
-                axios.get("/index/findJPAndKR").then(resp => {
+                axios.get("/index/movie/findJPAndKR").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
                         this.resetViewState();
@@ -532,7 +532,7 @@
 
             // 查询其他地区影视
             loadOther() {
-                axios.get("/index/findOther").then(resp => {
+                axios.get("/index/movie/findOther").then(resp => {
                     if (resp.data.code == 1) {
                         this.movieList = resp.data.data;
                         this.resetViewState();
@@ -565,6 +565,7 @@
             exit() {
                 this.userId = null;
                 sessionStorage.removeItem("Authorization");
+                sessionStorage.removeItem("Authorization");
                 location.href = "login.html";
             },
 
@@ -575,17 +576,20 @@
 
             if (token) {
                 // 获取用户id
-                axios.get("/user/jwtUserId", {
+                axios.get("/user/jwt/getIdByToken", {
                     headers: {Authorization: token}
                 }).then(resp => {
+                    if (resp.data.code === 401) {
+                        this.$message.error(resp.data.msg);
+                        return;
+                    }
                     this.userId = resp.data.data;
                     this.findMovieList();
                     this.findBannerList();
                     this.findUserById(this.userId);
                     this.findRecommendation();
                 }).catch(err => {
-                    console.error("获取用户ID失败：", err);
-                    this.$message.error("登录状态已失效，请重新登录！");
+                    this.$message.error("系统异常，请稍后再试");
                 });
             } else {
                 this.$message.warning("请先登录！");

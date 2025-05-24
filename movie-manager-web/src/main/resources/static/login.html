@@ -12,22 +12,10 @@
     <script src="/js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
 
-    <style>
-        #login-register-container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            background-image: url("images/trees_lake.jpg");
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-    </style>
     <link rel="stylesheet" href="css/loginStyle.css">
 </head>
 <body>
-<div id="login-register-container">
+<div id="login-register-container" style="background-image: url(images/trees_lake.jpg)">
     <!-- 1. 注册框 -->
     <div class="login-register-item" v-if="isRegister && !isResetPassword">
         <svg fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="100px" height="100px">

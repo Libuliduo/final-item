@@ -43,10 +43,10 @@
             <el-form-item prop="code">
                 <el-input placeholder="请输入验证码" v-model="registerForm.code">
                     <template #suffix>
-                        <el-button class="get-code-btn" @click="sendEmailCode('registerForm')" type="text"
+                        <el-button class="get-code-btn" @click="sendRegisterCode('registerForm')" type="text"
                                    :loading="codeSendStatus === 'sending'"
-                                   :disabled="codeSendStatus !== 'idle'">
-                            <span v-if="codeSendStatus === 'idle'">获取验证码</span>
+                                   :disabled="codeSendStatus !== 'free'">
+                            <span v-if="codeSendStatus === 'free'">获取验证码</span>
                             <span v-else-if="codeSendStatus === 'countdown'">{{ countdown }}s后重试</span>
                         </el-button>
                     </template>
@@ -121,10 +121,10 @@
             <el-form-item prop="code">
                 <el-input placeholder="请输入验证码" v-model="resetForm.code">
                     <template #suffix>
-                        <el-button class="get-code-btn" @click="sendEmailCode('resetForm')" type="text"
+                        <el-button class="get-code-btn" @click="sendResetCode('resetForm')" type="text"
                                    :loading="codeSendStatus === 'sending'"
-                                   :disabled="codeSendStatus !== 'idle'">
-                            <span v-if="codeSendStatus === 'idle'">获取验证码</span>
+                                   :disabled="codeSendStatus !== 'free'">
+                            <span v-if="codeSendStatus === 'free'">获取验证码</span>
                             <span v-else-if="codeSendStatus === 'countdown'">{{ countdown }}s后重试</span>
                         </el-button>
                     </template>
@@ -144,7 +144,7 @@
         data: {
             isRegister: false,  // 默认显示登录框
             isResetPassword: false, // 是否点击忘记密码
-            codeSendStatus: 'idle', // 空闲状态idle 发送状态sending 计时状态：countdown
+            codeSendStatus: 'free', // 空闲状态free 发送状态sending 计时状态：countdown
             countdown: 60,
             countdownTimer: null,
             loginForm: {
@@ -217,19 +217,16 @@
                             email: this.loginForm.email,
                             password: this.loginForm.password
                         }).then(resp => {
-                            if (0 == resp.data.code) {
-                                alert(resp.data.msg);
+                            if (0 === resp.data.code) {
+                                this.$message.error(resp.data.msg);
                             } else {
                                 sessionStorage.setItem("Authorization", resp.data.data);
                                 location.href = "index.html";
                             }
-                        }).catch(err => {
-                            console.log("登录失败", err);
-                            alert("登录失败，请重新输入账号密码");
-                        });
+                        })
                     } else {
-                        console.log('验证失败');
-                        return false;
+                        this.$message.error("请求失败，请稍后再试");
+                        return;
                     }
                 });
             },
@@ -242,15 +239,15 @@
                     this.countdown--;
                     if (this.countdown <= 0) {
                         clearInterval(this.countdownTimer);
-                        this.codeSendStatus = 'idle'; // 倒计时结束，恢复状态
+                        this.codeSendStatus = 'free'; // 倒计时结束，恢复状态
                     }
                 }, 1000);
             },
 
-            sendEmailCode(formName) {
+            sendRegisterCode(formName) {
                 this.$refs[formName].validateField('email', (errorMessage) => {
                     if (errorMessage) {
-                        console.log("校验失败——邮箱格式有误", errorMessage);
+                        this.$message.warning("邮箱格式不正确")
                         return;
                     }
 
@@ -259,23 +256,51 @@
 
                     // 开始发送请求
                     const targetForm = this[formName];
-                    axios.get("/email/sendEmail?email=" + targetForm.email)
+                    axios.get("/user/email/registerCode?email=" + targetForm.email)
                         .then(resp => {
                             if (resp.data.code === 1) {
-                                this.$message.success("验证码已送达");
+                                this.$message.success(resp.data.data);
                                 this.startCountdown();
                             } else {
-                                this.$message.error(resp.data.msg || "发送失败");
-                                this.codeSendStatus = 'idle';
+                                this.$message.error(resp.data.msg);
+                                this.codeSendStatus = 'free';
                             }
                         })
                         .catch(err => {
-                            this.$message.error("网络错误，请稍后重试");
-                            this.codeSendStatus = 'idle';
+                            this.$message.error("请求失败，请稍后再试");
+                            this.codeSendStatus = 'free';
                         });
                 });
             },
 
+            sendResetCode(formName) {
+                this.$refs[formName].validateField('email', (errorMessage) => {
+                    if (errorMessage) {
+                        this.$message.warning("邮箱格式不正确")
+                        return;
+                    }
+
+                    // 设置按钮状态为发送中
+                    this.codeSendStatus = 'sending';
+
+                    // 开始发送请求
+                    const targetForm = this[formName];
+                    axios.get("/user/email/resetCode?email=" + targetForm.email)
+                        .then(resp => {
+                            if (resp.data.code === 1) {
+                                this.$message.success(resp.data.data);
+                                this.startCountdown();
+                            } else {
+                                this.$message.error(resp.data.msg);
+                                this.codeSendStatus = 'free';
+                            }
+                        })
+                        .catch(error => {
+                            this.$message.error("请求失败，请稍后再试");
+                            this.codeSendStatus = 'free';
+                        });
+                });
+            },
 
             // 注册
             register() {
@@ -293,14 +318,13 @@
                         code: this.registerForm.code
                     }).then(resp => {
                         if (resp.data.code === 1) {
-                            this.$message.success("注册成功，即将跳转到登录页面");
+                            this.$message.success(resp.data.data);
                             this.switchToLogin();
                         } else {
-                            this.$message.error(resp.data.msg || "注册失败");
+                            this.$message.error(resp.data.msg);
                         }
                     }).catch(error => {
-                        console.error("注册失败", error);
-                        this.$message.error("注册失败，请稍后再试");
+                        this.$message.error("请求失败，请稍后重试");
                     });
                 });
             },
@@ -308,20 +332,19 @@
             // 重置密码
             resetPassword() {
                 // 表单校验通过后，发送重置请求
-                axios.post("/user/resetUserPwd", {
+                axios.post("/user/resetPassword", {
                     email: this.resetForm.email,
                     newPassword: this.resetForm.newPassword,
                     code: this.resetForm.code
                 }).then(resp => {
                     if (resp.data.code === 1) {
-                        this.$message.success("重置成功，即将跳转到登录页面");
+                        this.$message.success(resp.data.data);
                         this.switchToLogin();
                     } else {
-                        this.$message.error(resp.data.msg || "重置失败");
+                        this.$message.error(resp.data.msg);
                     }
                 }).catch(error => {
-                    console.error("重置失败", error);
-                    this.$message.error("重置失败，请稍后再试");
+                    this.$message.error("请求失败，请稍后再试");
                 });
             }
         }

@@ -16,18 +16,18 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
-    // 管理员注册
-    @PostMapping("register")
-    public Result register(@RequestBody Map<String, String> paramMap) {
-        String ok = adminService.registerAdmin(paramMap);
-        return Result.success(ok);
-    }
-
     // 管理员登录
     @PostMapping("login")
     public Result login(@RequestBody Map<String, String> paramMap) {
         String token = adminService.login(paramMap);
         return Result.success(token);
+    }
+
+    // 管理员注册
+    @PostMapping("register")
+    public Result register(@RequestBody Map<String, String> paramMap) {
+        String ok = adminService.registerAdmin(paramMap);
+        return Result.success(ok);
     }
 
     // 修改密码
@@ -37,6 +37,7 @@ public class AdminController {
         String idStr = paramMap.get("id");
 
         if (StrUtil.isBlank(idStr) || StrUtil.isBlank(newPwd)) {
+
             throw new BusinessException("管理员ID或新密码不能为空");
         }
 

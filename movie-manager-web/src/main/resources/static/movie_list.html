@@ -287,23 +287,14 @@
                     // 用户点击确定
                     axios.post("/movie/saveBanner?movieId=" + movieId).then(resp => {
                         if (resp.data.code == 1) {
-                            this.$message({
-                                type: 'success',
-                                message: '添加成功'
-                            });
+                            this.$message.success("添加成功");
                         } else {
-                            this.$message({
-                                type: 'warning',
-                                message: '该影片已经在横幅列表中，请勿重复添加'
-                            });
+                            this.$message.error("该影片已经在横幅列表中，请勿重复添加");
                         }
                     });
                 }).catch(() => {
                     // 用户点击取消
-                    this.$message({
-                        type: 'info',
-                        message: '已取消添加'
-                    });
+                    this.$message.info("已取消添加");
                 });
             }
 

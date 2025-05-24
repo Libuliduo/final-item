@@ -20,21 +20,23 @@ public interface UserService {
 
     boolean isFavorite(Integer userId, Integer movieId);
 
-    Integer getJwtUserId(String token);
+    Integer getIdByToken(String token);
 
     List<Integer> findMovieIdsByUserId(Integer userId);
 
     List<User> findAllUsers();
 
-    void updatePwdByEmail(String email, String newPwd);
+    void updatePwdById(Integer id, String newPwd);
 
     String resetUserPwd(Map<String, String> paramMap);
-
-    void updatePasswordById(Integer id, String newPwd);
 
     void resetUserName(Integer id, String userName);
 
     void resetUserAvatar(Integer id, String url);
 
     List<Movie> findFavorByUserId(Integer userId);
+
+    String sendRegisterCode(String email);
+
+    String sendResetCode(String email);
 }
