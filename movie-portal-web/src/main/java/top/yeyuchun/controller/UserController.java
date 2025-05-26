@@ -60,10 +60,10 @@ public class UserController {
         return Result.success("修改密码成功");
     }
 
-    // 重置密码
+    // 忘记密码
     @PostMapping("resetPassword")
     public Result resetPassword(@RequestBody Map<String, String> paramMap) {
-        String msg = userService.resetUserPwd(paramMap);
+        String msg = userService.resetPassword(paramMap);
         return Result.success(msg);
     }
 

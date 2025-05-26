@@ -22,10 +22,6 @@
     margin: 0 20px;
 }
 
-.title-bar {
-    height: 50px;
-    /*background: lightblue;*/
-}
 
 .tool-bar {
     display: flex;
@@ -39,7 +35,6 @@
     flex-direction: column;
     width: 1000px;
     height: auto;
-    /*background: lightpink;*/
     /* 让表格占在容器的顶部开始 */
     align-items: flex-start;
     padding: 5px;
@@ -64,7 +59,6 @@
 }
 
 <!-- element 自定义样式-->
-
 .pagination-wrapper {
     margin-top: 10px;
     width: 100%;
@@ -72,8 +66,6 @@
     display: flex;
     justify-content: center;
 }
-
-
 
 /* 下拉框和表格的自定义颜色 */
 .el-input__inner,
@@ -84,6 +76,12 @@
 {
     background-color: var(--base-color);
     color: var(--secondary-text);
+}
+
+/* 表格悬停的背景色 */
+.el-table--enable-row-hover
+.el-table__body tr:hover>td {
+    background-color: var(--background-hover-color);
 }
 
 /* 分页组件的自定义颜色 */

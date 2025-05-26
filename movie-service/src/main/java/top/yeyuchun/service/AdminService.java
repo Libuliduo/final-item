@@ -15,4 +15,8 @@ public interface AdminService {
     void updatePasswordById(Integer id, String newPassword);
 
     String resetPassword(Map<String, String> paramMap);
+
+    String sendRegisterCode(String email);
+
+    String sendResetCode(String email);
 }

@@ -12,10 +12,12 @@
     --primary-color: #4A5568;
     /* 强调色: 用于高亮元素，比如链接、按钮或选中状态。*/
     --accent-color: #202327;
-    /*  按钮色  */
+    /* 按钮色  */
     --button-color: #2173DF;
-    /*   按钮字体颜色 */
+    /* 按钮字体颜色 */
     --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #F3F4F6;
 }
 
 /* darkMode: 暗色主题*/
@@ -36,6 +38,8 @@
     --button-color: #2173DF;
     /*   按钮字体颜色 */
     --button-font-color: #F3F7FD;
+    /* 悬停背景色 */
+    --background-hover-color: #23272C;
 }
 
 * {
@@ -235,14 +239,13 @@ hr {
 
 .form-item textarea {
     resize: vertical;
-    min-height: 150px;
+    max-height: 130px;
 }
 
 .auto-img {
     border-radius: 5px;
     max-height: 120px;
     background-color: var(--base-color);
-
 }
 
 .auto-label {
@@ -250,3 +253,8 @@ hr {
     font-weight: bold;
 }
 
+.title-bar {
+    height: 50px;
+    font-size: 24px;
+    font-weight: bold;
+}

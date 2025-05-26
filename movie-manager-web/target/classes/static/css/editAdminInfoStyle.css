@@ -19,10 +19,6 @@
     margin: 0 20px;
 }
 
-.title-bar {
-    height: 50px;
-}
-
 /* admin信息的父容器：圆圈+name */
 .adminInfo {
     display: flex;
@@ -55,8 +51,8 @@
 /* 自定义 element */
 /* element-表单项-标签：新密码、确认密码 */
 .el-form-item__label {
-    font-weight: bold;
-    font-size: 24px;
+    font-size: 20px;
+    font-weight: normal;
     color: var(--text-color);
 }
 /* element-表单项-输入框 */

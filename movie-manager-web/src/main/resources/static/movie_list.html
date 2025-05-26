@@ -10,7 +10,6 @@
     <script src="js/vue.js"></script>
     <script src="/js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
-
 </head>
 <body>
 <div id="movie-list-container">
@@ -198,8 +197,6 @@
             handleCurrentChange(pageNum) {
                 // 当前页发生变化时，需要同步当前页的数值，并进行分页查询当前页的内容
                 this.pagination.pageNum = pageNum;
-                console.log(`当前页: ${pageNum}`);
-
                 // 从新发起分页请求
                 this.findByPage();
             },
@@ -213,12 +210,9 @@
                 }).then(() => {
                     // 用户点击了确定
                     axios.delete("/movie/deleteById?id=" + id).then(resp => {
-                        if (resp.data.code == 1) {
+                        if (resp.data.code === 1) {
                             // 提示成功
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                            this.$message.success(resp.data.data);
                             // 进行分页查询
                             const totalPage = Math.ceil((this.pagination.total - 1) / this.pagination.pageSize) // 计算总页数
                             this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
@@ -230,10 +224,7 @@
                     });
                 }).catch(() => {
                     // 用户点击取消
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    })
+                    this.$message.info("已取消删除");
                 })
             },
 
@@ -247,12 +238,9 @@
                     }).then(() => {
                         // 用户点击确定
                         axios.delete("/movie/deleteByIds?ids=" + this.selectedIds).then(resp => {
-                            if (resp.data.code == 1) {
+                            if (resp.data.code === 1) {
                                 // 提示成功
-                                this.$message({
-                                    type: 'success',
-                                    message: '批量删除成功!'
-                                })
+                                this.$message.success(resp.data.data);
                                 // 进行分页查询
                                 const totalPage = Math.ceil((this.pagination.total - this.selectedIds.length) / this.pagination.pageSize) // 计算总页数
                                 this.pagination.pageNum = this.pagination.pageNum > totalPage ? totalPage : this.pagination.pageNum;
@@ -264,19 +252,12 @@
                         })
                     }).catch(() => {
                         // 用户点击取消
-                        this.$message({
-                            type: 'info',
-                            message: '已取消删除'
-                        });
+                        this.$message.info("已取消删除");
                     })
                 } else {
-                    this.$message({
-                        type: 'warning',
-                        message: '请先选择要删除的内容'
-                    })
+                    this.$message.warning("请先选择要删除的内容")
                 }
             },
-
 
             toBanner(movieId) {
                 this.$confirm('确定要置为轮播吗？', '提示', {
@@ -285,11 +266,11 @@
                     type: 'warning'
                 }).then(() => {
                     // 用户点击确定
-                    axios.post("/movie/saveBanner?movieId=" + movieId).then(resp => {
-                        if (resp.data.code == 1) {
-                            this.$message.success("添加成功");
+                    axios.post("/movie/banner/saveBanner?movieId=" + movieId).then(resp => {
+                        if (resp.data.code === 1) {
+                            this.$message.success(resp.data.data);
                         } else {
-                            this.$message.error("该影片已经在横幅列表中，请勿重复添加");
+                            this.$message.error(resp.data.msg);
                         }
                     });
                 }).catch(() => {
@@ -299,6 +280,7 @@
             }
 
         },
+
         created:function (){
             this.findByPage();
         }

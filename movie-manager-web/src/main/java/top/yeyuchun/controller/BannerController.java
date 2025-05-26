@@ -27,18 +27,14 @@ public class BannerController {
     // 删除单个banner
     @DeleteMapping("deleteById")
     public Result deleteBanner(@RequestParam Integer bannerId) {
-        boolean isDeleted = bannerService.deleteById(bannerId);
-        if (isDeleted) {
-            return Result.success("删除成功");
-        } else {
-            return Result.error("删除失败");
-        }
+        bannerService.deleteById(bannerId);
+        return Result.success("删除成功");
     }
 
     // 批量删除banner
     @DeleteMapping("deleteByIds")
     public Result deleteBatch(Integer[] ids) {
         bannerService.deleteBatch(ids);
-        return Result.success();
+        return Result.success("批量删除成功");
     }
 }

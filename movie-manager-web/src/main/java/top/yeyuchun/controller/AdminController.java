@@ -16,6 +16,20 @@ public class AdminController {
     @Autowired
     private AdminService adminService;
 
+    // 发送注册验证码
+    @GetMapping("/email/registerCode")
+    public Result registerCode(@RequestParam String email) {
+        String msg = adminService.sendRegisterCode(email);
+        return Result.success(msg);
+    }
+
+    // 发送忘记密码的验证码
+    @GetMapping("/email/resetCode")
+    public Result resetEmail(@RequestParam String email) {
+        String msg = adminService.sendResetCode(email);
+        return Result.success(msg);
+    }
+
     // 管理员登录
     @PostMapping("login")
     public Result login(@RequestBody Map<String, String> paramMap) {
@@ -26,8 +40,8 @@ public class AdminController {
     // 管理员注册
     @PostMapping("register")
     public Result register(@RequestBody Map<String, String> paramMap) {
-        String ok = adminService.registerAdmin(paramMap);
-        return Result.success(ok);
+        String msg = adminService.registerAdmin(paramMap);
+        return Result.success(msg);
     }
 
     // 修改密码
@@ -47,10 +61,10 @@ public class AdminController {
     }
 
     // 忘记密码
-    @PostMapping("resetAdminPwd")
-    public Result resetAdminPwd(@RequestBody Map<String, String> paramMap) {
-        String ok = adminService.resetPassword(paramMap);
-        return Result.success(ok);
+    @PostMapping("resetPassword")
+    public Result resetPassword(@RequestBody Map<String, String> paramMap) {
+        String msg = adminService.resetPassword(paramMap);
+        return Result.success(msg);
     }
 
 }

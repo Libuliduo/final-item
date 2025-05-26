@@ -34,13 +34,20 @@
                 <a class="auto-button" style="margin-left: 10px;" href="javascript:void(0)" @click="fetchMovieInfo">自动获取信息</a>
             </div>
 
-            <!-- 影视发行Title TODO：如果为空，则设为和title值一样 -->
+            <!-- 影视发行Title -->
             <div class="form-item">
                 <label class="auto-label">影视发行名：</label>
                 <input class="auto-input" type="text" v-model="movie.originalTitle" name="originalTitle"/>
             </div>
 
-            <!-- TODO 影视类型：List<String> genres -->
+            <!--播放链接-->
+            <div class="form-item">
+                <label class="auto-label">播放链接：</label>
+                <input class="auto-input" type="text" class="input w50" v-model="movie.url" name="url"/>
+                <a class="auto-button" style="margin-left: 10px;" href="javascript:void(0)" @click="fetchMovieUrl">获取播放链接</a>
+            </div>
+
+            <!-- 影视类型 -->
             <div class="form-item">
                 <label class="auto-label">类型：</label>
                 <div style="display: flex; flex-wrap: wrap;">
@@ -81,12 +88,6 @@
                 <input class="auto-input" type="text" v-model="movie.actors" name="actors"/>
             </div>
 
-            <!--播放链接-->
-            <div class="form-item">
-                <label class="auto-label">播放链接：</label>
-                <input class="auto-input" type="text" class="input w50" v-model="movie.url" name="url"/>
-            </div>
-
             <!--影视海报-->
             <div class="form-item">
                 <label class="auto-label">影视海报链接：</label>
@@ -99,7 +100,7 @@
                 <input class="auto-input" type="text" v-model="movie.backdropPath" name="backdropPath"/>
             </div>
 
-            <!--影视评分 TODO Movie里面的定义为 Double popularity" -->
+            <!--影视评分-->
             <div class="form-item">
                 <label class="auto-label">影视评分：</label>
                 <input type="text" class="auto-input" v-model="movie.popularity" name="popularity"/>
@@ -153,33 +154,38 @@
             },
             fetchMovieInfo() {
                 if (!this.movie.title) {
-                    alert("请输入影视标题");
+                    this.$message.warning("请输入影视名")
                     return;
                 }
 
-                axios.get("/movie/info?title=" + this.movie.title).then(resp => {
-                    if (resp.data.code === 1 && resp.data.data) {
-                        const info = resp.data.data;
-
-                        this.movie.originalTitle = info.originalTitle || this.movie.title;
-                        this.movie.genres = info.genres || [];
-                        this.movie.country = info.country || '';
-                        this.movie.releaseDate = info.releaseDate || '';
-                        this.movie.overview = info.overview || '';
-                        this.movie.director = info.director || '';
-                        this.movie.actors = info.actors || ''; // 是字符串就直接赋值
-                        this.movie.backdropPath = info.backdropPath || '';
-                        this.movie.posterPath = info.posterPath || '';
-                        this.movie.url = info.url || '';
-                        this.movie.popularity = info.popularity || '';
-                    } else {
-                        alert(resp.data.msg || "获取信息失败");
-                    }
+                axios.get("/api/info?title=" + this.movie.title)
+                    .then(resp => {
+                        if (resp.data.code === 0) {
+                            this.$message.warning(resp.data.msg);
+                        } else {
+                            this.movie = resp.data.data;
+                        }
                 }).catch(error => {
-                    alert("请求失败，请检查网络或后台接口。");
+                    this.$message.warning("请求失败，请检查网络或后台接口。");
                 });
             }
             ,
+            fetchMovieUrl() {
+                if (!this.movie.title) {
+                    this.$message.warning("请输入影视名");
+                    return;
+                }
+                axios.get("/api/movieUrl?title=" + this.movie.title)
+                    .then(resp => {
+                        if (resp.data.code === 0) {
+                            this.$message.warning(resp.data.msg);
+                        } else {
+                            this.movie.url = resp.data.data;
+                        }
+                    }).catch(error => {
+                    this.$message.warning("请求失败，请检查网络或后台接口。");
+                });
+            },
 
             findById(id) {
                 axios.get("/movie/findById?id=" + id).then(resp => {

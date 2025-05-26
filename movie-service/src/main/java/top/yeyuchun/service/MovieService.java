@@ -11,8 +11,6 @@ public interface MovieService {
 
     List<Movie> findChinese();
 
-    Movie getMovieInfo(String title);
-
     Movie findById(Integer id);
 
     void addMovie(Movie movie);

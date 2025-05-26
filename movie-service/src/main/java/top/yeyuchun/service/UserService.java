@@ -28,7 +28,7 @@ public interface UserService {
 
     void updatePwdById(Integer id, String newPwd);
 
-    String resetUserPwd(Map<String, String> paramMap);
+    String resetPassword(Map<String, String> paramMap);
 
     void resetUserName(Integer id, String userName);
 

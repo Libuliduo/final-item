@@ -7,7 +7,8 @@
     background-position: center;
     background-repeat: no-repeat;
 }
-.login-register-item {
+
+.user-section {
     /* 容器本身 */
     width: 350px;
     height: auto;
@@ -31,61 +32,54 @@
     column-gap: 20px;
 }
 
-.login-register-input {
-    width: 90%;
-    height: 45px;
-    margin: 15px 0;
-    border: none;
-    border-radius: 10px;
-    padding: 0 15px;
-    font-size: 16px;
-    background-color: var(--base-color);
-    color: var(--secondary-text);
-    outline: none;
-}
-
-.forget-password {
-    color: #FFFFFF;
-    width: 100%;
-    display: flex;
-    justify-content: end;
-}
-
-.forget-password a {
-    color: #FFFFFF;
-}
-
-.el-checkbox {
-    color: #FFFFFF;
+a {
+    text-decoration: none;
 }
 
 .login-name {
     color: #c4c2c2;
 }
 
-/*------------------------------------*/
-.code-wrapper {
-    position: relative;
-    width: 100%;
-}
-
-.get-code-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    height: 30px;
-    padding: 0 10px;
-    border: none;
-    border-radius: 6px;
-    background-color: rgba(255, 255, 255, 0.3);
-    color: var(--secondary-text);
-    font-size: 12px;
-    cursor: pointer;
-}
-
 .reset-wrapper {
     display: flex;
     flex-direction: row-reverse;
     width: 100%;
+}
+
+/* element-按钮 */
+.el-button--primary {
+    background-color: var(--button-color);
+    color: var(--button-font-color);
+    border-radius: 15px;
+    font-weight: bold;
+    width: 70%;
+    height: 50px;
+    margin: 0 auto;
+}
+
+.el-form-item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.el-form-item__content {
+    width: 80%;
+    display: flex;
+    justify-content: center;
+}
+
+.el-input__inner {
+    height: 45px;
+    width: 100%;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+/* element 获取验证码的按钮 */
+.get-code-btn {
+    height: 28px;
+    border: none;
+    background-color: transparent;
 }

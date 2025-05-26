@@ -187,6 +187,7 @@
             #{id}
         </foreach>
     </delete>
+
     <delete id="deleteMovieFavorBatch">
         DELETE FROM tb_user_movie WHERE movie_id IN
         <foreach collection="ids" item="id" open="(" separator="," close=")">

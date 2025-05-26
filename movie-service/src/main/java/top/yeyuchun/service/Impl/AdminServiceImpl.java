@@ -31,46 +31,41 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public String registerAdmin(Map<String, String> paramMap) {
-        // 1.获取参数：邮箱、手机号、密码、验证码
+        // 1. 获取参数: email、username、password、验证码
         String email = paramMap.get("email");
-        String tel = paramMap.get("tel");
+        String name = paramMap.get("name");
         String password = paramMap.get("password");
         String code = paramMap.get("code");
 
-        // 2.用huTool工具做参数校验
-        if (StrUtil.isBlank(email) || StrUtil.isBlank(tel)) {
-            throw new BusinessException("手机号码或邮箱不能为空");
-        } else if (StrUtil.isBlank(password) || StrUtil.isBlank(code)) {
-            throw new BusinessException("密码或验证码不能为空");
-        }
+        // 2. 参数校验
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(name)) throw new BusinessException("邮箱和用户名不能为空");
+        if (StrUtil.isBlank(password)) throw new BusinessException("密码不能为空");
+        if (StrUtil.isBlank(code)) throw new BusinessException("验证码不能为空");
 
-        // 3.从Redis取出验证码
+        // 3.查看用户是否注册
+        Admin admin = adminMapper.findByEmail(email);
+        if (admin != null) throw new BusinessException("注册失败：该账户已存在");
+
+        // 4.用户未注册，进行注册操作
+        // 4.1 从redis中取出验证码
         Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
 
-        // 判断redis中是否有该验证码
-        if (redisCode == null) {
-            throw new BusinessException("请先发送验证码");
-        }
+        // 4.2 判断redis中是否有该验证码
+        if (redisCode == null) throw new BusinessException("请先发送验证码");
 
-        // 4.验证码校验————与redis中比较
-        if (!StrUtil.equals(redisCode.toString(), code)) {
-            throw new BusinessException("请输入正确的验证码");
-        }
+        // 4.3 验证码校验————与redis中存放的进行比较
+        if (!StrUtil.equals(redisCode.toString(),code)) throw new BusinessException("请输入正确的验证码");
 
-        // 5.查询数据库是否存在该用户，若不存在则存入数据库
-        Admin admin = emailService.findAdminByEmail(email);
-        if (admin == null) {
-            admin = new Admin();
-            admin.setEmail(email);
-            admin.setTel(tel);
-            admin.setPassword(password);
-            adminMapper.save(admin);
-        } else {
-            throw new BusinessException("注册失败——该邮箱已存在");
-        }
 
-        // 若没问题，返回ok
-        return "ok";
+        // 4.4 将该用户存入数据库
+
+        admin = new Admin();
+        admin.setEmail(email);
+        admin.setName(name);
+        admin.setPassword(password);
+        adminMapper.save(admin);
+
+        return "注册成功";
     }
 
     @Override
@@ -81,14 +76,11 @@ public class AdminServiceImpl implements AdminService {
         String code = paramMap.get("code");
 
         // 2. 参数校验
-        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) {
-            throw new BusinessException("邮箱和新密码不能为空");
-        } else if (StrUtil.isBlank(code)) {
-            throw new BusinessException("验证码不能为空");
-        }
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) throw new BusinessException("邮箱和新密码不能为空");
+        if (StrUtil.isBlank(code)) throw new BusinessException("验证码不能为空");
 
         // 3. 从Redis中取出验证码
-        Object redisCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
+        Object redisCode = redisTemplate.opsForValue().get("RESET_CODE:" + email);
 
         // 判断Redis中是否有该验证码
         if (redisCode == null) {
@@ -111,40 +103,60 @@ public class AdminServiceImpl implements AdminService {
         return "重置密码成功";
     }
 
+    // 发送注册验证码
+    @Override
+    public String sendRegisterCode(String email) {
+        // 1.参数校验
+        if (StrUtil.isBlank(email)) throw new BusinessException("邮箱不得为空");
+
+        // 2.注册用户，需要用户不存在
+        if (adminMapper.findByEmail(email) != null) throw new BusinessException("用户已存在");
+
+        // 3.发送验证码
+        emailService.sendRegisterCode(email);
+
+        return "发送成功";
+    }
+
+    // 发送找回密码的验证码
+    @Override
+    public String sendResetCode(String email) {
+        // 1.参数校验
+        if (StrUtil.isBlank(email)) throw new BusinessException("邮箱不得为空");
+
+        // 2.重置密码，需要用户存在
+        if (adminMapper.findByEmail(email) == null) throw new BusinessException("用不不存在");
+
+        // 3.发送验证码
+        emailService.sendResetCode(email);
+        return "发送成功";
+    }
+
     @Override
     public String login(Map<String, String> paramMap) {
-        // 1.获取前端输入的账号密码
-        String account = paramMap.get("account");
-        String password = paramMap.get("loginPassword");
-        String type = paramMap.get("type");
+        // 1. 先获取邮箱和密码
+        String email = paramMap.get("email");
+        String password = paramMap.get("password");
 
-        // 2.参数校验
-        if (StrUtil.isBlank(account) || StrUtil.isBlank(password)) {
-            throw new BusinessException("账号或密码不能为空");
-        }
+        // 2. 用huTool工具做参数校验
+        if (StrUtil.isBlank(email) && StrUtil.isBlank(password)) throw new BusinessException("邮箱和密码不能为空");
+        if (StrUtil.isBlank(email)) throw new BusinessException("邮箱不能为空");
+        if (StrUtil.isBlank(password)) throw new BusinessException("密码不能为空");
 
-        // 3.处理登录业务
-        Admin admin = null;
-        if ("email".equalsIgnoreCase(type)) {
-            admin = emailService.findAdminByEmail(account);
-        } else if ("tel".equalsIgnoreCase(type)) {
-            admin = adminMapper.findByTel(account);
-        } else {
-            throw new BusinessException("不存在该用户");
-        }
+        // 3. 准备登录工作：验证数据库中是否存在该用户
+        Admin admin = adminMapper.findByEmail(email);
+        if (admin == null) throw new BusinessException("账号不存在");
+        if (!admin.getPassword().equals(password)) throw new BusinessException("密码不正确");
 
-        if (admin == null || !StrUtil.equals(admin.getPassword(), password)) {
-            throw new BusinessException("此用户无权访问系统");
-        }
-
-        // 避免将password打包进jwt中，可能泄露的
+        /* 4. 都没有问题，用jwt生成token
+         *  4.1 去除安全数据
+         *  4.2 存放管理员数据
+         *  4.3 生成token
+         * */
         admin.setPassword(null);
-
-        // 存放管理员数据
         Map<String, Object> map = BeanUtil.beanToMap(admin);
-
-        // 生成token
         String token = jwtTemplate.createJWT(map);
+
         return token;
     }
 

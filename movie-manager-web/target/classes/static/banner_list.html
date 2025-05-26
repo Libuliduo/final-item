@@ -3,30 +3,13 @@
 <head>
     <meta charset="UTF-8"/>
     <title></title>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/movieListStyle.css">
+
     <script src="js/vue.js"></script>
     <script src="/js/axios-0.18.0.js"></script>
-    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <script src="element-ui/lib/index.js"></script>
-    <!-- element 自定义样式-->
-    <style>
-        /* 表格的自定义颜色 */
-        .el-table {
-            background-color: var(--base-color);
-            color: var(--secondary-text);
-        }
-
-        .el-table th {
-            background-color: var(--base-color);
-            color: var(--secondary-text);
-        }
-
-        .el-table tr {
-            background-color: var(--base-color);
-            color: var(--secondary-text);
-        }
-    </style>
 </head>
 <body>
 <div id="banner-list-container">
@@ -42,59 +25,25 @@
                 style="width: 100%"
                 @selection-change="handleSelectionChange">
             <!-- 多选框 -->
-            <el-table-column
-                    type="selection"
-                    width="55">
-            </el-table-column>
+            <el-table-column type="selection" width="55"></el-table-column>
 
-            <el-table-column label="封面" width="120">
-                <template slot-scope="{ row }">
-                    <img :src="row.posterPath" alt="封面" width="55" height="70"/>
-                </template>
-            </el-table-column>
+            <!-- 电影封面 -->
+            <el-table-column label="封面" width="120"><template slot-scope="{ row }"><img :src="row.posterPath" alt="封面" width="55" height="70"/></template></el-table-column>
 
-            <el-table-column
-                    prop="title"
-                    label="影视名称"
-                    width="130"
-                    show-overflow-tooltip>
-            </el-table-column>
+            <el-table-column prop="title" label="影视名称" width="130" show-overflow-tooltip></el-table-column>
 
-            <el-table-column
-                    prop="originalTitle"
-                    label="影视发布名称"
-                    width="130"
-                    show-overflow-tooltip>
-            </el-table-column>
+            <el-table-column prop="originalTitle" label="影视发布名称" width="130" show-overflow-tooltip></el-table-column>
 
-            <el-table-column
-                    prop="director"
-                    label="导演"
-                    width="150">
-            </el-table-column>
+            <el-table-column prop="director" label="导演" width="150"></el-table-column>
 
-            <el-table-column
-                    prop="releaseDate"
-                    label="上映时间"
-                    width="120">
-            </el-table-column>
+            <el-table-column prop="releaseDate" label="上映时间" width="120"></el-table-column>
 
-
-            <el-table-column
-                    prop="popularity"
-                    label="评分"
-                    width="120"
-            ></el-table-column>
+            <el-table-column prop="popularity" label="评分" width="120"></el-table-column>
 
             <el-table-column label="操作" width="100">
                 <template slot-scope="{ row }">
                     <a href="javascript:void(0)" @click="deleteById(row.id)" title="删除">
-                        <svg style="fill: var(--text-color)" xmlns="http://www.w3.org/2000/svg" height="24px"
-                             viewBox="0 -960 960 960"
-                             width="24px"
-                             fill="#e3e3e3">
-                            <path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm80-160h80v-360h-80v360Zm160 0h80v-360h-80v360Z"/>
-                        </svg>
+                        <svg style="fill: var(--text-color)" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm80-160h80v-360h-80v360Zm160 0h80v-360h-80v360Z"/></svg>
                     </a>
                 </template>
             </el-table-column>
@@ -104,10 +53,7 @@
     <div style="margin-top: 10px;margin-left: 20px;">
         <a href="javascript:void(0)" class="auto-button" @click="deleteBatch()"> 批量删除</a>
     </div>
-
-
 </div>
-
 
 <script type="text/javascript">
     const app = new Vue({
@@ -121,11 +67,14 @@
             // 查询首页轮播影视
             findBannerList() {
                 axios.get("/banner/findBannerList").then(resp => {
-                    if (resp.data.code == 1) {
+                    if (resp.data.code === 1) {
                         this.BannerList = resp.data.data;
+                    } else {
+                        this.$message.error(resp.data.msg);
                     }
                 })
             },
+
             handleSelectionChange(selection) {
                 // 把选中的行的id提取出来，存入 selectedIds 中
                 this.selectedIds = selection.map(item => item.id);
@@ -139,11 +88,8 @@
                 }).then(() => {
                     // 用户点击了确定
                     axios.delete("/banner/deleteById?bannerId=" + bannerId).then(resp => {
-                        if (resp.data.code == 1) {
-                            this.$message({
-                                type: 'success',
-                                message: '删除成功!'
-                            })
+                        if (resp.data.code === 1) {
+                            this.$message.success(resp.data.data);
                             this.findBannerList();
                         } else {
                             this.$message.error(resp.data.msg);
@@ -167,16 +113,11 @@
                     }).then(() => {
                         // 用户点击确定
                         axios.delete("/banner/deleteByIds?ids=" + this.selectedIds).then(resp => {
-                            if (resp.data.code == 1) {
-
-                                this.$message({
-                                    type: 'success',
-                                    message: '批量删除成功!'
-                                })
+                            if (resp.data.code === 1) {
+                                this.$message.success(resp.data.data);
                                 this.findBannerList();
-
                             } else {
-                                this.$message.error('删除失败');
+                                this.$message.error(resp.data.msg);
                             }
                         });
                     }).catch(() => {
@@ -195,6 +136,7 @@
             },
 
         },
+
         created() {
             this.findBannerList();
         }

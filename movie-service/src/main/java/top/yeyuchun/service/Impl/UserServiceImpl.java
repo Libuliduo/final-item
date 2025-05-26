@@ -85,7 +85,7 @@ public class UserServiceImpl implements UserService {
 
         // 3. 准备登录工作：验证数据库中是否存在该用户
         User user = userMapper.findByEmail(email);
-        if (user == null) throw new BusinessException("不存在该用户");
+        if (user == null) throw new BusinessException("账号不存在");
         if (!user.getPassword().equals(password)) throw new BusinessException("密码不正确");
 
         /* 4. 都没有问题，用jwt生成token
@@ -151,31 +151,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String resetUserPwd(Map<String, String> paramMap) {
+    public String resetPassword(Map<String, String> paramMap) {
         // 1. 获取参数：邮箱、新密码、验证码
         String email = paramMap.get("email");
         String newPassword = paramMap.get("newPassword");
         String code = paramMap.get("code");
 
         // 2. 参数校验
-        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) {
-            throw new BusinessException("邮箱和新密码不能为空");
-        } else if (StrUtil.isBlank(code)) {
-            throw new BusinessException("验证码不能为空");
-        }
+        if (StrUtil.isBlank(email) || StrUtil.isBlank(newPassword)) throw new BusinessException("邮箱和新密码不能为空");
+        if (StrUtil.isBlank(code)) throw new BusinessException("验证码不能为空");
 
         // 3.从Redis中取出验证码
         Object redisCode = redisTemplate.opsForValue().get("RESET_CODE:" + email);
 
         // 判断redis中是否有该验证码
-        if (redisCode == null) {
-            throw new BusinessException("请先发送验证码");
-        }
+        if (redisCode == null) throw new BusinessException("请先发送验证码");
 
         // 4.验证码校验————与redis中比较
-        if (!StrUtil.equals(redisCode.toString(), code)) {
-            throw new BusinessException("请输入正确的验证码");
-        }
+        if (!StrUtil.equals(redisCode.toString(), code)) throw new BusinessException("请输入正确的验证码");
 
         // 5..查询数据库是否存在该用户，若存在则更新密码
         User user = userMapper.findByEmail(email);
@@ -223,9 +216,7 @@ public class UserServiceImpl implements UserService {
 
         // 3.查看用户是否注册
         User user = userMapper.findByEmail(email);
-        if (user != null) {
-            throw new BusinessException("注册失败：该用户已存在");
-        }
+        if (user != null) throw new BusinessException("注册失败：该账户已存在");
 
         // 4.用户未注册，进行注册操作
         // 4.1 从redis中取出验证码

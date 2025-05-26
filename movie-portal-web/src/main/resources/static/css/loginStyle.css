@@ -3,8 +3,7 @@
     height: 100vh;
     display: flex;
     flex-direction: column;
-    background-image: url("/images/trees_lake.jpg");
-    background-size: cover; /* 等比缩放，可能裁剪 */
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }

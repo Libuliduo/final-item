@@ -25,7 +25,7 @@ public interface BannerMapper {
     Integer countBanners();
 
     @Delete("DELETE FROM tb_banner WHERE id = #{bannerId}")
-    boolean deleteById(Integer bannerId);
+    void deleteById(Integer bannerId);
 
     void deleteBatch(Integer[] ids);
 }

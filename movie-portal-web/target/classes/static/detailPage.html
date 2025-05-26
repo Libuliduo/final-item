@@ -65,28 +65,28 @@
             movieId: 1,
             isFavorite: false,
             movie: {
-                "id": 27,
-                "title": "三傻大闹宝莱坞",
-                "originalTitle": "3 Idiots",
-                "genres": [
-                    "剧情",
-                    "喜剧"
-                ],
-                "country": "IN",
-                "releaseDate": "2009-12-23",
-                "overview": "本片根据印度畅销书作家奇坦·巴哈特（Chetan Bhagat）的处女作小说《五点人》（Five Point Someone）改编而成。法兰、拉杜与兰乔是皇家工程学院的学生，三人共居一室，结为好友。在以严格著称的学院里，兰乔是个非常与众不同的学生，他不死记硬背，甚至还公然顶撞校长“病毒”，质疑他的教学方法。他不仅鼓动法兰与拉杜去勇敢追寻理想，还劝说校长的二女儿碧雅离开满眼铜臭的未婚夫。兰乔的特立独行引起了模范学生“消音器”的不满，他约定十年后再与兰乔一决高下，看哪种生活方式更能取得成功。本片获孟买电影博览奖最佳影片、最佳导演、最佳配角（波曼·伊拉尼）、最佳剧本等六项大奖，并获国际印度电影协会最佳影片、最佳导演、最佳剧情、最佳摄影等十六项大奖。",
-                "director": "拉吉库马尔·希拉尼",
-                "actors": "阿米尔·汗, 马达范 R, 沙尔曼·乔什, 卡琳娜·卡普, 博曼·伊拉尼",
-                "backdropPath": "https://image.tmdb.org/t/p/w500/e0PVYBaGdKLtvyIp2uEUzT1JUO7.jpg",
-                "posterPath": "https://image.tmdb.org/t/p/w500/qEVZeu6ODIpS3zwyhOxKEmvkDpH.jpg",
-                "url": "https://alist.yeyuchun.top:23333/p/NASVideo/%E5%8A%9F%E5%A4%AB/%E5%8A%9F~%E5%A4%AB4K120%E5%B8%A7%E7%B2%A4%E8%AF%AD.mp4?sign=FyfAV24tapK1Txdfc3wJVzaWAz4MYSOpL1yBPyWCcpw=:0",
-                "popularity": 12.5
+                // "id": 27,
+                // "title": "三傻大闹宝莱坞",
+                // "originalTitle": "3 Idiots",
+                // "genres": [
+                //     "剧情",
+                //     "喜剧"
+                // ],
+                // "country": "IN",
+                // "releaseDate": "2009-12-23",
+                // "overview": "本片根据印度畅销书作家奇坦·巴哈特（Chetan Bhagat）的处女作小说《五点人》（Five Point Someone）改编而成。法兰、拉杜与兰乔是皇家工程学院的学生，三人共居一室，结为好友。在以严格著称的学院里，兰乔是个非常与众不同的学生，他不死记硬背，甚至还公然顶撞校长“病毒”，质疑他的教学方法。他不仅鼓动法兰与拉杜去勇敢追寻理想，还劝说校长的二女儿碧雅离开满眼铜臭的未婚夫。兰乔的特立独行引起了模范学生“消音器”的不满，他约定十年后再与兰乔一决高下，看哪种生活方式更能取得成功。本片获孟买电影博览奖最佳影片、最佳导演、最佳配角（波曼·伊拉尼）、最佳剧本等六项大奖，并获国际印度电影协会最佳影片、最佳导演、最佳剧情、最佳摄影等十六项大奖。",
+                // "director": "拉吉库马尔·希拉尼",
+                // "actors": "阿米尔·汗, 马达范 R, 沙尔曼·乔什, 卡琳娜·卡普, 博曼·伊拉尼",
+                // "backdropPath": "https://image.tmdb.org/t/p/w500/e0PVYBaGdKLtvyIp2uEUzT1JUO7.jpg",
+                // "posterPath": "https://image.tmdb.org/t/p/w500/qEVZeu6ODIpS3zwyhOxKEmvkDpH.jpg",
+                // "url": "https://alist.yeyuchun.top:23333/p/NASVideo/%E5%8A%9F%E5%A4%AB/%E5%8A%9F~%E5%A4%AB4K120%E5%B8%A7%E7%B2%A4%E8%AF%AD.mp4?sign=FyfAV24tapK1Txdfc3wJVzaWAz4MYSOpL1yBPyWCcpw=:0",
+                // "popularity": 12.5
             },
         },
         methods: {
             // 进入界面时调用该方法，通过id获取该movie信息
             findMovieById(id) {
-                axios.get("/index/findMovieById?id=" + id).then(resp => {
+                axios.get("/index/movie/findMovieById?id=" + id).then(resp => {
                     if(resp.data.code == 1) {
                         this.movie = resp.data.data;
                     }
@@ -110,7 +110,6 @@
                 }).then(resp => {
                     this.isFavorite = resp.data.data;
                 }).catch(err => {
-                    console.error("获取收藏状态失败：", err);
                     this.$message.error("获取收藏状态失败，请重试！");
                 });
             },

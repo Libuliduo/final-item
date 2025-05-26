@@ -570,6 +570,7 @@
             },
 
         },
+
         created() {
             // 登录进来 从sessionStorage获取token 解析用户id
             const token = sessionStorage.getItem("Authorization");
@@ -596,6 +597,7 @@
                 location.href = "login.html";
             }
         },
+
         // DOM 渲染完成执行
         mounted() {
             this.rules.pass[0].validator = this.validatePass;

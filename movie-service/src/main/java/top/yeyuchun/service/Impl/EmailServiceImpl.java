@@ -73,9 +73,9 @@ public class EmailServiceImpl implements EmailService {
         // 发送邮件
         try {
             javaMailSender.send(simpleMailMessage); // 没抛异常就说明发送成功
-
             // 邮件发送成功，存入验证码
             redisTemplate.opsForValue().set("REGISTER_CODE:" + email, code, Duration.ofMinutes(5));
+
             // 输出一下存放进去的验证码
             Object storedObjectCode = redisTemplate.opsForValue().get("REGISTER_CODE:" + email);
             if (storedObjectCode != null) {

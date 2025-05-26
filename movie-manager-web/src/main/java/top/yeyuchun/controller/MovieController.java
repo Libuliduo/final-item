@@ -17,17 +17,6 @@ public class MovieController {
     @Autowired
     private MovieService movieService;
 
-    // 通过影视名title 调用API获取影视信息
-    @GetMapping("info")
-    public Result getMovieInfo(@RequestParam String title) {
-        System.out.println("前端传入 title: " + title);
-        Movie movie = movieService.getMovieInfo(title);
-        if (movie == null) {
-            return Result.error("未找到电影信息");
-        }
-        return Result.success(movie);
-    }
-
     // 查询数据库中所有影视
     @GetMapping("findAll")
     public Result findAll() {
@@ -61,20 +50,19 @@ public class MovieController {
     @DeleteMapping("deleteById")
     public Result deleteById(@RequestParam Integer id) {
         movieService.deleteById(id);
-        return Result.success();
+        return Result.success("删除成功");
     }
 
     // 删除多条数据
     @DeleteMapping("deleteByIds")
     public Result deleteBatch(Integer[] ids) {
         movieService.deleteBatch(ids);
-        return Result.success();
+        return Result.success("批量删除成功");
     }
 
     // 分页查询
     @GetMapping("list")
     public Result findByPage(
-
             // 传入当前页码和每页显示的条数，按需传入类型和关键字
             @RequestParam Integer pageNum,
             @RequestParam Integer pageSize,
@@ -91,13 +79,9 @@ public class MovieController {
     }
 
     // 置轮播
-    @PostMapping("saveBanner")
+    @PostMapping("/banner/saveBanner")
     public Result saveBanner(@RequestParam Integer movieId) {
-        try {
-            movieService.saveBanner(movieId);
-        } catch (BusinessException  e) {
-            return Result.error(e.getMessage());
-        }
+        movieService.saveBanner(movieId);
         return Result.success("置轮播成功");
     }
 }

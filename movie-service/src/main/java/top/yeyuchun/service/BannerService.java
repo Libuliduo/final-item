@@ -11,10 +11,7 @@ public interface BannerService {
 
     void saveByMovieId(Integer movieId);
 
-    // 查询轮播表中的数量
-    Integer countBanners();
-
-    boolean deleteById(Integer bannerId);
+    void deleteById(Integer bannerId);
 
     void deleteBatch(Integer[] ids);
 }
