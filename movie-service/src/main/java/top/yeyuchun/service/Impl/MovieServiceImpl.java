@@ -70,13 +70,18 @@ public class MovieServiceImpl implements MovieService {
     @Override
     @Transactional // 表名插入主标和中间表是一个事务
     public void addMovie(Movie movie) {
-        // 插入主表tb_movie，Mybatis会自动设置movie.id
+        // 1.判断数据库中是否存在该影视
+        if (movieMapper.findByTitle(movie.getTitle()) != null) {
+            throw new BusinessException("该影视已存在");
+        }
+
+        // 2.插入主表tb_movie，Mybatis会自动设置movie.id
         movieMapper.addMovie(movie);
 
-        // 根据movie.genres 名称查询genre表中的对应类型的id
+        // 3.根据movie.genres 名称查询genre表中的对应类型的id
         List<Integer> genreIds = movieMapper.findGenreIdsByNames(movie.getGenres());
 
-        // 插入中间表tb_movie_genre(movie_id + genre_id)
+        // 4.插入中间表tb_movie_genre(movie_id + genre_id)
         if (genreIds.isEmpty()) throw new BusinessException("类型id数组为空");
 
         movieMapper.addMovieGenres(movie.getId(),genreIds);

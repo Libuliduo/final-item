@@ -194,8 +194,7 @@
                 this.findMovieById(this.movieId); //获取影视详情
                 this.checkFavorite(); // 获取收藏状态
             } else {
-                this.$message.warning("用户信息或电影信息丢失，请重新登录");
-                window.location.href = 'login.html';
+                this.$message.warning("用户信息或电影信息丢失，请登录");
             }
 
             if (this.userId) {

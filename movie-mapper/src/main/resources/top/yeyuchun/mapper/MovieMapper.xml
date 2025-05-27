@@ -61,7 +61,7 @@
         FROM tb_movie AS movie
                  LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
                  LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
-        WHERE movie.country IN ('JA','JP', 'KR')
+        WHERE movie.country IN ('JA','JP', 'KR','KO')
     </select>
 
     <!-- 查询其他地区的影视 -->
@@ -214,6 +214,7 @@
             </if>
         </where>
         GROUP BY m.id
+        ORDER BY m.id DESC
     </select>
 
     <!-- =============== 查询多个 =================-->
@@ -233,9 +234,7 @@
             #{id}
         </foreach>
         ORDER BY
-        movie.id
+        movie.id DESC
     </select>
-
-
 
 </mapper>

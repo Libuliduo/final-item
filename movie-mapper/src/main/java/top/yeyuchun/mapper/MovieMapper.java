@@ -62,5 +62,8 @@ public interface MovieMapper {
 
     @Select("SELECT movie_id FROM tb_movie_genre WHERE genre_id = #{genreId}")
     List<Integer> findMovieIdsByGenreId(Integer genreId);
+
+    @Select("SELECT * FROM tb_movie WHERE title = #{title}")
+    Movie findByTitle(String title);
 }
 

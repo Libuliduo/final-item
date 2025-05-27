@@ -74,12 +74,17 @@ public class ApiServiceImpl implements ApiService {
                     .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .onErrorResume(WebClientResponseException.class, e-> {
+                .onErrorResume(WebClientResponseException.class, e -> {
                     throw new BusinessException("TMDB请求失败：" + e.getStatusCode());
                 })
-                .onErrorResume(TimeoutException.class, e-> {
-                    //处理超时异常
-                    throw new BusinessException("TMDB请求超时");
+                .onErrorResume(TimeoutException.class, e -> {
+                    throw new BusinessException("TMDB请求超时，请重试");
+                })
+                .onErrorResume(java.nio.channels.ClosedChannelException.class, e -> {
+                    throw new BusinessException("TMDB连接中断，请重试");
+                })
+                .onErrorResume(Exception.class, e -> {
+                    throw new BusinessException("TMDB请求异常：" + e.getMessage());
                 })
                 .block();
 
@@ -118,12 +123,17 @@ public class ApiServiceImpl implements ApiService {
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .onErrorResume(WebClientResponseException.class, e-> {
-                    throw new BusinessException("TMDB请求失败：" + e.getStatusCode());
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    throw new BusinessException("TMDB详情请求失败：" + e.getStatusCode());
                 })
-                .onErrorResume(TimeoutException.class, e-> {
-                    //处理超时异常
-                    throw new BusinessException("TMDB请求超时");
+                .onErrorResume(TimeoutException.class, e -> {
+                    throw new BusinessException("TMDB详情请求超时，请重试");
+                })
+                .onErrorResume(java.nio.channels.ClosedChannelException.class, e -> {
+                    throw new BusinessException("TMDB详情连接中断，请重试");
+                })
+                .onErrorResume(Exception.class, e -> {
+                    throw new BusinessException("TMDB详情请求异常：" + e.getMessage());
                 })
                 .block();
 
@@ -157,12 +167,17 @@ public class ApiServiceImpl implements ApiService {
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
-                .onErrorResume(WebClientResponseException.class, e-> {
-                    throw new BusinessException("TMDB请求失败：" + e.getStatusCode());
+                .onErrorResume(WebClientResponseException.class, e -> {
+                    throw new BusinessException("TMDB演员信息请求失败：" + e.getStatusCode());
                 })
-                .onErrorResume(TimeoutException.class, e-> {
-                    //处理超时异常
-                    throw new BusinessException("TMDB请求超时");
+                .onErrorResume(TimeoutException.class, e -> {
+                    throw new BusinessException("TMDB演员信息请求超时，请重试");
+                })
+                .onErrorResume(java.nio.channels.ClosedChannelException.class, e -> {
+                    throw new BusinessException("TMDB演员信息连接中断，请重试");
+                })
+                .onErrorResume(Exception.class, e -> {
+                    throw new BusinessException("TMDB演员信息请求异常：" + e.getMessage());
                 })
                 .block();
 

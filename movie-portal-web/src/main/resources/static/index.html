@@ -16,7 +16,7 @@
 </head>
 <body>
 <div id="portal-index-page">
-
+    
     <!-- 1. 顶部栏 -->
     <div class="portal-header-section">
         <div class="header-bar">
@@ -459,6 +459,7 @@
                 axios.get(`/user/favorite/findFavorite?userId=${id}`)
                     .then(resp => {
                         if (resp.data.code == 1) {
+                            this.iframeTitle = "个人收藏";
                             this.movieList = resp.data.data;
                             this.resetViewState();
                         } else {
@@ -591,10 +592,8 @@
         },
 
         created() {
-            // 登录进来 从sessionStorage获取token 解析用户id
+            // 若页面能进来，说明通过了verify.js的token认证
             const token = sessionStorage.getItem("Authorization");
-
-            if (token) {
                 // 获取用户id
                 axios.get("/user/jwt/getIdByToken", {
                     headers: {Authorization: token}
@@ -610,10 +609,6 @@
                 }).catch(err => {
                     this.$message.error("系统异常，请稍后再试");
                 });
-            } else {
-                this.$message.warning("请先登录！");
-                location.href = "login.html";
-            }
         },
 
         // DOM 渲染完成执行
@@ -646,5 +641,6 @@
     })
 </script>
 <script src="js/darkMode.js" defer></script>
+<script src="js/verify.js"></script>
 </body>
 </html>

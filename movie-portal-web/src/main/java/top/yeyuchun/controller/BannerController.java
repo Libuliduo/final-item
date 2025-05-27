@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.yeyuchun.entity.Banner;
-import top.yeyuchun.entity.Movie;
 import top.yeyuchun.result.Result;
 import top.yeyuchun.service.BannerService;
 
