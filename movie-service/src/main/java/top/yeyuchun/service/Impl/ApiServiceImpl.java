@@ -95,8 +95,6 @@ public class ApiServiceImpl implements ApiService {
             movie.setTitle(first.getString("title"));
             movie.setOriginalTitle(first.getString("original_title"));
             movie.setOverview(first.getString("overview"));
-
-            // TODO 调用方法，充新上传影视封面
             movie.setBackdropPath("https://image.tmdb.org/t/p/w500" + first.getString("backdrop_path"));
             movie.setPosterPath("https://image.tmdb.org/t/p/w500" + first.getString("poster_path"));
 
@@ -233,7 +231,13 @@ public class ApiServiceImpl implements ApiService {
         // 3.处理接收到的响应
         // 3.1 用fastjson解析响应字符串
         JSONObject alistJson = JSON.parseObject(alistResponse);
+
         // 3.2 判断是否找到相关资源
+        Integer code =  alistJson.getInteger("code");
+        if (code == 401) {
+            throw new BusinessException("Alist：token过期");
+        }
+
         Integer total = alistJson.getJSONObject("data").getInteger("total");
         if (total == 0) {
             throw new BusinessException("影视库中不存在该资源");

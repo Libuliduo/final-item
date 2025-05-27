@@ -34,4 +34,8 @@ public interface MovieService {
     void saveBanner(Integer movieId);
 
     List<Movie> findDefaultMovieIds();
+
+    List<Integer> findGenreIdsByMovieId(Integer movieId);
+
+    List<Integer> findMovieIdsByGenreId(Integer genreId);
 }

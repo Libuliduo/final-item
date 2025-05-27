@@ -15,7 +15,7 @@ public interface AdminMapper {
     @Select("select * from tb_admin where tel = #{tel}")
     Admin findByTel(String tel);
 
-    @Insert("INSERT INTO tb_admin (email, tel, password) VALUES (#{email}, #{tel}, #{password})")
+    @Insert("INSERT INTO tb_admin (email, name, password) VALUES (#{email}, #{name}, #{password})")
     void save(Admin admin);
 
     @Update("UPDATE tb_admin SET password = #{password} WHERE id = #{id}")

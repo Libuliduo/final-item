@@ -1,39 +1,3 @@
-/*
-    顶部栏
-*/
-.portal-top {
-    width: 100%;
-    height: 70px;
-    background-color: var(--base-color);
-    z-index: 1000; /* 保证在最上层 */
-
-    top: 0;
-    position: fixed;
-
-    display: flex;
-    align-items: center;
-}
-.header-bar {
-    width: 1000px;
-    margin: 0 auto;
-
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-bar-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex: 1;
-}
-
-.header-title {
-    font-size: 25px;
-    color: var(--text-color);
-}
-
 /* 切换明暗按钮样式 */
 #theme-switch {
     width: 40px;
@@ -65,6 +29,79 @@
     display: block;
 }
 
+.portal-header-section {
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    background-color: var(--base-color);
+    color: var(--text-color);
+    /* 保证在最上层 */
+    z-index: 1000;
+    /* 固定位置 */
+    top: 0;
+    position: fixed;
+}
+/*
+    顶部栏：导航区域
+ */
+.header-bar {
+    width: 70%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* 导航栏 左侧区域*/
+.header-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex: 1;
+}
+/* 导航栏 左侧区域logo名*/
+.header-title {
+    font-size: 25px;
+}
+/* 导航栏 横向列表1. 列表改为横向*/
+.header-bar-ul {
+    padding-left: 30px;
+    /* 去掉列表前面的小圆点 */
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 25px;
+    font-size: 20px;
+}
+/* 导航栏 横向列表2. 去除链接样式*/
+.header-bar-ul li a {
+    position: relative;
+    text-decoration: none;
+    color: var(--text-color);
+    padding-bottom: 4px; /* 给底部留空间 */
+    transition: color 0.3s ease;
+}
+/* 导航栏 横向列表3. 悬停时更换颜色 */
+.header-bar-ul li a:hover {
+    color: var(--button-color);
+    cursor: pointer;
+}
+/* 导航栏 横向列表4. 悬停时显示伪元素 */
+.header-bar-ul li a::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--button-color);
+    transition: width 0.3s ease;
+}
+/* 导航栏 横向列表5. 当前导航悬停和被选中时显示伪元素 横条逐渐展开到100% */
+.header-bar-ul li a:hover::after,
+.header-bar-ul li a.active::after{
+    width: 100%;
+}
 
 /*
     顶部栏：搜索
@@ -148,52 +185,6 @@
     width: 30px;
 }
 
-
-/*  横向列表 */
-.header-bar-ul {
-    padding-left: 30px;
-    /* 去掉列表前面的小圆点 */
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 25px;
-    font-size: 20px;
-}
-.header-bar-ul li a {
-    /* 让::after能相对于a正确定位 */
-    position: relative;
-    text-decoration: none;
-    color: var(--text-color);
-    padding-bottom: 4px; /* 给底部留空间 */
-    transition: color 0.3s ease;
-}
-
-/* 悬停时更换颜色 + 显示下划线条 */
-.header-bar-ul li a:hover {
-    color: var(--button-color);
-    cursor: pointer;
-}
-
-/* 创建一个伪元素放在文字底部，初始宽度为0，悬停时展开到100% */
-.header-bar-ul li a::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--button-color);
-    transition: width 0.3s ease;
-}
-/* 悬停时小条展开 */
-.header-bar-ul li a:hover::after {
-    width: 100%;
-}
-
-/* 当前选中的菜单，显示下划线 */
-.header-bar-ul li a.active::after {
-    width: 100%;
-}
 /*
     顶部用户按钮
 */

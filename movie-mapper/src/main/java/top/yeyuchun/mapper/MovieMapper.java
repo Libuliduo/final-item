@@ -56,5 +56,11 @@ public interface MovieMapper {
     void deleteMovieFavor(Integer id);
 
     void deleteMovieFavorBatch(Integer[] ids);
+
+    @Select("SELECT genre_id FROM tb_movie_genre WHERE movie_id = #{movieId}")
+    List<Integer> findGenreIdsByMovieId(Integer movieId);
+
+    @Select("SELECT movie_id FROM tb_movie_genre WHERE genre_id = #{genreId}")
+    List<Integer> findMovieIdsByGenreId(Integer genreId);
 }
 

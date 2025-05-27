@@ -33,4 +33,12 @@ public class RecommendationController {
         }
     }
 
+    // 根据电影id获取相似电影
+    @GetMapping("findSimilarMovies")
+    public Result findSimilarMovies(@RequestParam Integer currentMovieId) {
+            List<Movie> similarMovies = userMovieFavoriteService.getSimilarMovies(currentMovieId);
+            return Result.success(similarMovies);
+    }
+
+
 }

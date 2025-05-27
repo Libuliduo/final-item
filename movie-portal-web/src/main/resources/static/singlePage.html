@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css" href="css/singleStyle.css">
 
     <script src="js/vue.js"></script>
+    <script src="js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/dplayer@1.25.0/dist/DPlayer.min.js"></script>
@@ -16,8 +17,32 @@
 </head>
 <body>
 <div id="portal-single-page">
-    <!-- 播放器容器 -->
+<!-- 播放区域 -->
     <div id="dplayer"></div>
+
+    <!-- 当前影视信息 -->
+    <div class="movie-info" v-if="currentMovie">
+        <h1 class="title">{{ currentMovie.title }}</h1>
+        <div class="sub-info">
+            <span>{{ currentMovie.releaseDate.substring(0, 4) }}</span>
+            <span> / </span>
+            <span class="genres">{{ currentMovie.genres.join(' ') }}</span>
+        </div>
+    </div>
+
+<!-- 推荐相似区域 -->
+    <div class="recommend-content">
+        <h2 class="portal-title">为你推荐</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in recommendList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -25,7 +50,9 @@
         el: '#portal-single-page',
         data: {
             videoUrl: null,  // 获取到的视频地址
-            dp: null // DPlayer实例
+            dp: null, // DPlayer实例
+            recommendList: [],
+            currentMovie: null, // 当前播放的电影信息
         },
         methods: {
             // 初始化播放器方法，接收视频链接参数
@@ -49,12 +76,85 @@
                 } catch (e) {
                     return false;
                 }
+            },
+            // 获取当前播放电影的信息
+            async getCurrentMovie() {
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const movieId = urlParams.get('movieId');
+                    
+                    if (!movieId) {
+                        this.$message.error('获取影视信息失败');
+                        return;
+                    }
+
+                    const resp = await axios.get(`/index/movie/findMovieById`, {
+                        params: { id: movieId }
+                    });
+
+                    if (resp.data.code === 1) {
+                        this.currentMovie = resp.data.data;
+                        // 获取到电影信息后加载相似推荐
+                        await this.loadSimilarMovies();
+                    }
+                } catch (error) {
+                    console.error('获取影视信息失败:', error);
+                    this.$message.error('获取影视信息失败');
+                }
+            },
+
+            // 加载相似电影
+            async loadSimilarMovies() {
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const movieId = urlParams.get('movieId');
+                    
+                    if (!movieId) {
+                        this.$message.error('获取相似影视失败');
+                        return;
+                    }
+
+                    // 调用后端接口获取相似电影
+                    const resp = await axios.get('/recommendation/findSimilarMovies', {
+                        params: {
+                            currentMovieId: movieId
+                        }
+                    });
+
+                    if (resp.data.code === 1) {
+                        this.recommendList = resp.data.data.slice(0, 6);
+                    }
+
+                } catch (error) {
+                    console.error('获取相似影视失败:', error);
+                    this.$message.error('获取相似影视失败');
+                }
+            },
+
+            goToDetailPage(movieId) {
+                // 先通知父页面滚动到顶部
+                window.parent.postMessage({ 
+                    type: 'scrollTop'
+                }, '*');
+                
+                // 获取当前的userId
+                const userId = new URLSearchParams(window.location.search).get('userId');
+                
+                // 构建详情页URL并跳转
+                const detailPageUrl = `/detailPage.html?id=${movieId}&userId=${userId}`;
+                window.parent.postMessage({ 
+                    type: 'navigate',
+                    url: detailPageUrl
+                }, '*');
             }
         },
         created() {
-            // 页面加载时获取传过来的url
+            // 页面加载时获取传过来的url和movieId
             const urlParams = new URLSearchParams(window.location.search);
             this.videoUrl = urlParams.get('url');
+            
+            // 获取当前电影信息和相似推荐
+            this.getCurrentMovie();
         },
         async mounted() {
             // Vue 挂载完成后执行

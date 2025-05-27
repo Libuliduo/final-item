@@ -41,7 +41,7 @@
         FROM tb_movie AS movie
                  LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
                  LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
-        WHERE movie.country IN ('CN', 'HK', 'TW')
+        WHERE movie.country IN ('CN','ZH', 'HK', 'TW')
     </select>
 
     <!-- 查询地区为欧美的影视 -->
@@ -51,7 +51,7 @@
         FROM tb_movie AS movie
                  LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
                  LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
-        WHERE movie.country IN ('US', 'GB', 'FR', 'DE', 'IT', 'IE')
+        WHERE movie.country IN ('EN','US', 'GB', 'FR', 'DE', 'IT', 'IE')
     </select>
 
     <!-- 查询地区为日韩的影视 -->
@@ -61,7 +61,7 @@
         FROM tb_movie AS movie
                  LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
                  LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
-        WHERE movie.country IN ('JP', 'KR')
+        WHERE movie.country IN ('JA','JP', 'KR')
     </select>
 
     <!-- 查询其他地区的影视 -->
@@ -71,7 +71,7 @@
         FROM tb_movie AS movie
                  LEFT JOIN tb_movie_genre AS movieGenre ON movie.id = movieGenre.movie_id
                  LEFT JOIN tb_genre AS genre ON movieGenre.genre_id = genre.id
-        WHERE movie.country NOT IN ('CN', 'HK', 'TW', 'US', 'GB', 'FR', 'DE', 'IT', 'IE', 'JP', 'KR')
+        WHERE movie.country NOT IN ('CN', 'ZH','EN','JA','HK', 'TW', 'US', 'GB', 'FR', 'DE', 'IT', 'IE', 'JP', 'KR')
     </select>
 
     <!-- =============== 查询单个 =================-->
@@ -207,7 +207,6 @@
                 m.title LIKE CONCAT('%', #{keyword}, '%')
                 OR m.original_title LIKE CONCAT('%', #{keyword}, '%')
                 OR m.director LIKE CONCAT('%', #{keyword}, '%')
-                OR m.actors LIKE CONCAT('%', #{keyword}, '%')
                 )
             </if>
             <if test="genre != null and genre != ''">

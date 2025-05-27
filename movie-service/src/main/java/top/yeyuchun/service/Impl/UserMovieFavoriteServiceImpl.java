@@ -47,6 +47,47 @@ public class UserMovieFavoriteServiceImpl implements UserMovieFavoriteService {
         return dotProduct / (normA * normB);
     }
 
+    @Override
+public List<Movie> getSimilarMovies(Integer currentMovieId) {
+    // 1. 获取当前电影的类型ID, 最多保留2个类型
+    List<Integer> currentMovieGenres = movieService.findGenreIdsByMovieId(currentMovieId);
+    if (currentMovieGenres == null || currentMovieGenres.isEmpty()) {
+        System.out.println("当前电影没有类型");
+        return new ArrayList<>(); 
+    }
+
+    if (currentMovieGenres.size() > 2) {
+        // 最多保留2个类型
+        currentMovieGenres = currentMovieGenres.subList(0, 2);
+    }
+
+    System.out.println("当前电影保留的类型ID: " + currentMovieGenres);
+
+    // 2. 获取和本电影第一个类型一样的全部电影id
+    List<Integer> similarMovieIds = movieService.findMovieIdsByGenreId(currentMovieGenres.get(0));
+    System.out.println("和本电影第一个类型一样的全部电影id: " + similarMovieIds);
+
+    List<Integer> finalMovieIds = new ArrayList<>();
+
+    // 3. 如果有第二个类型，筛选同时具有两个类型的电影；否则返回所有 similarMovieIds 的电影
+    if (currentMovieGenres.size() == 2) {
+        for (Integer movieId : similarMovieIds) {
+            List<Integer> movieGenres = movieService.findGenreIdsByMovieId(movieId);
+            if (movieGenres.contains(currentMovieGenres.get(1))) {
+                finalMovieIds.add(movieId);
+            }
+        }
+    } else {
+        finalMovieIds.addAll(similarMovieIds);
+    }
+
+    System.out.println("最终相似电影id: " + finalMovieIds);
+
+    // 4. 获取对应电影对象
+    return movieService.findMoviesByIds(finalMovieIds);
+}
+
+
     // 获取推荐的电影列表
     @Override
     public List<Movie> getRecommendedMovies(Integer userId) {

@@ -58,6 +58,7 @@ if (themeSwitch) {
         }
     });
 }
+
 // 监听 iframe 的 load 事件，同步暗黑状态
 const iframes = document.querySelectorAll('iframe');
 iframes.forEach((iframe) => {

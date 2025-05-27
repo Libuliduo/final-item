@@ -89,7 +89,6 @@
                 </template>
             </el-table-column>
 
-
             <el-table-column
                     prop="releaseDate"
                     label="上映时间"
@@ -180,7 +179,7 @@
                         keyword: this.keyword
                     }
                 }).then(resp => {
-                    if (resp.data.code = 1){
+                    if (resp.data.code === 1){
                         this.pagination.total=resp.data.data.total;
                         this.pagination.list=resp.data.data.list;
                     }else{

@@ -173,4 +173,14 @@ public class MovieServiceImpl implements MovieService {
         return movieList;
     }
 
+    @Override
+    public List<Integer> findGenreIdsByMovieId(Integer movieId) {
+        return movieMapper.findGenreIdsByMovieId(movieId);
+    }
+
+    @Override
+    public List<Integer> findMovieIdsByGenreId(Integer genreId) {
+        return movieMapper.findMovieIdsByGenreId(genreId);
+    }
+
 }

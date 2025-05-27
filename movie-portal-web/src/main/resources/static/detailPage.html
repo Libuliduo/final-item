@@ -3,18 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Popcorn影视</title>
-    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <link rel="stylesheet" type="text/css" href="element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" type="text/css" href="css/commonStyle.css">
     <link rel="stylesheet" type="text/css" href="css/detailStyle.css">
 
     <script src="js/vue.js"></script>
     <script src="js/axios-0.18.0.js"></script>
     <script src="element-ui/lib/index.js"></script>
-    <style>
-        html {
-            background-color: var(--base-color);
-        }
-    </style>
 </head>
 <body>
 <div id="portal-detail-page">
@@ -55,6 +50,20 @@
             <span class="overview">{{ movie.overview }}</span>
         </el-tooltip>
     </div>
+
+    <!-- 推荐区域-推荐相同类型的电影 -->
+    <div class="recommend-content">
+        <h2 class="portal-title">为你推荐</h2>
+        <div class="box-group">
+            <div class="box-item" v-for="(movie) in recommendList" :key="movie.id">
+                <a @click="goToDetailPage(movie.id)">
+                    <img class="box-img" :src="movie.posterPath">
+                    <div class="box-name">{{ movie.title }}</div>
+                </a>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script type="text/javascript">
@@ -64,23 +73,24 @@
             userId: 1,
             movieId: 1,
             isFavorite: false,
+            recommendList: [],
             movie: {
-                // "id": 27,
-                // "title": "三傻大闹宝莱坞",
-                // "originalTitle": "3 Idiots",
-                // "genres": [
-                //     "剧情",
-                //     "喜剧"
-                // ],
-                // "country": "IN",
-                // "releaseDate": "2009-12-23",
-                // "overview": "本片根据印度畅销书作家奇坦·巴哈特（Chetan Bhagat）的处女作小说《五点人》（Five Point Someone）改编而成。法兰、拉杜与兰乔是皇家工程学院的学生，三人共居一室，结为好友。在以严格著称的学院里，兰乔是个非常与众不同的学生，他不死记硬背，甚至还公然顶撞校长“病毒”，质疑他的教学方法。他不仅鼓动法兰与拉杜去勇敢追寻理想，还劝说校长的二女儿碧雅离开满眼铜臭的未婚夫。兰乔的特立独行引起了模范学生“消音器”的不满，他约定十年后再与兰乔一决高下，看哪种生活方式更能取得成功。本片获孟买电影博览奖最佳影片、最佳导演、最佳配角（波曼·伊拉尼）、最佳剧本等六项大奖，并获国际印度电影协会最佳影片、最佳导演、最佳剧情、最佳摄影等十六项大奖。",
-                // "director": "拉吉库马尔·希拉尼",
-                // "actors": "阿米尔·汗, 马达范 R, 沙尔曼·乔什, 卡琳娜·卡普, 博曼·伊拉尼",
-                // "backdropPath": "https://image.tmdb.org/t/p/w500/e0PVYBaGdKLtvyIp2uEUzT1JUO7.jpg",
-                // "posterPath": "https://image.tmdb.org/t/p/w500/qEVZeu6ODIpS3zwyhOxKEmvkDpH.jpg",
-                // "url": "https://alist.yeyuchun.top:23333/p/NASVideo/%E5%8A%9F%E5%A4%AB/%E5%8A%9F~%E5%A4%AB4K120%E5%B8%A7%E7%B2%A4%E8%AF%AD.mp4?sign=FyfAV24tapK1Txdfc3wJVzaWAz4MYSOpL1yBPyWCcpw=:0",
-                // "popularity": 12.5
+                "id": 27,
+                "title": "三傻大闹宝莱坞",
+                "originalTitle": "3 Idiots",
+                "genres": [
+                    "剧情",
+                    "喜剧"
+                ],
+                "country": "IN",
+                "releaseDate": "2009-12-23",
+                "overview": "本片根据印度畅销书作家奇坦·巴哈特（Chetan Bhagat）的处女作小说《五点人》（Five Point Someone）改编而成。法兰、拉杜与兰乔是皇家工程学院的学生，三人共居一室，结为好友。在以严格著称的学院里，兰乔是个非常与众不同的学生，他不死记硬背，甚至还公然顶撞校长病毒，质疑他的教学方法。他不仅鼓动法兰与拉杜去勇敢追寻理想，还劝说校长的二女儿碧雅离开满眼铜臭的未婚夫。兰乔的特立独行引起了模范学生消音器的不满，他约定十年后再与兰乔一决高下，看哪种生活方式更能取得成功。本片获孟买电影博览奖最佳影片、最佳导演、最佳配角（波曼·伊拉尼）、最佳剧本等六项大奖，并获国际印度电影协会最佳影片、最佳导演、最佳剧情、最佳摄影等十六项大奖。",
+                "director": "拉吉库马尔·希拉尼",
+                "actors": "阿米尔·汗, 马达范 R, 沙尔曼·乔什, 卡琳娜·卡普, 博曼·伊拉尼",
+                "backdropPath": "https://lsky.yeyuchun.top:23333/videos/2025/05/26/683423dd4b981.png",
+                "posterPath": "https://image.tmdb.org/t/p/w500/qEVZeu6ODIpS3zwyhOxKEmvkDpH.jpg",
+                "url": "https://alist.yeyuchun.top:23333/p/NASVideo/%E5%8A%9F%E5%A4%AB/%E5%8A%9F~%E5%A4%AB4K120%E5%B8%A7%E7%B2%A4%E8%AF%AD.mp4?sign=FyfAV24tapK1Txdfc3wJVzaWAz4MYSOpL1yBPyWCcpw=:0",
+                "popularity": 12.5
             },
         },
         methods: {
@@ -96,9 +106,10 @@
             goToSinglePage(url) {
                 // url 中可能有中文，浏览器不会自动编码 需要自行编码
                 if (url == null) {
-                    alert("播放链接不存在");
+                    this.$message.error("播放链接不存在");
+                    return;
                 }
-                window.location.href = `/singlePage.html?url=${encodeURIComponent(url)}`;
+                window.location.href = `/singlePage.html?url=${url}&userId=${this.userId}&movieId=${this.movieId}`;
             },
 
             checkFavorite() {
@@ -131,8 +142,48 @@
                 }).catch(err => {
                     this.$message.error("操作失败，请重试！");
                 });
-            }
+            },
 
+            notifyParentHeight() {
+                // 等待Vue更新完成后执行
+                this.$nextTick(() => {
+                    const height = document.documentElement.scrollHeight;
+                    // 通知父页面更新高度
+                    window.parent.postMessage({ type: 'resize', height: height }, '*');
+                });
+            },
+
+            goToDetailPage(movieId) {
+                // 先通知父页面滚动到顶部
+                window.parent.postMessage({ 
+                    type: 'scrollTop'
+                }, '*');
+                
+                // 短暂延迟后更新页面
+                setTimeout(() => {
+                    const params = new URLSearchParams(location.search);
+                    params.set('id', movieId);
+                    window.location.search = params.toString();
+                }, 100);
+            }
+        },
+        watch: {
+            // 监听推荐列表的变化
+            recommendList: {
+                handler() {
+                    // 当推荐列表变化时，通知父页面更新高度
+                    setTimeout(() => this.notifyParentHeight(), 100);
+                },
+                deep: true
+            },
+            // 监听电影详情的变化
+            movie: {
+                handler() {
+                    // 当电影详情变化时，通知父页面更新高度
+                    setTimeout(() => this.notifyParentHeight(), 100);
+                },
+                deep: true
+            }
         },
         created() {
             const params = new URLSearchParams(location.search);
@@ -146,6 +197,28 @@
                 this.$message.warning("用户信息或电影信息丢失，请重新登录");
                 window.location.href = 'login.html';
             }
+
+            if (this.userId) {
+                axios.get(`/recommendation/getRecommendations?userId=${this.userId}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.recommendList = resp.data.data;
+                        }
+                    })
+                    .catch(error => {
+                        console.error(resp.data.msg);
+                    });
+            } else {
+                this.$message.warning("请先登录");
+            }
+        },
+        mounted() {
+            // 初始加载时通知父页面更新高度
+            this.notifyParentHeight();
+        },
+        updated() {
+            // 每次更新后通知父页面更新高度
+            this.notifyParentHeight();
         }
     })
 </script>

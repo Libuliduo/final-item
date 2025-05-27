@@ -13,23 +13,12 @@
     <script src="js/axios-0.18.0.js"></script>
     <script src="js/vue.js"></script>
     <script src="element-ui/lib/index.js"></script>
-    <style>
-        html {
-            background-color: var(--base-color);
-        }
-        .iframe-content {
-            width: 100%;
-            height: 100vh; /* 设置固定高度为视口高度 */
-            overflow-y: auto; /* 当内容溢出时显示垂直滚动条 */
-            overflow-x: hidden; /* 隐藏水平滚动条 */
-        }
-    </style>
 </head>
 <body>
 <div id="portal-index-page">
 
     <!-- 1. 顶部栏 -->
-    <div class="portal-top">
+    <div class="portal-header-section">
         <div class="header-bar">
             <div class="header-bar-left">
                 <!-- 1.1 logo + 名 -->
@@ -45,7 +34,6 @@
                     <li><a @click="loadEnglish()">欧美剧</a></li>
                     <li><a @click="loadJPAndKR()">日韩剧</a></li>
                     <li><a @click="loadOther()">其他</a></li>
-                    <li><a @click="loadRecommendation()">推荐</a></li>
                 </ul>
             </div>
 
@@ -184,10 +172,9 @@
         </el-carousel>
     </div>
 
-
     <!-- 2. 显示区域 -->
     <div class="portal-content" v-if="showContent">
-        <h2 class="portal-title">电影</h2>
+        <h2 class="portal-title">{{ this.iframeTitle }}</h2>
         <div class="box-group">
             <div class="box-item" v-for="(movie) in movieList" :key="movie.id">
                 <a @click="goToDetailPage(movie.id)">
@@ -198,24 +185,12 @@
         </div>
     </div>
 
-<!-- 3. 其他页面的显示: 详情页和播放页面 -->
-    <iframe class="iframe-content" v-if="showIframe" :src="iframeSrc" frameborder="0" scrolling="no" @load="adjustIframeHeight" ></iframe>
-
-<!--  4. 推荐区域： 当页面是详情页和播放页的时候显示  -->
-    <div class="recommend-content" v-if="showIframe">
-        <h2 class="portal-title">为你推荐</h2>
-        <div class="box-group">
-            <div class="box-item" v-for="(movie) in recommendList" :key="movie.id">
-                <a @click="goToDetailPage(movie.id)">
-                    <img class="box-img" :src="movie.posterPath">
-                    <div class="box-name">{{ movie.title }}</div>
-                </a>
-            </div>
-        </div>
-    </div>
+    <!-- 3. 其他页面的显示: 详情页和播放页面 -->
+    <iframe ref="contentIframe" scrolling="no" class="iframe-content" width="100%" v-if="showIframe" frameborder="0"
+            :src="iframeSrc" @load="handleIframeLoad">
+    </iframe>
 
 </div>
-
 
 <script type="text/javascript">
     const app = new Vue({
@@ -226,15 +201,18 @@
             avatarUrl: '', // 用户头像链接
             movieList: [], // 影视显示列表
             movieBannerList: [], // 轮播的影视列表
+
             recommendList: [], // 推荐的影视列表
+
             searchInput: '', // 搜索栏的文字
             editDialog: false, // 控制修改信息框显示状态
             resetDialog: false, // 控制重置密码框的显示状态
             showBanner: true, // 控制轮播的显示
             showContent: true, // 控制页面影视的显示
             showIframe: false, // 控制detailPage和singlePage的显示
+            iframeTitle: "全部影视", // 当前影视列表的名称
             iframeSrc: '', // 当前iframe显示的页面
-            token: '1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR',
+            token: '1|xEBUopUBkRUY5yfSj3A5azrzpWXwlFsFkyUjxtvR', // Lsky图床的token
             ruleForm: {
                 pass: '',
                 checkPass: ''
@@ -265,19 +243,6 @@
         },
 
         methods: {
-            // 动态调整iframe的高度
-            adjustIframeHeight() {
-                const iframe = this.$el.querySelector('.iframe-content');
-                if (iframe) {
-                    try {
-                        const contentHeight = iframe.contentWindow.document.body.scrollHeight;
-                        iframe.style.height = contentHeight + 'px';
-                    } catch (error) {
-                        console.error('无法获取 iframe 内容高度:', error);
-                    }
-                }
-            },
-
             // 首页显示轮播
             resetIndexViewState() {
                 this.showIframe = false;
@@ -325,6 +290,12 @@
 
             // 跳转到详情页
             goToDetailPage(movieId) {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth' // 平滑滚动
+                });
+
                 const userId = this.userId;
 
                 if (userId) {
@@ -478,6 +449,12 @@
 
             // 查询用户收藏的影视
             findFavorById() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 const id = this.userId;
                 axios.get(`/user/favorite/findFavorite?userId=${id}`)
                     .then(resp => {
@@ -492,8 +469,15 @@
 
             // 查询所有影视
             findMovieList() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 axios.get("/index/movie/findAll").then(resp => {
                     if (resp.data.code == 1) {
+                        this.iframeTitle = "所有影视";
                         this.movieList = resp.data.data;
                         this.resetIndexViewState();
                     }
@@ -502,8 +486,15 @@
 
             // 查询华语影视
             loadChinese() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 axios.get("/index/movie/findChinese").then(resp => {
                     if (resp.data.code == 1) {
+                        this.iframeTitle = "华语影视";
                         this.movieList = resp.data.data;
                         this.resetViewState();
                     }
@@ -512,8 +503,15 @@
 
             // 查询欧美影视
             loadEnglish() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 axios.get("/index/movie/findEnglish").then(resp => {
                     if (resp.data.code == 1) {
+                        this.iframeTitle = "欧美影视";
                         this.movieList = resp.data.data;
                         this.resetViewState();
                     }
@@ -522,8 +520,15 @@
 
             // 查询日韩影视
             loadJPAndKR() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 axios.get("/index/movie/findJPAndKR").then(resp => {
                     if (resp.data.code == 1) {
+                        this.iframeTitle = "日韩影视";
                         this.movieList = resp.data.data;
                         this.resetViewState();
                     }
@@ -532,34 +537,19 @@
 
             // 查询其他地区影视
             loadOther() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+                
                 axios.get("/index/movie/findOther").then(resp => {
                     if (resp.data.code == 1) {
+                        this.iframeTitle = "其他地区影视";
                         this.movieList = resp.data.data;
                         this.resetViewState();
                     }
                 })
-            },
-
-            // 查询推荐影视
-            loadRecommendation() {
-                this.movieList = this.recommendList;
-                this.resetViewState();
-            },
-
-            findRecommendation() {
-                if (this.userId) {
-                    axios.get(`/recommendation/getRecommendations?userId=${this.userId}`)
-                        .then(resp => {
-                            if (resp.data.code == 1) {
-                                this.recommendList = resp.data.data;
-                            }
-                        })
-                        .catch(error => {
-                            console.error(resp.data.msg);
-                        });
-                } else {
-                    this.$message.warning("请先登录");
-                }
             },
 
             exit() {
@@ -569,6 +559,35 @@
                 location.href = "login.html";
             },
 
+            handleIframeLoad() {
+                // 等待Vue更新完成后执行
+                this.$nextTick(() => {
+                    const iframe = this.$refs.contentIframe;
+                    if (iframe) {
+                        // 设置一个定时器，多次尝试获取高度
+                        const checkHeight = () => {
+                            const doc = iframe.contentDocument || iframe.contentWindow.document;
+                            const body = doc.body;
+                            const html = doc.documentElement;
+                            
+                            // 获取实际内容高度
+                            const height = Math.max(
+                                body.scrollHeight, body.offsetHeight,
+                                html.clientHeight, html.scrollHeight, html.offsetHeight
+                            );
+                            
+                            if (height > 100) { // 确保内容已经加载
+                                iframe.style.height = height + 'px';
+                            } else {
+                                // 如果高度太小，可能内容还没加载完，继续尝试
+                                setTimeout(checkHeight, 100);
+                            }
+                        };
+                        
+                        checkHeight();
+                    }
+                });
+            },
         },
 
         created() {
@@ -588,7 +607,6 @@
                     this.findMovieList();
                     this.findBannerList();
                     this.findUserById(this.userId);
-                    this.findRecommendation();
                 }).catch(err => {
                     this.$message.error("系统异常，请稍后再试");
                 });
@@ -602,7 +620,28 @@
         mounted() {
             this.rules.pass[0].validator = this.validatePass;
             this.rules.checkPass[0].validator = this.validatePass2;
-            this.adjustIframeHeight();
+
+            // 添加消息监听器
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'resize') {
+                    const iframe = this.$refs.contentIframe;
+                    if (iframe) {
+                        iframe.style.height = `${event.data.height}px`;
+                    }
+                } else if (event.data && event.data.type === 'scrollTop') {
+                    // 处理滚动到顶部的消息
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                } else if (event.data && event.data.type === 'navigate') {
+                    // 处理导航消息
+                    this.showBanner = false;
+                    this.showContent = false;
+                    this.showIframe = true;
+                    this.iframeSrc = event.data.url;
+                }
+            });
         }
     })
 </script>

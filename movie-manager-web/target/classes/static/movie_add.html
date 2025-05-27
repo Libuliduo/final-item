@@ -3,9 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title></title>
+    <link rel="stylesheet" href="./element-ui/lib/theme-chalk/index.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+
     <script src="js/vue.js"></script>
     <script src="/js/axios-0.18.0.js"></script>
+    <script src="element-ui/lib/index.js"></script>
     <style>
         .body-content {
             margin: 20px;
@@ -142,13 +145,14 @@
             saveOrUpdate() {
                 //发送ajax的post请求,保存影视 this.movie传过去的是json数据
                 axios.post("/movie/saveOrUpdate", this.movie).then(resp => {
-                    if (1 == resp.data.code) {
+                    if (resp.data.code === 1) {
                         //清空表单中的数据
                         this.movie = {};
                         //重定向到影视列表页面
                         location.href = "movie_list.html";
+                        this.$message.success("操作成功")
                     } else {
-                        alert(resp.data.msg);
+                        this.$message.error(resp.data.msg)
                     }
                 });
             },

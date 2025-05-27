@@ -3,10 +3,10 @@
 */
 .portal-banner {
     width: 70%;
-    height: 485px;
-    margin: 70px auto 0;
+    height: 435px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-direction: column;
 }
 
@@ -16,9 +16,8 @@
     margin: 0 auto;
 }
 
-
 .el-carousel__container {
-    height: 380px;
+    height: 350px;
 }
 
 /* 每一张轮播卡片 */
@@ -26,7 +25,6 @@
     width: 220px;
     height: 330px;
 }
-
 
 /* 图片设置 */
 .banner-img {
@@ -51,4 +49,3 @@
     text-align: left;
     box-sizing: border-box;
 }
-
