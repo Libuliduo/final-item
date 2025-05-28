@@ -108,7 +108,12 @@
         <el-form :model="user" status-icon label-position="top" label-width="100px"
                  class="demo-ruleForm">
             <el-form-item prop="avatar" v-if="user">
-                <el-avatar class="" :src="avatarUrl" fit="fit"></el-avatar>
+                <el-avatar 
+                    :size="100"
+                    :src="avatarUrl" 
+                    fit="cover"
+                    style="margin-bottom: 15px;"
+                ></el-avatar>
 
                 <el-upload
                         class="upload-demo"
@@ -125,7 +130,7 @@
 
             </el-form-item>
             <el-form-item label="你的昵称" prop="username">
-                <el-input style="width: 70%;" v-model="user.username" placeholder="你的昵称"></el-input>
+                <el-input style="width: 70%;" v-model="username" placeholder="你的昵称"></el-input>
             </el-form-item>
         </el-form>
 
@@ -199,6 +204,7 @@
             userId: null, // 登录的用户ID
             user: {}, // 登录的用户信息
             avatarUrl: '', // 用户头像链接
+            username: '', // 用户昵称
             movieList: [], // 影视显示列表
             movieBannerList: [], // 轮播的影视列表
             searchInput: '', // 搜索栏的文字
@@ -363,6 +369,8 @@
                 console.log(this.resetDialog)
             },
             visibleEditDialog() {
+                this.avatarUrl = this.user.avatar;
+                this.username = this.user.username;
                 this.editDialog = !this.editDialog;
                 console.log(this.editDialog)
             },
@@ -371,11 +379,12 @@
                 if (this.userId) {
                     axios.post('/user/updateInfo', {
                         id: this.userId,
-                        userName: this.user.username,
+                        userName: this.username,
                         url: this.avatarUrl
                     })
                         .then(resp => {
                             if (resp.data.code == 1) {
+                                this.findUserById(this.userId)
                                 this.editDialog = false;
                                 this.$message.success(resp.data.data);
                             }
@@ -420,13 +429,16 @@
             validatePass(rule, value, callback) {
                 if (value === '') {
                     callback(new Error('请输入新密码'));
+                } else if (value.length < 5 || value.length > 16) {
+                    callback(new Error('密码长度必须在5到16位之间'));
                 } else {
                     if (this.ruleForm.checkPass !== '') {
                         this.$refs.ruleForm.validateField('checkPass');
                     }
                     callback();
                 }
-            },
+            }
+            ,
 
             // 校验 确认密码是否一致
             validatePass2(rule, value, callback) {
@@ -437,135 +449,6 @@
                 } else {
                     callback();
                 }
-            },
-
-            // 查询当前用户信息
-            findUserById(id) {
-                axios.get(`/user/findById?id=${id}`)
-                    .then(resp => {
-                        if (resp.data.code == 1) {
-                            this.user = resp.data.data;
-                            this.avatarUrl = this.user.avatar;
-                        }
-                    })
-                    .catch(error => {
-                        console.error("获取用户信息失败:", error);
-                    });
-            },
-
-            // 查询首页轮播影视
-            findBannerList() {
-                axios.get("/banner/findBannerList").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.movieBannerList = resp.data.data;
-                    }
-                })
-            },
-
-            // 查询用户收藏的影视
-            findFavorById() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                const id = this.userId;
-                axios.get(`/user/favorite/findFavorite?userId=${id}`)
-                    .then(resp => {
-                        if (resp.data.code == 1) {
-                            this.iframeTitle = "个人收藏";
-                            this.movieList = resp.data.data;
-                            this.resetViewState();
-                        } else {
-                            this.$message.error(resp.data.msg);
-                        }
-                    })
-            },
-
-            // 查询所有影视
-            findMovieList() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                axios.get("/index/movie/findAll").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.iframeTitle = "所有影视";
-                        this.movieList = resp.data.data;
-                        this.resetIndexViewState();
-                    }
-                })
-            },
-
-            // 查询华语影视
-            loadChinese() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                axios.get("/index/movie/findChinese").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.iframeTitle = "华语影视";
-                        this.movieList = resp.data.data;
-                        this.resetViewState();
-                    }
-                })
-            },
-
-            // 查询欧美影视
-            loadEnglish() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                axios.get("/index/movie/findEnglish").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.iframeTitle = "欧美影视";
-                        this.movieList = resp.data.data;
-                        this.resetViewState();
-                    }
-                })
-            },
-
-            // 查询日韩影视
-            loadJPAndKR() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                axios.get("/index/movie/findJPAndKR").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.iframeTitle = "日韩影视";
-                        this.movieList = resp.data.data;
-                        this.resetViewState();
-                    }
-                })
-            },
-
-            // 查询其他地区影视
-            loadOther() {
-                // 回到顶部
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-                
-                axios.get("/index/movie/findOther").then(resp => {
-                    if (resp.data.code == 1) {
-                        this.iframeTitle = "其他地区影视";
-                        this.movieList = resp.data.data;
-                        this.resetViewState();
-                    }
-                })
             },
 
             exit() {
@@ -599,10 +482,138 @@
                                 setTimeout(checkHeight, 100);
                             }
                         };
-                        
                         checkHeight();
                     }
                 });
+            },
+
+            // 查询当前用户信息
+            findUserById(id) {
+                axios.get(`/user/findById?id=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.user = resp.data.data;
+                            this.avatarUrl = this.user.avatar;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("获取用户信息失败:", error);
+                    });
+            },
+
+            // 查询首页轮播影视
+            findBannerList() {
+                axios.get("/banner/findBannerList").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.movieBannerList = resp.data.data;
+                    }
+                })
+            },
+
+            // 查询用户收藏的影视
+            findFavorById() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                const id = this.userId;
+                axios.get(`/user/favorite/findFavorite?userId=${id}`)
+                    .then(resp => {
+                        if (resp.data.code == 1) {
+                            this.iframeTitle = "个人收藏";
+                            this.movieList = resp.data.data;
+                            this.resetViewState();
+                        } else {
+                            this.$message.error(resp.data.msg);
+                        }
+                    })
+            },
+
+            // 查询所有影视
+            findMovieList() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                axios.get("/index/movie/findAll").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.iframeTitle = "所有影视";
+                        this.movieList = resp.data.data;
+                        this.resetIndexViewState();
+                    }
+                })
+            },
+
+            // 查询华语影视
+            loadChinese() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                axios.get("/index/movie/findChinese").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.iframeTitle = "华语影视";
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询欧美影视
+            loadEnglish() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                axios.get("/index/movie/findEnglish").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.iframeTitle = "欧美影视";
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询日韩影视
+            loadJPAndKR() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                axios.get("/index/movie/findJPAndKR").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.iframeTitle = "日韩影视";
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
+            },
+
+            // 查询其他地区影视
+            loadOther() {
+                // 回到顶部
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                axios.get("/index/movie/findOther").then(resp => {
+                    if (resp.data.code == 1) {
+                        this.iframeTitle = "其他地区影视";
+                        this.movieList = resp.data.data;
+                        this.resetViewState();
+                    }
+                })
             },
         },
 
