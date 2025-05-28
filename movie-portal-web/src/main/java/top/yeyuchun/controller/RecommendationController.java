@@ -22,15 +22,9 @@ public class RecommendationController {
     // 根据用户id获取推荐电影列表
     @GetMapping("getRecommendations")
     public Result getRecommendations(@RequestParam Integer userId) {
-        try {
             //调用推荐算法获取电影
             List<Movie> recommendedMovies = userMovieFavoriteService.getRecommendedMovies(userId);
-
             return Result.success(recommendedMovies);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Result.error("获取推荐影视失败！");
-        }
     }
 
     // 根据电影id获取相似电影

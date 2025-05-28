@@ -48,8 +48,8 @@ public interface MovieMapper {
 
     List<Integer> findMovieIdsByCondition(String genre, String keyword);
 
-    // 默认推荐： 最新的前5条电影
-    @Select("select id from tb_movie order by release_date desc limit 5")
+    // 默认推荐： 最新的前6条电影
+    @Select("select id from tb_movie order by release_date desc limit 6")
     List<Integer> findDefaultMovieIds();
 
     @Delete("delete from tb_user_movie where movie_id = #{id}")

@@ -111,31 +111,61 @@
 .suggestion-item {
     display: flex;
     align-items: center;
-    padding: 5px 0;
+    padding: 8px;
     width: 100%;
     height: 100px;
     border-bottom: 1px solid var(--text-color);
 }
+
 /* 建议项的封面图 */
 .target-poster {
-    margin-right: 5px;
-    width: 70px;
+    flex: 0 0 70px; /* 固定宽度，不伸缩 */
     height: 100%;
+    margin-right: 12px;
 }
+
 .target-poster img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    padding: 0;
+    border-radius: 4px;
 }
+
 /* 建议项的信息：电影名 电影导演 */
 .target-info {
+    flex: 1;
+    min-width: 0; /* 防止文本溢出 */
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    gap: 8px;
 }
-.target-info .target-title{
+
+.target-info .target-title {
     font-weight: bold;
+    font-size: 14px;
+    line-height: 1.4;
+    max-height: 40px; /* 限制最大高度，约显示两行 */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
 }
+
+.target-info .target-director {
+    font-size: 12px;
+    color: #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 搜索建议框的最小宽度 */
+.el-autocomplete-suggestion {
+    min-width: 300px !important;
+}
+
 .el-scrollbar__wrap, .popper__arrow::after {
     background-color: var(--base-color);
 }

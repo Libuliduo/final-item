@@ -60,7 +60,7 @@
                         <template slot-scope="props">
                             <div class="suggestion-item">
                                 <div class="target-poster">
-                                    <img :src="props.item.posterPath" alt="Movie Poster">
+                                    <img :src="props.item.posterPath" alt="电影封面">
                                 </div>
                                 <div class="target-info">
                                     <div class="target-title">{{ props.item.title }}</div>
@@ -201,9 +201,6 @@
             avatarUrl: '', // 用户头像链接
             movieList: [], // 影视显示列表
             movieBannerList: [], // 轮播的影视列表
-
-            recommendList: [], // 推荐的影视列表
-
             searchInput: '', // 搜索栏的文字
             editDialog: false, // 控制修改信息框显示状态
             resetDialog: false, // 控制重置密码框的显示状态
@@ -320,15 +317,33 @@
             // 输入时自动匹配建议
             querySearch(queryString, cb) {
                 const trimmedQuery = queryString.trim();
+                console.log('搜索关键词:', trimmedQuery);
+                console.log('当前电影列表长度:', this.movieList.length);
 
+                // 如果movieList为空，重新加载电影列表
+                if (!this.movieList || this.movieList.length === 0) {
+                    console.log('电影列表为空，重新加载...');
+                    axios.get("/index/movie/findAll").then(resp => {
+                        if (resp.data.code == 1) {
+                            this.movieList = resp.data.data;
+                            this.performSearch(trimmedQuery, cb);
+                        }
+                    });
+                } else {
+                    this.performSearch(trimmedQuery, cb);
+                }
+            },
+
+            // 执行搜索
+            performSearch(trimmedQuery, cb) {
                 const results = trimmedQuery
-                    ? this.movieList.filter(item =>
-                        // 匹配电影名或者导演名
-                        item.title.toLowerCase().includes(trimmedQuery.toLowerCase()) ||
-                        item.director.toLowerCase().includes(trimmedQuery.toLowerCase())
-                    )
+                    ? this.movieList.filter(item => {
+                        const matchTitle = item.title && item.title.toLowerCase().includes(trimmedQuery.toLowerCase());
+                        const matchDirector = item.director && item.director.toLowerCase().includes(trimmedQuery.toLowerCase());
+                        return matchTitle || matchDirector;
+                    })
                     : [];
-                // 直接返回电影对象数组
+                console.log('搜索结果数量:', results.length);
                 cb(results);
             },
 

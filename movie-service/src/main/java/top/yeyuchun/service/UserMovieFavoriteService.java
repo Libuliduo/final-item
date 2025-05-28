@@ -3,7 +3,6 @@ package top.yeyuchun.service;
 import top.yeyuchun.entity.Movie;
 
 import java.util.List;
-import java.util.Map;
 
 public interface UserMovieFavoriteService {
     List<Movie> getRecommendedMovies(Integer userId);
