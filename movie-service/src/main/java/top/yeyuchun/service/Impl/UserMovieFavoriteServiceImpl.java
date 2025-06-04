@@ -96,7 +96,6 @@ public class UserMovieFavoriteServiceImpl implements UserMovieFavoriteService {
         return movieService.findMoviesByIds(finalMovieIds);
     }
 
-
     // 获取推荐的电影列表
     @Override
     public List<Movie> getRecommendedMovies(Integer userId) {

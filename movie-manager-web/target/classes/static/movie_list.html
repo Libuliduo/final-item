@@ -182,6 +182,7 @@
                     if (resp.data.code === 1){
                         this.pagination.total=resp.data.data.total;
                         this.pagination.list=resp.data.data.list;
+                        console.log(resp.data.data.list);
                     }else{
                         this.$message.error("resp.data.msg");
                     }
